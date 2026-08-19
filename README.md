@@ -1,1 +1,2 @@
-# Web-mobile-
+# Webmobile- Aplicativo de aluguel de ferramentas
+Uma plataforma para pessoas que possuem ferramentas que utilizam pouco e gostariam de alugá-las para outras pessoas. Quem precisa de uma ferramenta pode pesquisar no aplicativo, verificar disponibilidade, valor e localização e fazer a solicitação de aluguel. Assim, quem possui uma ferramenta consegue gerar uma renda com algo que ficaria parado, enquanto quem precisa não precisa comprar uma ferramenta que usará poucas vezes.
