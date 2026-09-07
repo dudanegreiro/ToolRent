@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     fontSize: 15,
     color: '#1F2937',
+    opacity: 0.5
   },
 
   showPasswordButton: {
@@ -62,8 +63,8 @@ const styles = StyleSheet.create({
   },
 
   showPasswordText: {
-    color: '#1F6F78',
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: 'bold',
+    opacity:0.5
   },
 });

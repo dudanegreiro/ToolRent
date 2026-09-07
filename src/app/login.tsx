@@ -6,7 +6,8 @@ import {
   Platform,
   ScrollView,
   StyleSheet,
-  View,
+  Text,
+  View
 } from 'react-native';
 import {
   FooterText,
@@ -57,6 +58,11 @@ export default function Login() {
       >
         <View style={styles.content}>
           <LogoSection />
+          
+         <View style={styles.containerText}>
+          <Text style={styles.textBemVindo}>BEM-VINDO DE VOLTA</Text>
+          <Text style={styles.text}>Entre na sua conta para alugar ou anunciar ferramentas.</Text>
+        </View>
 
           <LoginForm
             email={email}
@@ -81,7 +87,23 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: 'white',
+  },
+
+  containerText:{
+    marginBottom: 20
+  },
+
+  textBemVindo:{
+    fontSize: 28,
+    fontFamily: 'sans-serif',
+    fontWeight: 'bold'
+  },
+
+  text: {
+    fontSize: 15,
+    fontFamily: 'sans-serif',
+    opacity: 0.5
   },
 
   scrollContainer: {

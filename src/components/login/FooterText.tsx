@@ -6,7 +6,7 @@ export default function FooterText() {
 
 const styles = StyleSheet.create({
   footer: {
-    textAlign: 'center',
+    textAlign:  'center',
     color: '#9CA3AF',
     fontSize: 12,
     marginTop: 35,

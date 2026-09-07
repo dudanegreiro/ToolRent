@@ -1,53 +1,55 @@
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function LogoSection() {
   return (
     <View style={styles.container}>
       <View style={styles.logo}>
-        <Text style={styles.logoIcon}>🔧</Text>
+        <MaterialCommunityIcons
+          name="wrench-outline"
+          size={18}
+          color="#FFFF"
+        />
       </View>
-
-      <Text style={styles.title}>ToolRent</Text>
-
-      <Text style={styles.subtitle}>
-        Alugue ferramentas de forma simples e segura.
-      </Text>
+    
+      <Text style={styles.title}>TOOL</Text>
+      <Text style={styles.title2}>RENT</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
-    marginBottom: 35,
+    alignItems: 'flex-start',
+    flexDirection: 'row',
+    transform: [{translateY: -20}]
   },
 
   logo: {
-    width: 75,
-    height: 75,
-    borderRadius: 20,
-    backgroundColor: '#1F6F78',
+    width: 40,
+    height: 40,
+    borderRadius: 8,
+    backgroundColor: '#E85D04',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 15,
-  },
-
-  logoIcon: {
-    fontSize: 35,
   },
 
   title: {
-    fontSize: 32,
-    fontWeight: '700',
+    fontSize: 15,
+    fontFamily: 'sans-serif',
+    fontWeight: 'bold',
     color: '#1F3D4A',
     marginBottom: 8,
+    marginTop: 10,
+    marginLeft: 8
   },
 
-  subtitle: {
-    fontSize: 14,
-    color: '#6B7280',
-    textAlign: 'center',
-    maxWidth: 280,
-    lineHeight: 20,
+  title2: {
+    fontSize: 15,
+    fontFamily: 'sans-serif',
+    fontWeight: '900',
+    color: '#E85D04',
+    marginBottom: 8,
+    marginTop: 10
   },
 });
