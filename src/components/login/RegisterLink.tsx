@@ -21,17 +21,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 25,
+    fontFamily: 'sans-serif',
   },
 
   text: {
     fontSize: 14,
     color: '#6B7280',
+    opacity: 0.7
   },
 
   link: {
     fontSize: 14,
-    color: '#1F6F78',
-    fontWeight: '700',
+    color: '#E85D04',
+    fontWeight: 'bold',
     marginLeft: 5,
   },
 });

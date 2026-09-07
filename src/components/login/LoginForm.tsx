@@ -1,9 +1,9 @@
 import {
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import PasswordInput from './PasswordInput';
 
@@ -30,8 +30,6 @@ export default function LoginForm({
 }: LoginFormProps) {
   return (
     <View style={styles.form}>
-      <Text style={styles.formTitle}>Entrar</Text>
-
       <Text style={styles.label}>E-mail</Text>
 
       <TextInput
@@ -66,7 +64,7 @@ export default function LoginForm({
         onPress={onLogin}
         activeOpacity={0.8}
       >
-        <Text style={styles.loginButtonText}>Entrar</Text>
+        <Text style={styles.loginButtonText}>ENTRAR</Text>
       </TouchableOpacity>
     </View>
   );
@@ -77,6 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 20,
     padding: 24,
+    fontFamily: 'sans-serif',
 
     shadowColor: '#000',
     shadowOffset: {
@@ -100,6 +99,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#374151',
     marginBottom: 8,
+    opacity: 0.5
   },
 
   input: {
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     color: '#1F2937',
     backgroundColor: '#FAFBFC',
     marginBottom: 20,
+    opacity: 0.5
   },
 
   forgotContainer: {
@@ -120,14 +121,14 @@ const styles = StyleSheet.create({
   },
 
   forgotText: {
-    color: '#1F6F78',
+    color: '#E85D04',
     fontSize: 13,
     fontWeight: '600',
   },
 
   loginButton: {
     height: 52,
-    backgroundColor: '#1F6F78',
+    backgroundColor: '#E85D04',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
