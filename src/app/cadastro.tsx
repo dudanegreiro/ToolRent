@@ -24,7 +24,7 @@ export default function Cadastro() {
       >
         <View style={styles.content}>
 
-          <LogoSection/>
+          <LogoSection />
 
           <Text style={styles.title}>
             DADOS PESSOAIS
@@ -34,7 +34,7 @@ export default function Cadastro() {
             Preencha suas informações para continuar..
           </Text>
 
-          <CadastroForm/>
+          <CadastroForm />
 
           <View style={styles.loginContainer}>
             <Text style={styles.loginText}>
@@ -99,8 +99,8 @@ const styles = StyleSheet.create({
   },
 
   loginLink: {
-    color: '#1F6F78',
-    fontWeight: '700',
+    color: '#E85D04',
+    fontWeight: 'bold',
     fontSize: 14,
     marginLeft: 5,
   },
