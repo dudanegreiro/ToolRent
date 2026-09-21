@@ -16,6 +16,7 @@ interface LoginFormProps {
   onToggleShowPassword: () => void;
   onLogin: () => void;
   onForgotPassword: () => void;
+  loading?: boolean;
 }
 
 export default function LoginForm({
@@ -27,6 +28,7 @@ export default function LoginForm({
   onToggleShowPassword,
   onLogin,
   onForgotPassword,
+  loading = false,
 }: LoginFormProps) {
   return (
     <View style={styles.form}>
@@ -62,9 +64,12 @@ export default function LoginForm({
       <TouchableOpacity
         style={styles.loginButton}
         onPress={onLogin}
+        disabled={loading}
         activeOpacity={0.8}
       >
-        <Text style={styles.loginButtonText}>ENTRAR</Text>
+        <Text style={styles.loginButtonText}>
+          {loading ? 'AGUARDE...' : 'ENTRAR'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -77,13 +82,7 @@ const styles = StyleSheet.create({
     padding: 24,
     fontFamily: 'sans-serif',
 
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 10,
+    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.08)',
     elevation: 4,
   },
 
