@@ -1,3 +1,5 @@
+import { cadastrarUsuario } from '@/services/api';
+import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
     Alert,
@@ -9,6 +11,7 @@ import {
 } from 'react-native';
 
 export default function CadastroForm() {
+    const router = useRouter();
     const [etapa, setEtapa] = useState(1);
     const [nome, setNome] = useState('');
     const [email, setEmail] = useState('');
@@ -16,10 +19,17 @@ export default function CadastroForm() {
     const [cpf, setCpf] = useState('');
     const [senha, setSenha] = useState('');
     const [confirmSenha, setConfirmSenha] = useState('');
+    const [carregando, setCarregando] = useState(false);
+    const [mensagem, setMensagem] = useState('');
+    const [cadastroRealizado, setCadastroRealizado] = useState(false);
 
-    const handleCadastro = () => {
+    const handleCadastro = async () => {
+        setMensagem('');
+        setCadastroRealizado(false);
+
         if (etapa === 1) {
             if (!nome || !email || !telefone || !cpf) {
+                setMensagem('Preencha todos os campos para continuar.');
                 Alert.alert('Campos obrigatórios', 'Preencha todos os campos.');
                 return;
             }
@@ -30,16 +40,40 @@ export default function CadastroForm() {
 
         if (etapa === 2) {
             if (!senha) {
+                setMensagem('Digite uma senha para continuar.');
                 Alert.alert('Campo obrigatório', 'Digite Sua Senha');
                 return;
             }
 
             if (senha !== confirmSenha) {
+                setMensagem('As senhas precisam ser iguais.');
                 Alert.alert('Senhas diferentes', 'Confirme sua Senha!');
                 return;
             }
 
-            Alert.alert('Cadastro realizado', 'Sua conta foi criada!');
+            setCarregando(true);
+
+            try {
+                await cadastrarUsuario({
+                    nome,
+                    email,
+                    cpf,
+                    telefone,
+                    senha,
+                });
+                setCadastroRealizado(true);
+                setMensagem('Cadastro realizado corretamente!');
+                Alert.alert('Cadastro realizado', 'Sua conta foi criada!');
+                router.replace('/home' as Href);
+            } catch (error) {
+                const message = error instanceof Error
+                    ? error.message
+                    : 'Não foi possível realizar o cadastro.';
+                setMensagem(message);
+                Alert.alert('Erro no cadastro', message);
+            } finally {
+                setCarregando(false);
+            }
         }
 
 
@@ -126,17 +160,37 @@ export default function CadastroForm() {
                     <TouchableOpacity
                         style={[styles.button, styles.backButton]}
                         onPress={() => setEtapa(1)}
+                        disabled={carregando}
                     >
                         <Text style={styles.backButtonText}>VOLTAR</Text>
                     </TouchableOpacity>
                 )}
 
-                <TouchableOpacity style={styles.button} onPress={handleCadastro}>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handleCadastro}
+                    disabled={carregando}
+                >
                     <Text style={styles.buttonText}>
-                        {etapa === 1 ? 'CONTINUAR' : 'CRIAR CONTA'}
+                        {carregando
+                            ? 'AGUARDE...'
+                            : etapa === 1
+                                ? 'CONTINUAR'
+                                : 'CRIAR CONTA'}
                     </Text>
                 </TouchableOpacity>
             </View>
+
+            {!!mensagem && (
+                <Text
+                    style={[
+                        styles.message,
+                        cadastroRealizado && styles.successMessage,
+                    ]}
+                >
+                    {mensagem}
+                </Text>
+            )}
         </View>
     );
 }
@@ -146,10 +200,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFFFFF',
         borderRadius: 20,
         padding: 24,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.08,
-        shadowRadius: 10,
+        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.08)',
         elevation: 4,
     },
     label: {
@@ -213,5 +264,15 @@ const styles = StyleSheet.create({
         color: '#E85D04',
         fontSize: 16,
         fontWeight: '700',
+    },
+    message: {
+        color: '#374151',
+        fontSize: 14,
+        marginTop: 12,
+        textAlign: 'center',
+    },
+    successMessage: {
+        color: '#16803C',
+        fontWeight: '600',
     },
 });

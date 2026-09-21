@@ -6,6 +6,7 @@ from django.db import models
 class Usuario(models.Model):
     nome = models.TextField(max_length=100)
     email = models.EmailField(unique=True)
+    cpf = models.CharField(max_length=14, unique=True, null=True, blank=True)
     senha = models.CharField(max_length=120)
     telefone = models.CharField(max_length=120)
     data_cadastro = models.DateField()

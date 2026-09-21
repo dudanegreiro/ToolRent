@@ -1,4 +1,5 @@
-import { useRouter } from 'expo-router';
+import { fazerLogin } from '@/services/api';
+import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
   Alert,
@@ -22,8 +23,9 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
+  const [carregando, setCarregando] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !senha) {
       Alert.alert(
         'Campos obrigatórios',
@@ -32,12 +34,20 @@ export default function Login() {
       return;
     }
 
-    // Por enquanto, apenas simula o login.
-    // Depois podemos conectar com a API/banco de dados.
-    Alert.alert('Login realizado!', `Bem-vindo ao ToolRent, ${email}!`);
+    setCarregando(true);
 
-    // Quando o backend estiver pronto:
-    // router.replace('/home');
+    try {
+      const usuario = await fazerLogin({ email, senha });
+      Alert.alert('Login realizado!', `Bem-vindo ao ToolRent, ${usuario.nome}!`);
+      router.replace('/home' as Href);
+    } catch (error) {
+      const message = error instanceof Error
+        ? error.message
+        : 'Não foi possível realizar o login.';
+      Alert.alert('Erro no login', message);
+    } finally {
+      setCarregando(false);
+    }
   };
 
   const handleForgotPassword = () => {
@@ -58,11 +68,11 @@ export default function Login() {
       >
         <View style={styles.content}>
           <LogoSection />
-          
-         <View style={styles.containerText}>
-          <Text style={styles.textBemVindo}>BEM-VINDO DE VOLTA</Text>
-          <Text style={styles.text}>Entre na sua conta para alugar ou anunciar ferramentas.</Text>
-        </View>
+
+          <View style={styles.containerText}>
+            <Text style={styles.textBemVindo}>BEM-VINDO DE VOLTA</Text>
+            <Text style={styles.text}>Entre na sua conta para alugar ou anunciar ferramentas.</Text>
+          </View>
 
           <LoginForm
             email={email}
@@ -73,6 +83,7 @@ export default function Login() {
             onToggleShowPassword={() => setMostrarSenha(!mostrarSenha)}
             onLogin={handleLogin}
             onForgotPassword={handleForgotPassword}
+            loading={carregando}
           />
 
           <RegisterLink />
@@ -90,11 +101,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
 
-  containerText:{
+  containerText: {
     marginBottom: 20
   },
 
-  textBemVindo:{
+  textBemVindo: {
     fontSize: 28,
     fontFamily: 'sans-serif',
     fontWeight: 'bold'
