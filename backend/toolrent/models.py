@@ -17,11 +17,25 @@ class Categoria(models.Model):
 
 class Ferramenta(models.Model):
     nome = models.TextField(max_length=100)
+    marca = models.CharField(max_length=100)
+    modelo = models.CharField(max_length=100)
+    estado_conservacao = models.CharField(max_length=20)
     descricao = models.CharField(max_length=500)
+    itens_inclusos = models.CharField(max_length=500, blank=True)
     preco_diaria = models.DecimalField(
         max_digits=10,
         decimal_places=2
     )
+    preco_semanal = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0
+    )
+    periodo_minimo = models.PositiveSmallIntegerField(default=1)
+    exige_caucao = models.BooleanField(default=False)
+    politica_cancelamento = models.CharField(max_length=20, default='Flexível')
+    entrega = models.BooleanField(default=False)
+    status_aprovacao = models.CharField(max_length=20, default='PUBLICADO')
 
     disponibilidade = models.BooleanField()
     data_cadastro = models.DateField()
@@ -59,11 +73,14 @@ class Aluguel(models.Model):
     )
 
 class Foto(models.Model):
-    url = models.CharField(max_length=500)
+    url = models.CharField(max_length=500, blank=True)
+    arquivo = models.FileField(upload_to='fotos/', blank=True)
 
     ferramenta = models.ForeignKey(
         Ferramenta,
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
         related_name="fotos"
     )
 
@@ -114,10 +131,12 @@ class Avaliacao(models.Model):
 
 
 class Localizacao(models.Model):
+    endereco = models.CharField(max_length=200, blank=True)
     cidade = models.CharField(max_length=100)
     bairro = models.CharField(max_length=100)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    entrega = models.BooleanField(default=False)
 
     ferramenta = models.ForeignKey(
         Ferramenta,
