@@ -39,7 +39,10 @@ export default function Login() {
     try {
       const usuario = await fazerLogin({ email, senha });
       Alert.alert('Login realizado!', `Bem-vindo ao ToolRent, ${usuario.nome}!`);
-      router.replace('/home' as Href);
+      router.replace({
+        pathname: '/home',
+        params: { usuarioId: String(usuario.id) },
+      } as Href);
     } catch (error) {
       const message = error instanceof Error
         ? error.message

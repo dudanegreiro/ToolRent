@@ -9,6 +9,12 @@ type Usuario = {
     data_cadastro: string;
 };
 
+export type Categoria = {
+    id: number;
+    nome: string;
+    descricao: string;
+};
+
 type CadastroPayload = {
     nome: string;
     email: string;
@@ -20,6 +26,28 @@ type CadastroPayload = {
 type LoginPayload = {
     email: string;
     senha: string;
+};
+
+export type FerramentaPayload = {
+    nome: string;
+    marca: string;
+    modelo: string;
+    estado_conservacao: string;
+    descricao: string;
+    itens_inclusos: string;
+    preco_diaria: number;
+    preco_semanal: number;
+    periodo_minimo: number;
+    exige_caucao: boolean;
+    politica_cancelamento: string;
+    endereco: string;
+    bairro: string;
+    cidade: string;
+    entrega: boolean;
+    fotos: string[];
+    disponibilidade?: boolean;
+    usuario_id: number;
+    categoria_id: number;
 };
 
 const API_URL = process.env.EXPO_PUBLIC_API_URL ?? (
@@ -48,7 +76,11 @@ async function request<T>(path: string, options: RequestInit): Promise<T> {
     if (!response.ok) {
         const message = typeof body?.detail === 'string'
             ? body.detail
-            : 'Não foi possível concluir a operação.';
+            : Array.isArray(body?.detail)
+                ? body.detail
+                    .map((error: { msg?: string }) => error.msg ?? 'Campo inválido.')
+                    .join(' ')
+                : 'Não foi possível concluir a operação.';
         throw new Error(message);
     }
 
@@ -67,4 +99,55 @@ export function fazerLogin(payload: LoginPayload) {
         method: 'POST',
         body: JSON.stringify(payload),
     });
+}
+
+export function listarCategorias() {
+    return request<Categoria[]>('/categorias', {
+        method: 'GET',
+    });
+}
+
+export function criarFerramenta(payload: FerramentaPayload) {
+    return request('/ferramentas', {
+        method: 'POST',
+        body: JSON.stringify(payload),
+    });
+}
+
+export async function enviarFoto(uri: string, index: number) {
+    const formData = new FormData();
+
+    if (Platform.OS === 'web') {
+        const fileResponse = await fetch(uri);
+        const blob = await fileResponse.blob();
+        formData.append('arquivo', blob, `foto-${index}.jpg`);
+    } else {
+        formData.append('arquivo', {
+            uri,
+            name: `foto-${index}.jpg`,
+            type: 'image/jpeg',
+        } as unknown as Blob);
+    }
+
+    let response: Response;
+
+    try {
+        response = await fetch(`${API_URL}/fotos`, {
+            method: 'POST',
+            body: formData,
+        });
+    } catch {
+        throw new Error('Não foi possível enviar a foto.');
+    }
+
+    const body = await response.json().catch(() => null);
+
+    if (!response.ok) {
+        const message = typeof body?.detail === 'string'
+            ? body.detail
+            : 'Não foi possível salvar a foto.';
+        throw new Error(message);
+    }
+
+    return body as { id: number; url: string };
 }
