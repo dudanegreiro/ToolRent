@@ -128,6 +128,19 @@ export function fazerLogin(payload: LoginPayload) {
     });
 }
 
+export function buscarUsuarioPorId(usuarioId: number) {
+    return request<Usuario>(`/usuarios/${usuarioId}`, {
+        method: 'GET',
+    });
+}
+
+export function atualizarUsuario(usuarioId: number, payload: Partial<Pick<Usuario, 'nome' | 'telefone'> & { senha?: string }>) {
+    return request<Usuario>(`/usuarios/${usuarioId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+    });
+}
+
 export function listarCategorias() {
     return request<Categoria[]>('/categorias', {
         method: 'GET',
@@ -144,6 +157,19 @@ export function criarFerramenta(payload: FerramentaPayload) {
     return request('/ferramentas', {
         method: 'POST',
         body: JSON.stringify(payload),
+    });
+}
+
+export function atualizarFerramenta(ferramentaId: number, payload: Partial<FerramentaPayload>) {
+    return request<Ferramenta>(`/ferramentas/${ferramentaId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+    });
+}
+
+export function excluirFerramenta(ferramentaId: number) {
+    return request<{ sucesso: boolean }>(`/ferramentas/${ferramentaId}`, {
+        method: 'DELETE',
     });
 }
 
