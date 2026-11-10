@@ -1,4 +1,5 @@
 import LocationForm from '@/components/anuncio/LocationForm';
+import { goBackOrHome } from '@/utils/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -74,7 +75,7 @@ export default function AnuncioLocalizacao() {
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => router.back()}
+                        onPress={() => goBackOrHome(router, { usuarioId: params.usuarioId })}
                         activeOpacity={0.75}
                         accessibilityLabel="Voltar"
                     >

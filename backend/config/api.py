@@ -1,7 +1,7 @@
 from datetime import date
 
 from django.contrib.auth.hashers import check_password, make_password
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 from ninja import File, NinjaAPI, Schema, UploadedFile
 from ninja.errors import HttpError
@@ -26,6 +26,12 @@ class UsuarioOutput(Schema):
 	cpf: str
 	telefone: str
 	data_cadastro: date
+
+
+class UsuarioUpdateInput(Schema):
+	nome: str = None
+	telefone: str = None
+	senha: str = None
 
 
 class LoginInput(Schema):
@@ -66,6 +72,23 @@ class FerramentaInput(Schema):
 	categoria_id: int
 
 
+class FerramentaUpdateInput(Schema):
+	nome: str = None
+	marca: str = None
+	modelo: str = None
+	estado_conservacao: str = None
+	descricao: str = None
+	itens_inclusos: str = None
+	preco_diaria: float = None
+	preco_semanal: float = None
+	periodo_minimo: int = None
+	exige_caucao: bool = None
+	politica_cancelamento: str = None
+	entrega: bool = None
+	disponibilidade: bool = None
+	categoria_id: int = None
+
+
 class FerramentaOutput(Schema):
 	id: int
 	nome: str
@@ -98,16 +121,50 @@ def listar_usuarios(request):
 	return Usuario.objects.all()
 
 
+@api.get('/usuarios/{usuario_id}', response=UsuarioOutput, tags=['Usuários'])
+def obter_usuario(request, usuario_id: int):
+	return get_object_or_404(Usuario, id=usuario_id)
+
+
+@api.patch('/usuarios/{usuario_id}', response=UsuarioOutput, tags=['Usuários'])
+def atualizar_usuario(request, usuario_id: int, payload: UsuarioUpdateInput):
+	usuario = get_object_or_404(Usuario, id=usuario_id)
+
+	if payload.nome is not None:
+		if not payload.nome.strip():
+			raise HttpError(400, 'O nome não pode ficar vazio.')
+		usuario.nome = payload.nome.strip()
+
+	if payload.telefone is not None:
+		telefone = ''.join(ch for ch in payload.telefone if ch.isdigit())
+		if len(telefone) < 10:
+			raise HttpError(400, 'Informe um telefone válido com DDD e número.')
+		usuario.telefone = telefone
+
+	if payload.senha is not None and payload.senha.strip():
+		usuario.senha = make_password(payload.senha.strip())
+
+	usuario.save()
+	return usuario
+
+
 @api.post('/usuarios', response=UsuarioOutput, tags=['Usuários'])
 def criar_usuario(request, payload: UsuarioInput):
-	return Usuario.objects.create(
-		nome=payload.nome,
-		email=payload.email,
-		cpf=payload.cpf,
-		senha=make_password(payload.senha),
-		telefone=payload.telefone,
-		data_cadastro=date.today(),
-	)
+	try:
+		return Usuario.objects.create(
+			nome=payload.nome,
+			email=payload.email,
+			cpf=payload.cpf,
+			senha=make_password(payload.senha),
+			telefone=payload.telefone,
+			data_cadastro=date.today(),
+		)
+	except IntegrityError as exc:
+		if Usuario.objects.filter(cpf=payload.cpf).exists():
+			raise HttpError(400, 'Este CPF já está cadastrado. Faça login ou utilize outro CPF.')
+		if Usuario.objects.filter(email=payload.email).exists():
+			raise HttpError(400, 'Este e-mail já está cadastrado. Faça login ou utilize outro e-mail.')
+		raise HttpError(400, 'Não foi possível concluir o cadastro. Verifique os dados e tente novamente.')
 
 
 @api.post('/login', response=UsuarioOutput, tags=['Autenticação'])
@@ -136,6 +193,13 @@ def listar_ferramentas(request):
 
 
 def serializar_ferramenta(request, ferramenta):
+	fotos = []
+	for foto in ferramenta.fotos.all():
+		url = foto.url or (foto.arquivo.url if foto.arquivo else '')
+		if not url or url.startswith('blob:'):
+			continue
+		fotos.append({'id': foto.id, 'url': request.build_absolute_uri(url) if not url.startswith('http') else url})
+
 	return {
 		'id': ferramenta.id,
 		'nome': ferramenta.nome,
@@ -155,10 +219,7 @@ def serializar_ferramenta(request, ferramenta):
 		'data_cadastro': ferramenta.data_cadastro,
 		'usuario_id': ferramenta.usuario_id,
 		'categoria_id': ferramenta.categoria_id,
-		'fotos': [
-			{'id': foto.id, 'url': foto.url or request.build_absolute_uri(foto.arquivo.url)}
-			for foto in ferramenta.fotos.all()
-		],
+		'fotos': fotos,
 	}
 
 
@@ -172,8 +233,13 @@ def enviar_foto(request, arquivo: UploadedFile = File(...)):
 
 @api.post('/ferramentas', response=FerramentaOutput, tags=['Ferramentas'])
 def criar_ferramenta(request, payload: FerramentaInput):
-	usuario = get_object_or_404(Usuario, id=payload.usuario_id)
-	categoria = get_object_or_404(Categoria, id=payload.categoria_id)
+	usuario = Usuario.objects.filter(id=payload.usuario_id).first()
+	if usuario is None:
+		raise HttpError(400, 'Usuário não encontrado. Faça login novamente e tente publicar o anúncio.')
+
+	categoria = Categoria.objects.filter(id=payload.categoria_id).first()
+	if categoria is None:
+		raise HttpError(400, 'Categoria não encontrada. Selecione uma categoria válida para continuar.')
 
 	if payload.periodo_minimo < 1:
 		raise HttpError(400, 'O período mínimo deve ser maior que zero.')
@@ -206,6 +272,8 @@ def criar_ferramenta(request, payload: FerramentaInput):
 			ferramenta=ferramenta,
 		)
 		for url in payload.fotos:
+			if not url or url.startswith('blob:'):
+				continue
 			foto = Foto.objects.filter(url=url, ferramenta__isnull=True).first()
 			if foto is not None:
 				foto.ferramenta = ferramenta
@@ -214,3 +282,71 @@ def criar_ferramenta(request, payload: FerramentaInput):
 				Foto.objects.create(url=url, ferramenta=ferramenta)
 
 	return serializar_ferramenta(request, ferramenta)
+
+@api.patch('/ferramentas/{ferramenta_id}', response=FerramentaOutput, tags=['Ferramentas'])
+def atualizar_ferramenta(request, ferramenta_id: int, payload: FerramentaUpdateInput):
+	ferramenta = get_object_or_404(Ferramenta, id=ferramenta_id)
+
+	if payload.nome is not None:
+		if not payload.nome.strip():
+			raise HttpError(400, 'O nome do anúncio não pode ficar vazio.')
+		ferramenta.nome = payload.nome.strip()
+
+	if payload.marca is not None:
+		ferramenta.marca = payload.marca.strip()
+
+	if payload.modelo is not None:
+		ferramenta.modelo = payload.modelo.strip()
+
+	if payload.estado_conservacao is not None:
+		ferramenta.estado_conservacao = payload.estado_conservacao.strip()
+
+	if payload.descricao is not None:
+		if not payload.descricao.strip():
+			raise HttpError(400, 'A descrição não pode ficar vazia.')
+		ferramenta.descricao = payload.descricao.strip()
+
+	if payload.itens_inclusos is not None:
+		ferramenta.itens_inclusos = payload.itens_inclusos.strip()
+
+	if payload.preco_diaria is not None:
+		if payload.preco_diaria <= 0:
+			raise HttpError(400, 'A diária precisa ser maior que zero.')
+		ferramenta.preco_diaria = payload.preco_diaria
+
+	if payload.preco_semanal is not None:
+		if payload.preco_semanal < 0:
+			raise HttpError(400, 'O valor semanal não pode ser negativo.')
+		ferramenta.preco_semanal = payload.preco_semanal
+
+	if payload.periodo_minimo is not None:
+		if payload.periodo_minimo < 1:
+			raise HttpError(400, 'O período mínimo deve ser maior que zero.')
+		ferramenta.periodo_minimo = payload.periodo_minimo
+
+	if payload.exige_caucao is not None:
+		ferramenta.exige_caucao = payload.exige_caucao
+
+	if payload.politica_cancelamento is not None:
+		ferramenta.politica_cancelamento = payload.politica_cancelamento
+
+	if payload.entrega is not None:
+		ferramenta.entrega = payload.entrega
+		Localizacao.objects.filter(ferramenta=ferramenta).update(entrega=payload.entrega)
+
+	if payload.disponibilidade is not None:
+		ferramenta.disponibilidade = payload.disponibilidade
+
+	if payload.categoria_id is not None:
+		categoria = get_object_or_404(Categoria, id=payload.categoria_id)
+		ferramenta.categoria = categoria
+
+	ferramenta.save()
+	return serializar_ferramenta(request, ferramenta)
+
+
+@api.delete('/ferramentas/{ferramenta_id}', tags=['Ferramentas'])
+def excluir_ferramenta(request, ferramenta_id: int):
+	ferramenta = get_object_or_404(Ferramenta, id=ferramenta_id)
+	ferramenta.delete()
+	return {'sucesso': True}

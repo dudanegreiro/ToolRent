@@ -1,5 +1,6 @@
 import CategorySelection from '@/components/anuncio/CategorySelection';
 import { listarCategorias, type Categoria } from '@/services/api';
+import { goBackOrHome } from '@/utils/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -47,7 +48,7 @@ export default function Anuncio() {
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => router.back()}
+                        onPress={() => goBackOrHome(router, { usuarioId })}
                         activeOpacity={0.75}
                         accessibilityLabel="Voltar"
                     >

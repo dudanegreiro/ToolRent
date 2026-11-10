@@ -1,4 +1,5 @@
 import { criarFerramenta, enviarFoto } from '@/services/api';
+import { goBackOrHome } from '@/utils/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -55,6 +56,12 @@ export default function AnuncioRevisao() {
     const deposit = params.caucao === 'true' ? 'Sim' : 'Não';
     const minimumPeriod = params.periodoMinimo === '1' ? '1 dia' : `${params.periodoMinimo ?? '-'} dias`;
 
+    const cancellationMeaning: Record<string, string> = {
+        Flexível: 'Reembolso total até 24h antes da reserva.',
+        Moderada: 'Reembolso até 3 dias antes; após isso, só parcial ou crédito.',
+        Rigorosa: 'Sem reembolso após a confirmação da reserva.',
+    };
+
     const rows = [
         ['Categoria', params.categoriaNome],
         ['Marca', params.marca],
@@ -64,7 +71,7 @@ export default function AnuncioRevisao() {
         ['Semanal', weeklyPrice > 0 ? formatCurrency(weeklyPrice) : undefined],
         ['Período mínimo', minimumPeriod],
         ['Caução', deposit],
-        ['Cancelamento', params.cancelamento],
+        ['Cancelamento', params.cancelamento ? `${params.cancelamento} — ${cancellationMeaning[params.cancelamento]}` : undefined],
         ['Endereço', params.endereco],
         ['Bairro', params.bairro],
         ['Cidade', params.cidade],
@@ -110,15 +117,11 @@ export default function AnuncioRevisao() {
 
             const message = 'Seu anúncio foi publicado com sucesso e já está disponível.';
             setFeedback({ type: 'success', message });
-            Alert.alert('Anúncio publicado', message, [
-                {
-                    text: 'IR PARA HOME',
-                    onPress: () => router.replace({
-                        pathname: '/home',
-                        params: { usuarioId: params.usuarioId },
-                    } as Href),
-                },
-            ]);
+
+            router.replace({
+                pathname: '/home',
+                params: { usuarioId: params.usuarioId },
+            } as Href);
         } catch (requestError) {
             const message = requestError instanceof Error
                 ? requestError.message
@@ -139,7 +142,7 @@ export default function AnuncioRevisao() {
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => router.back()}
+                        onPress={() => goBackOrHome(router, { usuarioId: params.usuarioId })}
                         activeOpacity={0.75}
                         accessibilityLabel="Voltar"
                     >
