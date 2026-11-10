@@ -1,4 +1,5 @@
 import PriceForm, { type CancellationPolicy, type MinimumPeriod } from '@/components/anuncio/PriceForm';
+import { goBackOrHome } from '@/utils/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -60,7 +61,7 @@ export default function AnuncioPreco() {
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => router.back()}
+                        onPress={() => goBackOrHome(router, { usuarioId: params.usuarioId })}
                         activeOpacity={0.75}
                         accessibilityLabel="Voltar"
                     >

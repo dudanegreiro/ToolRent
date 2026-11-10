@@ -1,7 +1,7 @@
 from datetime import date
 
 from django.contrib.auth.hashers import check_password, make_password
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 from ninja import File, NinjaAPI, Schema, UploadedFile
 from ninja.errors import HttpError
@@ -100,14 +100,21 @@ def listar_usuarios(request):
 
 @api.post('/usuarios', response=UsuarioOutput, tags=['Usuários'])
 def criar_usuario(request, payload: UsuarioInput):
-	return Usuario.objects.create(
-		nome=payload.nome,
-		email=payload.email,
-		cpf=payload.cpf,
-		senha=make_password(payload.senha),
-		telefone=payload.telefone,
-		data_cadastro=date.today(),
-	)
+	try:
+		return Usuario.objects.create(
+			nome=payload.nome,
+			email=payload.email,
+			cpf=payload.cpf,
+			senha=make_password(payload.senha),
+			telefone=payload.telefone,
+			data_cadastro=date.today(),
+		)
+	except IntegrityError as exc:
+		if Usuario.objects.filter(cpf=payload.cpf).exists():
+			raise HttpError(400, 'Este CPF já está cadastrado. Faça login ou utilize outro CPF.')
+		if Usuario.objects.filter(email=payload.email).exists():
+			raise HttpError(400, 'Este e-mail já está cadastrado. Faça login ou utilize outro e-mail.')
+		raise HttpError(400, 'Não foi possível concluir o cadastro. Verifique os dados e tente novamente.')
 
 
 @api.post('/login', response=UsuarioOutput, tags=['Autenticação'])
@@ -172,8 +179,13 @@ def enviar_foto(request, arquivo: UploadedFile = File(...)):
 
 @api.post('/ferramentas', response=FerramentaOutput, tags=['Ferramentas'])
 def criar_ferramenta(request, payload: FerramentaInput):
-	usuario = get_object_or_404(Usuario, id=payload.usuario_id)
-	categoria = get_object_or_404(Categoria, id=payload.categoria_id)
+	usuario = Usuario.objects.filter(id=payload.usuario_id).first()
+	if usuario is None:
+		raise HttpError(400, 'Usuário não encontrado. Faça login novamente e tente publicar o anúncio.')
+
+	categoria = Categoria.objects.filter(id=payload.categoria_id).first()
+	if categoria is None:
+		raise HttpError(400, 'Categoria não encontrada. Selecione uma categoria válida para continuar.')
 
 	if payload.periodo_minimo < 1:
 		raise HttpError(400, 'O período mínimo deve ser maior que zero.')

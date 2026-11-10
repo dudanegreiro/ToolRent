@@ -15,6 +15,33 @@ export type Categoria = {
     descricao: string;
 };
 
+export type Foto = {
+    id: number;
+    url: string;
+};
+
+export type Ferramenta = {
+    id: number;
+    nome: string;
+    marca: string;
+    modelo: string;
+    estado_conservacao: string;
+    descricao: string;
+    itens_inclusos: string;
+    preco_diaria: number;
+    preco_semanal: number;
+    periodo_minimo: number;
+    exige_caucao: boolean;
+    politica_cancelamento: string;
+    entrega: boolean;
+    status_aprovacao: string;
+    disponibilidade: boolean;
+    data_cadastro: string;
+    usuario_id: number;
+    categoria_id: number;
+    fotos: Foto[];
+};
+
 type CadastroPayload = {
     nome: string;
     email: string;
@@ -103,6 +130,12 @@ export function fazerLogin(payload: LoginPayload) {
 
 export function listarCategorias() {
     return request<Categoria[]>('/categorias', {
+        method: 'GET',
+    });
+}
+
+export function listarFerramentas() {
+    return request<Ferramenta[]>('/ferramentas', {
         method: 'GET',
     });
 }

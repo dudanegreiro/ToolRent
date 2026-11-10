@@ -17,6 +17,7 @@ interface LoginFormProps {
   onLogin: () => void;
   onForgotPassword: () => void;
   loading?: boolean;
+  errorMessage?: string;
 }
 
 export default function LoginForm({
@@ -29,6 +30,7 @@ export default function LoginForm({
   onLogin,
   onForgotPassword,
   loading = false,
+  errorMessage,
 }: LoginFormProps) {
   return (
     <View style={styles.form}>
@@ -43,6 +45,9 @@ export default function LoginForm({
         keyboardType="email-address"
         autoCapitalize="none"
         autoCorrect={false}
+        returnKeyType="next"
+        textContentType="emailAddress"
+        blurOnSubmit={false}
       />
 
       <Text style={styles.label}>Senha</Text>
@@ -52,7 +57,12 @@ export default function LoginForm({
         onChangeText={onPasswordChange}
         showPassword={showPassword}
         onToggleShowPassword={onToggleShowPassword}
+        onSubmitEditing={onLogin}
       />
+
+      {errorMessage ? (
+        <Text style={styles.errorText}>{errorMessage}</Text>
+      ) : null}
 
       <TouchableOpacity
         style={styles.forgotContainer}
@@ -62,7 +72,7 @@ export default function LoginForm({
       </TouchableOpacity>
 
       <TouchableOpacity
-        style={styles.loginButton}
+        style={[styles.loginButton, loading && styles.loginButtonDisabled]}
         onPress={onLogin}
         disabled={loading}
         activeOpacity={0.8}
@@ -81,8 +91,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 24,
     fontFamily: 'sans-serif',
-
-    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.08)',
+    shadowColor: '#111827',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
     elevation: 4,
   },
 
@@ -114,6 +126,14 @@ const styles = StyleSheet.create({
     opacity: 0.5
   },
 
+  errorText: {
+    color: '#B42318',
+    fontSize: 13,
+    fontWeight: '600',
+    marginBottom: 14,
+    lineHeight: 18,
+  },
+
   forgotContainer: {
     alignItems: 'flex-end',
     marginBottom: 25,
@@ -131,6 +151,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+
+  loginButtonDisabled: {
+    opacity: 0.7,
   },
 
   loginButtonText: {

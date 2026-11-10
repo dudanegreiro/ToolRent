@@ -18,9 +18,9 @@ type PriceFormProps = {
 };
 
 const policies: Array<{ label: CancellationPolicy; description: string }> = [
-    { label: 'Flexível', description: 'Reembolso até 24h antes' },
-    { label: 'Moderada', description: 'Reembolso até 3 dias antes' },
-    { label: 'Rigorosa', description: 'Sem reembolso após reserva' },
+    { label: 'Flexível', description: 'Reembolso total até 24h antes da reserva.' },
+    { label: 'Moderada', description: 'Reembolso até 3 dias antes; após isso, só parcial ou crédito.' },
+    { label: 'Rigorosa', description: 'Sem reembolso após a confirmação da reserva.' },
 ];
 
 export default function PriceForm({
