@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "Webmobile",
-    "slug": "Webmobile",
+    "name": "ToolRent",
+    "slug": "toolrent",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "webmobile",
+    "scheme": "toolrent",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon"
