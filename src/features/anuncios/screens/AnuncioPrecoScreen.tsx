@@ -1,4 +1,5 @@
 import PriceForm, { type CancellationPolicy, type MinimumPeriod } from '@/features/anuncios/components/PriceForm';
+import { calcularEstimativaMensal, calcularPrecoSemanal } from '@/features/anuncios/domain/preco';
 import { goBackOrHome } from '@/shared/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
@@ -34,8 +35,8 @@ export default function AnuncioPreco() {
     const [cancellationPolicy, setCancellationPolicy] = useState<CancellationPolicy>('Flexível');
 
     const dailyValue = Number(dailyPrice.replace(',', '.')) || 0;
-    const weeklyPrice = dailyValue * 7 * 0.9;
-    const monthlyEstimate = weeklyPrice * 4;
+    const weeklyPrice = calcularPrecoSemanal(dailyValue);
+    const monthlyEstimate = calcularEstimativaMensal(dailyValue);
 
     const handleContinue = () => {
         if (dailyValue <= 0) {

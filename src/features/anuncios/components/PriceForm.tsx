@@ -1,8 +1,10 @@
+import { POLITICAS_CANCELAMENTO, type PoliticaCancelamento } from '@/features/ferramentas/domain/politicaCancelamento';
+import { formatarMoeda } from '@/shared/formatacao';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 export type MinimumPeriod = 1 | 3 | 7;
-export type CancellationPolicy = 'Flexível' | 'Moderada' | 'Rigorosa';
+export type CancellationPolicy = PoliticaCancelamento;
 
 type PriceFormProps = {
     dailyPrice: string;
@@ -17,12 +19,6 @@ type PriceFormProps = {
     onCancellationPolicyChange: (value: CancellationPolicy) => void;
 };
 
-const policies: { label: CancellationPolicy; description: string }[] = [
-    { label: 'Flexível', description: 'Reembolso total até 24h antes da reserva.' },
-    { label: 'Moderada', description: 'Reembolso até 3 dias antes; após isso, só parcial ou crédito.' },
-    { label: 'Rigorosa', description: 'Sem reembolso após a confirmação da reserva.' },
-];
-
 export default function PriceForm({
     dailyPrice,
     minimumPeriod,
@@ -35,11 +31,6 @@ export default function PriceForm({
     onDepositChange,
     onCancellationPolicyChange,
 }: PriceFormProps) {
-    const formatCurrency = (value: number) => value.toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-    });
-
     return (
         <View style={styles.form}>
             <View style={styles.priceRow}>
@@ -79,7 +70,7 @@ export default function PriceForm({
                 </View>
                 <View style={styles.estimateCopy}>
                     <Text style={styles.estimateLabel}>Estimativa de ganhos mensais</Text>
-                    <Text style={styles.estimateValue}>{formatCurrency(monthlyEstimate)}</Text>
+                    <Text style={styles.estimateValue}>{formatarMoeda(monthlyEstimate)}</Text>
                     <Text style={styles.estimateHint}>Considerando 4 semanas de aluguel</Text>
                 </View>
             </View>
@@ -121,14 +112,14 @@ export default function PriceForm({
             <View style={styles.section}>
                 <Text style={styles.label}>Política de cancelamento</Text>
                 <View style={styles.policyList}>
-                    {policies.map((policy) => {
-                        const isSelected = cancellationPolicy === policy.label;
+                    {POLITICAS_CANCELAMENTO.map((policy) => {
+                        const isSelected = cancellationPolicy === policy.nome;
 
                         return (
                             <TouchableOpacity
-                                key={policy.label}
+                                key={policy.nome}
                                 style={[styles.policyCard, isSelected && styles.selectedPolicy]}
-                                onPress={() => onCancellationPolicyChange(policy.label)}
+                                onPress={() => onCancellationPolicyChange(policy.nome)}
                                 activeOpacity={0.8}
                             >
                                 <View style={[styles.radio, isSelected && styles.selectedRadio]}>
@@ -136,9 +127,9 @@ export default function PriceForm({
                                 </View>
                                 <View style={styles.policyCopy}>
                                     <Text style={[styles.policyLabel, isSelected && styles.selectedText]}>
-                                        {policy.label}
+                                        {policy.nome}
                                     </Text>
-                                    <Text style={styles.policyDescription}>{policy.description}</Text>
+                                    <Text style={styles.policyDescription}>{policy.descricao}</Text>
                                 </View>
                             </TouchableOpacity>
                         );

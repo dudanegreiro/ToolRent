@@ -1,4 +1,7 @@
+import { calcularPrecoSemanal } from '@/features/anuncios/domain/preco';
+import { descreverPolitica } from '@/features/ferramentas/domain/politicaCancelamento';
 import { criarFerramenta, enviarFoto } from '@/services/api';
+import { formatarMoeda } from '@/shared/formatacao';
 import { goBackOrHome } from '@/shared/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
@@ -47,31 +50,21 @@ export default function AnuncioRevisao() {
     const [publishing, setPublishing] = useState(false);
     const [feedback, setFeedback] = useState<PublicationFeedback | null>(null);
     const dailyPrice = Number(params.diaria ?? 0);
-    const weeklyPrice = dailyPrice * 7 * 0.9;
-    const formatCurrency = (value: number) => value.toLocaleString('pt-BR', {
-        style: 'currency',
-        currency: 'BRL',
-    });
+    const weeklyPrice = calcularPrecoSemanal(dailyPrice);
     const delivery = params.entrega === 'true' ? 'Sim' : 'Não';
     const deposit = params.caucao === 'true' ? 'Sim' : 'Não';
     const minimumPeriod = params.periodoMinimo === '1' ? '1 dia' : `${params.periodoMinimo ?? '-'} dias`;
-
-    const cancellationMeaning: Record<string, string> = {
-        Flexível: 'Reembolso total até 24h antes da reserva.',
-        Moderada: 'Reembolso até 3 dias antes; após isso, só parcial ou crédito.',
-        Rigorosa: 'Sem reembolso após a confirmação da reserva.',
-    };
 
     const rows = [
         ['Categoria', params.categoriaNome],
         ['Marca', params.marca],
         ['Modelo', params.modelo],
         ['Conservação', params.conservacao],
-        ['Diária', dailyPrice > 0 ? formatCurrency(dailyPrice) : undefined],
-        ['Semanal', weeklyPrice > 0 ? formatCurrency(weeklyPrice) : undefined],
+        ['Diária', dailyPrice > 0 ? formatarMoeda(dailyPrice) : undefined],
+        ['Semanal', weeklyPrice > 0 ? formatarMoeda(weeklyPrice) : undefined],
         ['Período mínimo', minimumPeriod],
         ['Caução', deposit],
-        ['Cancelamento', params.cancelamento ? `${params.cancelamento} — ${cancellationMeaning[params.cancelamento]}` : undefined],
+        ['Cancelamento', params.cancelamento ? `${params.cancelamento} — ${descreverPolitica(params.cancelamento)}` : undefined],
         ['Endereço', params.endereco],
         ['Bairro', params.bairro],
         ['Cidade', params.cidade],
@@ -189,7 +182,7 @@ export default function AnuncioRevisao() {
                                 <MaterialCommunityIcons name="map-marker-outline" size={16} color="#E85D04" />
                                 <Text style={styles.locationText}>{params.cidade || 'Cidade'}</Text>
                             </View>
-                            <Text style={styles.previewPrice}>{formatCurrency(dailyPrice)}<Text style={styles.perDay}> / dia</Text></Text>
+                            <Text style={styles.previewPrice}>{formatarMoeda(dailyPrice)}<Text style={styles.perDay}> / dia</Text></Text>
                         </View>
                     </View>
                 </View>

@@ -1,3 +1,4 @@
+import { descreverPolitica } from '@/features/ferramentas/domain/politicaCancelamento';
 import { atualizarFerramenta, excluirFerramenta } from '@/services/api';
 import { getSession } from '@/shared/session';
 import { goBackOrHome } from '@/shared/navigation';
@@ -351,12 +352,10 @@ function ToolDetailsView({
     params,
     price,
     period,
-    cancellationMeaning,
 }: {
     params: ToolDetailParams;
     price: number;
     period: number;
-    cancellationMeaning: Record<string, string>;
 }) {
     const infoRows = [
         ['Categoria', params.categoria_nome || 'Não informado'],
@@ -402,7 +401,7 @@ function ToolDetailsView({
                 <Text style={styles.sectionTitle}>Política de cancelamento</Text>
                 <Text style={styles.description}>
                     {params.politica_cancelamento
-                        ? `${params.politica_cancelamento} — ${cancellationMeaning[params.politica_cancelamento] ?? 'Regra não definida.'}`
+                        ? `${params.politica_cancelamento} — ${descreverPolitica(params.politica_cancelamento) ?? 'Regra não definida.'}`
                         : 'Não informado.'}
                 </Text>
             </View>
@@ -535,12 +534,6 @@ export default function FerramentaDetalhes() {
         if (canGoNext) {
             setSelectedImageIndex((current) => current + 1);
         }
-    };
-
-    const cancellationMeaning: Record<string, string> = {
-        Flexível: 'Reembolso total até 24h antes da reserva.',
-        Moderada: 'Reembolso até 3 dias antes; após isso, só parcial ou crédito.',
-        Rigorosa: 'Sem reembolso após a confirmação da reserva.',
     };
 
     const handleDelete = () => {
@@ -685,7 +678,6 @@ export default function FerramentaDetalhes() {
                         params={params}
                         price={price}
                         period={period}
-                        cancellationMeaning={cancellationMeaning}
                     />
                 )}
             </ScrollView>
