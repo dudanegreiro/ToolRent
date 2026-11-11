@@ -18,7 +18,7 @@ type AdDetailsFormProps = {
     onIncludedItemsChange: (value: string) => void;
 };
 
-const conservationOptions: Array<{ label: ConservationState; icon: keyof typeof MaterialCommunityIcons.glyphMap }> = [
+const conservationOptions: { label: ConservationState; icon: keyof typeof MaterialCommunityIcons.glyphMap }[] = [
     { label: 'Novo', icon: 'star-outline' },
     { label: 'Excelente', icon: 'thumb-up-outline' },
     { label: 'Bom', icon: 'check-circle-outline' },

@@ -17,7 +17,7 @@ type PriceFormProps = {
     onCancellationPolicyChange: (value: CancellationPolicy) => void;
 };
 
-const policies: Array<{ label: CancellationPolicy; description: string }> = [
+const policies: { label: CancellationPolicy; description: string }[] = [
     { label: 'Flexível', description: 'Reembolso total até 24h antes da reserva.' },
     { label: 'Moderada', description: 'Reembolso até 3 dias antes; após isso, só parcial ou crédito.' },
     { label: 'Rigorosa', description: 'Sem reembolso após a confirmação da reserva.' },
