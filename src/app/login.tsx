@@ -1,5 +1,5 @@
 import { fazerLogin } from '@/services/api';
-import { saveSession } from '@/services/session';
+import { saveSession } from '@/shared/session';
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {

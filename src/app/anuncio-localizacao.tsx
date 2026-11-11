@@ -1,5 +1,5 @@
 import LocationForm from '@/components/anuncio/LocationForm';
-import { goBackOrHome } from '@/utils/navigation';
+import { goBackOrHome } from '@/shared/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';

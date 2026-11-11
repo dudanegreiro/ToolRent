@@ -1,5 +1,5 @@
 import { criarFerramenta, enviarFoto } from '@/services/api';
-import { goBackOrHome } from '@/utils/navigation';
+import { goBackOrHome } from '@/shared/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';

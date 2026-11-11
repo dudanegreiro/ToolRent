@@ -1,6 +1,6 @@
 import { atualizarFerramenta, excluirFerramenta } from '@/services/api';
-import { getSession } from '@/services/session';
-import { goBackOrHome } from '@/utils/navigation';
+import { getSession } from '@/shared/session';
+import { goBackOrHome } from '@/shared/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';

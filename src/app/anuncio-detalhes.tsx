@@ -1,5 +1,5 @@
 import AdDetailsForm, { type ConservationState } from '@/components/anuncio/AdDetailsForm';
-import { goBackOrHome } from '@/utils/navigation';
+import { goBackOrHome } from '@/shared/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';

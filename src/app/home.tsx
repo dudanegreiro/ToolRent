@@ -1,6 +1,6 @@
-import { BottomNavBar, NavigationItem } from '@/components/home';
+import { BottomNavBar, NavigationItem } from '@/shared/components';
 import { atualizarUsuario, buscarUsuarioPorId, listarCategorias, listarFerramentas, type Categoria, type Ferramenta } from '@/services/api';
-import { clearSession, getSession, saveSession } from '@/services/session';
+import { clearSession, getSession, saveSession } from '@/shared/session';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';

@@ -1,5 +1,5 @@
 import PriceForm, { type CancellationPolicy, type MinimumPeriod } from '@/components/anuncio/PriceForm';
-import { goBackOrHome } from '@/utils/navigation';
+import { goBackOrHome } from '@/shared/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
