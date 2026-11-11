@@ -16,7 +16,7 @@ import {
     LoginForm,
     LogoSection,
     RegisterLink,
-} from '../components';
+} from '@/features/auth/components';
 
 export default function Login() {
   const router = useRouter();

@@ -1,3 +1,3 @@
-export { default as BottomNavBar } from './BottomNavBar';
-export type { NavigationItem } from './BottomNavBar';
+export { default as BottomNavBar } from '@/shared/components/BottomNavBar';
+export type { NavigationItem } from '@/shared/components/BottomNavBar';
 

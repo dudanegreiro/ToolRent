@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
-import PasswordInput from './PasswordInput';
+import PasswordInput from '@/features/auth/components/PasswordInput';
 
 interface LoginFormProps {
   email: string;
