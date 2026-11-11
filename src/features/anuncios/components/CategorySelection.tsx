@@ -1,6 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import type { Categoria } from '@/services/api';
+import type { Categoria } from '@/features/ferramentas/types';
 
 type CategorySelectionProps = {
     categories: Categoria[];

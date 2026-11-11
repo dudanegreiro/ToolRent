@@ -1,5 +1,8 @@
 import { BottomNavBar, NavigationItem } from '@/shared/components';
-import { atualizarUsuario, buscarUsuarioPorId, listarCategorias, listarFerramentas, type Categoria, type Ferramenta } from '@/services/api';
+import { authHttp } from '@/features/auth/api/authHttp';
+import { categoriaHttp } from '@/features/ferramentas/api/categoriaHttp';
+import { ferramentaHttp } from '@/features/ferramentas/api/ferramentaHttp';
+import type { Categoria, Ferramenta } from '@/features/ferramentas/types';
 import { clearSession, getSession, saveSession } from '@/shared/session';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
@@ -68,7 +71,7 @@ export default function Home() {
     useEffect(() => {
         const loadCategories = async () => {
             try {
-                const data = await listarCategorias();
+                const data = await categoriaHttp.listar();
                 setCategories(data);
             } catch {
                 setCategories([]);
@@ -85,7 +88,7 @@ export default function Home() {
 
         const loadProfile = async () => {
             try {
-                const usuario = await buscarUsuarioPorId(Number(usuarioId));
+                const usuario = await authHttp.buscarPorId(Number(usuarioId));
                 setProfileName(usuario.nome ?? '');
                 setProfileEmail(usuario.email ?? '');
                 setProfilePhone(usuario.telefone ?? '');
@@ -111,7 +114,7 @@ export default function Home() {
             setExploreError(null);
 
             try {
-                const allTools = await listarFerramentas();
+                const allTools = await ferramentaHttp.listar();
                 const normalizedSearch = searchTerm.trim().toLowerCase();
                 const parsedMin = minPrice.trim() === '' ? null : Number(minPrice);
                 const parsedMax = maxPrice.trim() === '' ? null : Number(maxPrice);
@@ -225,7 +228,7 @@ export default function Home() {
         setProfileLoading(true);
 
         try {
-            const usuarioAtualizado = await atualizarUsuario(Number(usuarioId), {
+            const usuarioAtualizado = await authHttp.atualizar(Number(usuarioId), {
                 nome,
                 telefone: telefone,
                 ...(profilePassword.trim() ? { senha: profilePassword.trim() } : {}),

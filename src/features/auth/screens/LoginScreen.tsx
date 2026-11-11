@@ -1,4 +1,4 @@
-import { fazerLogin } from '@/services/api';
+import { authHttp } from '@/features/auth/api/authHttp';
 import { saveSession } from '@/shared/session';
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -60,7 +60,7 @@ export default function Login() {
     setErroLogin('');
 
     try {
-      const usuario = await fazerLogin({
+      const usuario = await authHttp.login({
         email: emailNormalizado,
         senha: senhaNormalizada,
       });

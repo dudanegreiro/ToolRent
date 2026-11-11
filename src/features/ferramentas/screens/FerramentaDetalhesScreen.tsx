@@ -1,5 +1,5 @@
 import { descreverPolitica } from '@/features/ferramentas/domain/politicaCancelamento';
-import { atualizarFerramenta, excluirFerramenta } from '@/services/api';
+import { ferramentaHttp } from '@/features/ferramentas/api/ferramentaHttp';
 import { getSession } from '@/shared/session';
 import { goBackOrHome } from '@/shared/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -549,7 +549,7 @@ export default function FerramentaDetalhes() {
                 style: 'destructive',
                 onPress: async () => {
                     try {
-                        await excluirFerramenta(ferramentaId);
+                        await ferramentaHttp.excluir(ferramentaId);
                         Alert.alert('Anúncio excluído', 'O anúncio foi removido com sucesso.');
                         router.replace({ pathname: '/meus-anuncios', params: { usuarioId: params.usuario_id } } as Href);
                     } catch (error) {
@@ -583,7 +583,7 @@ export default function FerramentaDetalhes() {
         setSaving(true);
 
         try {
-            const updated = await atualizarFerramenta(ferramentaId, {
+            const updated = await ferramentaHttp.atualizar(ferramentaId, {
                 nome: form.nome.trim(),
                 marca: form.marca.trim(),
                 modelo: form.modelo.trim(),

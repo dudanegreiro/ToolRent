@@ -1,6 +1,8 @@
 import { calcularPrecoSemanal } from '@/features/anuncios/domain/preco';
+import { publicarAnuncio } from '@/features/anuncios/services/anuncioService';
+import { ferramentaHttp } from '@/features/ferramentas/api/ferramentaHttp';
+import { fotoHttp } from '@/features/ferramentas/api/fotoHttp';
 import { descreverPolitica } from '@/features/ferramentas/domain/politicaCancelamento';
-import { criarFerramenta, enviarFoto } from '@/services/api';
 import { formatarMoeda } from '@/shared/formatacao';
 import { goBackOrHome } from '@/shared/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -85,9 +87,8 @@ export default function AnuncioRevisao() {
 
         try {
             const fotoUris = params.fotos ? params.fotos.split('|').filter(Boolean) : [];
-            const fotos = await Promise.all(fotoUris.map((uri, index) => enviarFoto(uri, index)));
 
-            await criarFerramenta({
+            await publicarAnuncio(ferramentaHttp, fotoHttp, {
                 nome: params.titulo,
                 marca: params.marca,
                 modelo: params.modelo,
@@ -95,7 +96,6 @@ export default function AnuncioRevisao() {
                 descricao: params.descricao,
                 itens_inclusos: params.itensInclusos ?? '',
                 preco_diaria: dailyPrice,
-                preco_semanal: weeklyPrice,
                 periodo_minimo: Number(params.periodoMinimo ?? 1),
                 exige_caucao: params.caucao === 'true',
                 politica_cancelamento: params.cancelamento ?? 'Flexível',
@@ -103,7 +103,7 @@ export default function AnuncioRevisao() {
                 bairro: params.bairro,
                 cidade: params.cidade,
                 entrega: params.entrega === 'true',
-                fotos: fotos.map((foto) => foto.url),
+                fotosLocais: fotoUris,
                 usuario_id: Number(params.usuarioId),
                 categoria_id: Number(params.categoriaId),
             });

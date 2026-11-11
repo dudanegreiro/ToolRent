@@ -1,4 +1,6 @@
-import { listarFerramentas, type Ferramenta } from '@/services/api';
+import { listarMeusAnuncios } from '@/features/anuncios/services/anuncioService';
+import { ferramentaHttp } from '@/features/ferramentas/api/ferramentaHttp';
+import type { Ferramenta } from '@/features/ferramentas/types';
 import { goBackOrHome } from '@/shared/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
@@ -30,8 +32,7 @@ export default function MeusAnuncios() {
             }
 
             try {
-                const allTools = await listarFerramentas();
-                const myTools = allTools.filter((tool) => String(tool.usuario_id) === String(usuarioId));
+                const myTools = await listarMeusAnuncios(ferramentaHttp, usuarioId);
                 setTools(myTools);
             } catch (requestError) {
                 setError(

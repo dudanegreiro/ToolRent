@@ -1,5 +1,6 @@
 import CategorySelection from '@/features/anuncios/components/CategorySelection';
-import { listarCategorias, type Categoria } from '@/services/api';
+import { categoriaHttp } from '@/features/ferramentas/api/categoriaHttp';
+import type { Categoria } from '@/features/ferramentas/types';
 import { goBackOrHome } from '@/shared/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
@@ -26,7 +27,7 @@ export default function Anuncio() {
         setError(null);
 
         try {
-            setCategories(await listarCategorias());
+            setCategories(await categoriaHttp.listar());
         } catch (requestError) {
             setError(
                 requestError instanceof Error

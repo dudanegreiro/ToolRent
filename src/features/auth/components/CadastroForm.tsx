@@ -1,4 +1,4 @@
-import { cadastrarUsuario } from '@/services/api';
+import { authHttp } from '@/features/auth/api/authHttp';
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -122,7 +122,7 @@ export default function CadastroForm() {
             setCarregando(true);
 
             try {
-                await cadastrarUsuario({
+                await authHttp.cadastrar({
                     nome: nome.trim(),
                     email: email.trim(),
                     cpf: cpf.replace(/\D/g, ''),
