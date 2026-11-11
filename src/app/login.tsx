@@ -1,20 +1,21 @@
 import { fazerLogin } from '@/services/api';
+import { saveSession } from '@/services/session';
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View
+    Alert,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
+    StyleSheet,
+    Text,
+    View
 } from 'react-native';
 import {
-  FooterText,
-  LoginForm,
-  LogoSection,
-  RegisterLink,
+    FooterText,
+    LoginForm,
+    LogoSection,
+    RegisterLink,
 } from '../components/login';
 
 export default function Login() {
@@ -24,20 +25,51 @@ export default function Login() {
   const [senha, setSenha] = useState('');
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [carregando, setCarregando] = useState(false);
+  const [erroLogin, setErroLogin] = useState('');
+
+  const handleEmailChange = (valor: string) => {
+    setEmail(valor);
+    if (erroLogin) setErroLogin('');
+  };
+
+  const handleSenhaChange = (valor: string) => {
+    setSenha(valor);
+    if (erroLogin) setErroLogin('');
+  };
 
   const handleLogin = async () => {
-    if (!email || !senha) {
-      Alert.alert(
-        'Campos obrigatórios',
-        'Preencha seu e-mail e sua senha.'
-      );
+    const emailNormalizado = email.trim().toLowerCase();
+    const senhaNormalizada = senha.trim();
+
+    if (!emailNormalizado && !senhaNormalizada) {
+      setErroLogin('Digite seu e-mail e sua senha para continuar.');
+      return;
+    }
+
+    if (!emailNormalizado) {
+      setErroLogin('Digite seu e-mail para continuar.');
+      return;
+    }
+
+    if (!senhaNormalizada) {
+      setErroLogin('Digite sua senha para continuar.');
       return;
     }
 
     setCarregando(true);
+    setErroLogin('');
 
     try {
-      const usuario = await fazerLogin({ email, senha });
+      const usuario = await fazerLogin({
+        email: emailNormalizado,
+        senha: senhaNormalizada,
+      });
+      await saveSession({
+        usuarioId: String(usuario.id),
+        email: usuario.email,
+        nome: usuario.nome,
+      });
+
       Alert.alert('Login realizado!', `Bem-vindo ao ToolRent, ${usuario.nome}!`);
       router.replace({
         pathname: '/home',
@@ -47,6 +79,7 @@ export default function Login() {
       const message = error instanceof Error
         ? error.message
         : 'Não foi possível realizar o login.';
+      setErroLogin(message);
       Alert.alert('Erro no login', message);
     } finally {
       setCarregando(false);
@@ -79,14 +112,15 @@ export default function Login() {
 
           <LoginForm
             email={email}
-            onEmailChange={setEmail}
+            onEmailChange={handleEmailChange}
             password={senha}
-            onPasswordChange={setSenha}
+            onPasswordChange={handleSenhaChange}
             showPassword={mostrarSenha}
-            onToggleShowPassword={() => setMostrarSenha(!mostrarSenha)}
+            onToggleShowPassword={() => setMostrarSenha((valor) => !valor)}
             onLogin={handleLogin}
             onForgotPassword={handleForgotPassword}
             loading={carregando}
+            errorMessage={erroLogin}
           />
 
           <RegisterLink />
@@ -101,23 +135,26 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#F5F7FA',
   },
 
   containerText: {
-    marginBottom: 20
+    marginBottom: 24,
   },
 
   textBemVindo: {
     fontSize: 28,
     fontFamily: 'sans-serif',
-    fontWeight: 'bold'
+    fontWeight: '700',
+    color: '#1F3D4A',
   },
 
   text: {
     fontSize: 15,
     fontFamily: 'sans-serif',
-    opacity: 0.5
+    color: '#6B7280',
+    marginTop: 8,
+    lineHeight: 22,
   },
 
   scrollContainer: {

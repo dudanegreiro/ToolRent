@@ -15,6 +15,33 @@ export type Categoria = {
     descricao: string;
 };
 
+export type Foto = {
+    id: number;
+    url: string;
+};
+
+export type Ferramenta = {
+    id: number;
+    nome: string;
+    marca: string;
+    modelo: string;
+    estado_conservacao: string;
+    descricao: string;
+    itens_inclusos: string;
+    preco_diaria: number;
+    preco_semanal: number;
+    periodo_minimo: number;
+    exige_caucao: boolean;
+    politica_cancelamento: string;
+    entrega: boolean;
+    status_aprovacao: string;
+    disponibilidade: boolean;
+    data_cadastro: string;
+    usuario_id: number;
+    categoria_id: number;
+    fotos: Foto[];
+};
+
 type CadastroPayload = {
     nome: string;
     email: string;
@@ -101,8 +128,27 @@ export function fazerLogin(payload: LoginPayload) {
     });
 }
 
+export function buscarUsuarioPorId(usuarioId: number) {
+    return request<Usuario>(`/usuarios/${usuarioId}`, {
+        method: 'GET',
+    });
+}
+
+export function atualizarUsuario(usuarioId: number, payload: Partial<Pick<Usuario, 'nome' | 'telefone'> & { senha?: string }>) {
+    return request<Usuario>(`/usuarios/${usuarioId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+    });
+}
+
 export function listarCategorias() {
     return request<Categoria[]>('/categorias', {
+        method: 'GET',
+    });
+}
+
+export function listarFerramentas() {
+    return request<Ferramenta[]>('/ferramentas', {
         method: 'GET',
     });
 }
@@ -111,6 +157,19 @@ export function criarFerramenta(payload: FerramentaPayload) {
     return request('/ferramentas', {
         method: 'POST',
         body: JSON.stringify(payload),
+    });
+}
+
+export function atualizarFerramenta(ferramentaId: number, payload: Partial<FerramentaPayload>) {
+    return request<Ferramenta>(`/ferramentas/${ferramentaId}`, {
+        method: 'PATCH',
+        body: JSON.stringify(payload),
+    });
+}
+
+export function excluirFerramenta(ferramentaId: number) {
+    return request<{ sucesso: boolean }>(`/ferramentas/${ferramentaId}`, {
+        method: 'DELETE',
     });
 }
 

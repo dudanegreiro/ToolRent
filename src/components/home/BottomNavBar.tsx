@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-export type NavigationItem = 'Perfil' | 'Anunciar' | 'Meus aluguéis' | 'Explorar';
+export type NavigationItem = 'Perfil' | 'Anunciar' | 'Meus anúncios' | 'Explorar';
 
 type NavigationOption = {
     label: NavigationItem;
@@ -16,7 +16,7 @@ type BottomNavBarProps = {
 const navigationOptions: NavigationOption[] = [
     { label: 'Perfil', icon: 'account-outline' },
     { label: 'Anunciar', icon: 'plus-circle-outline' },
-    { label: 'Meus aluguéis', icon: 'clipboard-text-outline' },
+    { label: 'Meus anúncios', icon: 'clipboard-text-outline' },
     { label: 'Explorar', icon: 'compass-outline' },
 ];
 

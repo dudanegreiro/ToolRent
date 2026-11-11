@@ -1,4 +1,5 @@
 import AdDetailsForm, { type ConservationState } from '@/components/anuncio/AdDetailsForm';
+import { goBackOrHome } from '@/utils/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -59,7 +60,7 @@ export default function AnuncioDetalhes() {
                 <View style={styles.header}>
                     <TouchableOpacity
                         style={styles.backButton}
-                        onPress={() => router.back()}
+                        onPress={() => goBackOrHome(router, { usuarioId })}
                         activeOpacity={0.75}
                         accessibilityLabel="Voltar"
                     >

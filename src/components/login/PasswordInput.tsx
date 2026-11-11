@@ -5,6 +5,7 @@ interface PasswordInputProps {
   onChangeText: (text: string) => void;
   showPassword: boolean;
   onToggleShowPassword: () => void;
+  onSubmitEditing?: () => void;
 }
 
 export default function PasswordInput({
@@ -12,6 +13,7 @@ export default function PasswordInput({
   onChangeText,
   showPassword,
   onToggleShowPassword,
+  onSubmitEditing,
 }: PasswordInputProps) {
   return (
     <View style={styles.container}>
@@ -23,11 +25,16 @@ export default function PasswordInput({
         onChangeText={onChangeText}
         secureTextEntry={!showPassword}
         autoCapitalize="none"
+        autoCorrect={false}
+        returnKeyType="done"
+        textContentType="password"
+        onSubmitEditing={onSubmitEditing}
       />
 
       <TouchableOpacity
         onPress={onToggleShowPassword}
         style={styles.showPasswordButton}
+        hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
       >
         <Text style={styles.showPasswordText}>
           {showPassword ? 'Ocultar' : 'Mostrar'}
@@ -64,7 +71,7 @@ const styles = StyleSheet.create({
 
   showPasswordText: {
     fontSize: 13,
-    fontWeight: 'bold',
-    opacity:0.5
+    fontWeight: '700',
+    color: '#374151',
   },
 });
