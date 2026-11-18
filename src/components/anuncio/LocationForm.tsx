@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Animated, StyleSheet, Switch, Text, TextInput, View } from 'react-native';
+import { tokens } from '@/shared/theme/tokens';
 
 type LocationFormProps = {
     address: string;
@@ -29,13 +30,13 @@ export default function LocationForm({
             <View style={styles.fieldGroup}>
                 <Text style={styles.label}>Endereço</Text>
                 <View style={styles.inputWithIcon}>
-                    <MaterialCommunityIcons name="map-marker-outline" size={20} color="#8A8A8A" />
+                    <MaterialCommunityIcons name="map-marker-outline" size={20} color={tokens.colors.secondaryText} />
                     <TextInput
                         style={styles.input}
                         value={address}
                         onChangeText={onAddressChange}
                         placeholder="Rua, número e complemento"
-                        placeholderTextColor="#9AA3AD"
+                        placeholderTextColor={tokens.colors.placeholderText}
                     />
                 </View>
             </View>
@@ -48,7 +49,7 @@ export default function LocationForm({
                         value={neighborhood}
                         onChangeText={onNeighborhoodChange}
                         placeholder="Ex.: Centro"
-                        placeholderTextColor="#9AA3AD"
+                        placeholderTextColor={tokens.colors.placeholderText}
                     />
                 </View>
                 <View style={styles.halfField}>
@@ -58,7 +59,7 @@ export default function LocationForm({
                         value={city}
                         onChangeText={onCityChange}
                         placeholder="Ex.: São Paulo"
-                        placeholderTextColor="#9AA3AD"
+                        placeholderTextColor={tokens.colors.placeholderText}
                     />
                 </View>
             </View>
@@ -70,11 +71,11 @@ export default function LocationForm({
                     <View style={styles.mapRoadThree} />
                     <View style={styles.pinShadow} />
                     <Animated.View style={[styles.pin, { transform: [{ scale: pinScale }] }]}>
-                        <MaterialCommunityIcons name="map-marker" size={30} color="#FFFFFF" />
+                        <MaterialCommunityIcons name="map-marker" size={30} color={tokens.colors.onAction} />
                     </Animated.View>
                 </View>
                 <View style={styles.mapCaption}>
-                    <MaterialCommunityIcons name="information-outline" size={18} color="#E85D04" />
+                    <MaterialCommunityIcons name="information-outline" size={18} color={tokens.colors.action} />
                     <Text style={styles.mapCaptionText}>O mapa ajuda locatários a encontrarem sua ferramenta.</Text>
                 </View>
             </View>
@@ -84,7 +85,7 @@ export default function LocationForm({
                     <MaterialCommunityIcons
                         name={deliveryEnabled ? 'truck-check-outline' : 'truck-outline'}
                         size={23}
-                        color={deliveryEnabled ? '#FFFFFF' : '#E85D04'}
+                        color={deliveryEnabled ? tokens.colors.surface : tokens.colors.action}
                     />
                 </View>
                 <View style={styles.deliveryCopy}>
@@ -98,8 +99,8 @@ export default function LocationForm({
                 <Switch
                     value={deliveryEnabled}
                     onValueChange={onDeliveryChange}
-                    trackColor={{ false: '#D5DCE3', true: '#F6A36B' }}
-                    thumbColor={deliveryEnabled ? '#E85D04' : '#FFFFFF'}
+                    trackColor={{ false: tokens.colors.border, true: tokens.colors.actionTrack }}
+                    thumbColor={deliveryEnabled ? tokens.colors.action : tokens.colors.surface}
                 />
             </View>
         </View>
@@ -108,65 +109,65 @@ export default function LocationForm({
 
 const styles = StyleSheet.create({
     form: {
-        gap: 20,
+        gap: tokens.spacing.md,
     },
     fieldGroup: {
-        gap: 8,
+        gap: tokens.spacing.sm,
     },
     label: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '700',
     },
     inputWithIcon: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flexDirection: 'row',
         minHeight: 52,
-        paddingHorizontal: 14,
+        paddingHorizontal: tokens.spacing.md,
     },
     input: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         flex: 1,
         fontSize: 15,
-        marginLeft: 8,
+        marginLeft: tokens.spacing.sm,
     },
     standaloneInput: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 15,
         minHeight: 52,
-        paddingHorizontal: 14,
+        paddingHorizontal: tokens.spacing.md,
     },
     row: {
         flexDirection: 'row',
-        gap: 12,
+        gap: tokens.spacing.md,
     },
     halfField: {
         flex: 1,
-        gap: 8,
+        gap: tokens.spacing.sm,
     },
     mapCard: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 14,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         overflow: 'hidden',
     },
     mapPattern: {
-        backgroundColor: '#DDE8E3',
+        backgroundColor: tokens.colors.mapSurface,
         height: 180,
         overflow: 'hidden',
         position: 'relative',
     },
     mapRoadOne: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: tokens.colors.surface,
         height: 18,
         left: -20,
         position: 'absolute',
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
         width: '120%',
     },
     mapRoadTwo: {
-        backgroundColor: '#FFFFFF',
+        backgroundColor: tokens.colors.surface,
         height: 13,
         left: -25,
         position: 'absolute',
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
         width: '120%',
     },
     mapRoadThree: {
-        backgroundColor: '#C2D6CC',
+        backgroundColor: tokens.colors.mapRoad,
         height: 7,
         left: -15,
         position: 'absolute',
@@ -193,8 +194,8 @@ const styles = StyleSheet.create({
         width: '115%',
     },
     pinShadow: {
-        backgroundColor: 'rgba(232, 93, 4, 0.18)',
-        borderRadius: 32,
+        backgroundColor: tokens.colors.actionShadow,
+        borderRadius: tokens.radii.pill,
         height: 64,
         left: '50%',
         marginLeft: -32,
@@ -205,8 +206,8 @@ const styles = StyleSheet.create({
     },
     pin: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 25,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.pill,
         height: 50,
         justifyContent: 'center',
         left: '50%',
@@ -219,51 +220,51 @@ const styles = StyleSheet.create({
     mapCaption: {
         alignItems: 'center',
         flexDirection: 'row',
-        padding: 12,
+        padding: tokens.spacing.md,
     },
     mapCaptionText: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         flex: 1,
         fontSize: 12,
-        marginLeft: 8,
+        marginLeft: tokens.spacing.sm,
     },
     deliveryCard: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 12,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flexDirection: 'row',
-        padding: 14,
+        padding: tokens.spacing.md,
     },
     deliveryEnabled: {
-        backgroundColor: '#F1FAF5',
-        borderColor: '#62B985',
+        backgroundColor: tokens.colors.successSurface,
+        borderColor: tokens.colors.deliveryBorder,
     },
     deliveryIcon: {
         alignItems: 'center',
-        backgroundColor: '#FFF1E8',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.subtleSurface,
+        borderRadius: tokens.radii.lg,
         height: 44,
         justifyContent: 'center',
         width: 44,
     },
     deliveryIconEnabled: {
-        backgroundColor: '#38A169',
+        backgroundColor: tokens.colors.successAction,
     },
     deliveryCopy: {
         flex: 1,
-        marginHorizontal: 12,
+        marginHorizontal: tokens.spacing.md,
     },
     deliveryTitle: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '700',
     },
     deliveryHint: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 12,
         lineHeight: 18,
-        marginTop: 4,
+        marginTop: tokens.spacing.xs,
     },
 });

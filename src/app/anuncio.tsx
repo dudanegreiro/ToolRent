@@ -1,6 +1,7 @@
 import CategorySelection from '@/components/anuncio/CategorySelection';
 import { listarCategorias, type Categoria } from '@/services/api';
 import { goBackOrHome } from '@/utils/navigation';
+import { tokens } from '@/shared/theme/tokens';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -52,14 +53,14 @@ export default function Anuncio() {
                         activeOpacity={0.75}
                         accessibilityLabel="Voltar"
                     >
-                        <MaterialCommunityIcons name="arrow-left" size={24} color="#1F3D4A" />
+                        <MaterialCommunityIcons name="arrow-left" size={24} color={tokens.colors.text} />
                     </TouchableOpacity>
                     <View style={styles.headerCopy}>
                         <Text style={styles.eyebrow}>NOVO ANÚNCIO</Text>
                         <Text style={styles.title}>O que você vai anunciar?</Text>
                     </View>
                     <View style={styles.logo}>
-                        <MaterialCommunityIcons name="wrench-outline" size={20} color="#FFFFFF" />
+                        <MaterialCommunityIcons name="wrench-outline" size={20} color={tokens.colors.onAction} />
                     </View>
                 </View>
 
@@ -100,7 +101,7 @@ export default function Anuncio() {
                         ) : (
                             <>
                                 <Text style={styles.continueButtonText}>CONTINUAR</Text>
-                                <MaterialCommunityIcons name="arrow-right" size={20} color="#FFFFFF" />
+                                <MaterialCommunityIcons name="arrow-right" size={20} color={tokens.colors.onAction} />
                             </>
                         )}
                     </TouchableOpacity>
@@ -112,92 +113,92 @@ export default function Anuncio() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#F5F7FA',
+        backgroundColor: tokens.colors.background,
         flex: 1,
     },
     content: {
-        paddingBottom: 32,
-        paddingHorizontal: 24,
-        paddingTop: 20,
+        paddingBottom: tokens.spacing.lg + tokens.spacing.sm,
+        paddingHorizontal: tokens.spacing.lg,
+        paddingTop: tokens.spacing.md,
     },
     header: {
         alignItems: 'center',
         flexDirection: 'row',
-        marginBottom: 24,
+        marginBottom: tokens.spacing.lg,
     },
     backButton: {
         alignItems: 'center',
         height: 44,
         justifyContent: 'center',
-        marginRight: 12,
+        marginRight: tokens.spacing.md,
         width: 44,
     },
     headerCopy: {
         flex: 1,
     },
     eyebrow: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 12,
         fontWeight: '700',
         letterSpacing: 1,
-        marginBottom: 6,
+        marginBottom: tokens.spacing.xs,
     },
     title: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 23,
         fontWeight: 'bold',
     },
     logo: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
         height: 44,
         justifyContent: 'center',
         width: 44,
     },
     progressRow: {
         flexDirection: 'row',
-        gap: 6,
-        marginBottom: 28,
+        gap: tokens.spacing.xs,
+        marginBottom: tokens.spacing.lg,
     },
     activeProgress: {
-        backgroundColor: '#E85D04',
-        borderRadius: 4,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.sm,
         flex: 1,
         height: 5,
     },
     progress: {
-        backgroundColor: '#D5DCE3',
-        borderRadius: 4,
+        backgroundColor: tokens.colors.border,
+        borderRadius: tokens.radii.sm,
         flex: 1,
         height: 5,
     },
     instruction: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 15,
-        marginBottom: 16,
+        marginBottom: tokens.spacing.md,
     },
     continueButton: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
         flexDirection: 'row',
         justifyContent: 'center',
-        marginTop: 24,
+        marginTop: tokens.spacing.lg,
         minHeight: 52,
-        paddingHorizontal: 20,
+        paddingHorizontal: tokens.spacing.md,
     },
     disabledButton: {
-        backgroundColor: '#D5DCE3',
+        backgroundColor: tokens.colors.border,
     },
     continueButtonText: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 13,
         fontWeight: '700',
-        marginRight: 10,
+        marginRight: tokens.spacing.sm,
     },
     disabledButtonText: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 13,
         fontWeight: '700',
     },

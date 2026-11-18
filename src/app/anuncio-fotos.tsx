@@ -1,4 +1,5 @@
 import { goBackOrHome } from '@/utils/navigation';
+import { tokens } from '@/shared/theme/tokens';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
@@ -90,7 +91,7 @@ export default function AnuncioFotos() {
                         activeOpacity={0.75}
                         accessibilityLabel="Voltar"
                     >
-                        <MaterialCommunityIcons name="arrow-left" size={24} color="#1F3D4A" />
+                        <MaterialCommunityIcons name="arrow-left" size={24} color={tokens.colors.text} />
                     </TouchableOpacity>
                     <View style={styles.headerCopy}>
                         <Text style={styles.eyebrow}>NOVO ANÚNCIO</Text>
@@ -124,7 +125,7 @@ export default function AnuncioFotos() {
                                 <Image source={{ uri: photo.uri }} style={styles.photo} />
                             ) : (
                                 <>
-                                    <MaterialCommunityIcons name="camera-plus-outline" size={30} color="#E85D04" />
+                                    <MaterialCommunityIcons name="camera-plus-outline" size={30} color={tokens.colors.action} />
                                     <Text style={styles.addPhotoText}>Adicionar</Text>
                                 </>
                             )}
@@ -134,7 +135,7 @@ export default function AnuncioFotos() {
                 </View>
 
                 <View style={styles.tipsBox}>
-                    <MaterialCommunityIcons name="lightbulb-outline" size={23} color="#E85D04" />
+                    <MaterialCommunityIcons name="lightbulb-outline" size={23} color={tokens.colors.action} />
                     <View style={styles.tipsCopy}>
                         <Text style={styles.tipsTitle}>Boas práticas</Text>
                         <Text style={styles.tip}>• Fotografe em um local bem iluminado.</Text>
@@ -145,7 +146,7 @@ export default function AnuncioFotos() {
 
                 <TouchableOpacity style={styles.continueButton} onPress={handleContinue} activeOpacity={0.8}>
                     <Text style={styles.continueButtonText}>CONTINUAR</Text>
-                    <MaterialCommunityIcons name="arrow-right" size={20} color="#FFFFFF" />
+                    <MaterialCommunityIcons name="arrow-right" size={20} color={tokens.colors.onAction} />
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
@@ -154,81 +155,81 @@ export default function AnuncioFotos() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#F5F7FA',
+        backgroundColor: tokens.colors.background,
         flex: 1,
     },
     content: {
-        paddingBottom: 32,
-        paddingHorizontal: 24,
-        paddingTop: 20,
+        paddingBottom: tokens.spacing.lg + tokens.spacing.sm,
+        paddingHorizontal: tokens.spacing.lg,
+        paddingTop: tokens.spacing.md,
     },
     header: {
         alignItems: 'center',
         flexDirection: 'row',
-        marginBottom: 24,
+        marginBottom: tokens.spacing.lg,
     },
     backButton: {
         alignItems: 'center',
         height: 44,
         justifyContent: 'center',
-        marginRight: 12,
+        marginRight: tokens.spacing.md,
         width: 44,
     },
     headerCopy: {
         flex: 1,
     },
     eyebrow: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 12,
         fontWeight: '700',
         letterSpacing: 1,
-        marginBottom: 6,
+        marginBottom: tokens.spacing.xs,
     },
     title: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 23,
         fontWeight: 'bold',
     },
     stepBadge: {
         alignItems: 'center',
-        backgroundColor: '#FFF1E8',
-        borderRadius: 16,
+        backgroundColor: tokens.colors.subtleSurface,
+        borderRadius: tokens.radii.xl,
         height: 40,
         justifyContent: 'center',
         width: 40,
     },
     stepText: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 12,
         fontWeight: '700',
     },
     progressRow: {
         flexDirection: 'row',
-        gap: 6,
-        marginBottom: 28,
+        gap: tokens.spacing.xs,
+        marginBottom: tokens.spacing.lg,
     },
     completedProgress: {
-        backgroundColor: '#E85D04',
-        borderRadius: 4,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.sm,
         flex: 1,
         height: 5,
     },
     activeProgress: {
-        backgroundColor: '#E85D04',
-        borderRadius: 4,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.sm,
         flex: 1,
         height: 5,
     },
     progress: {
-        backgroundColor: '#D5DCE3',
-        borderRadius: 4,
+        backgroundColor: tokens.colors.border,
+        borderRadius: tokens.radii.sm,
         flex: 1,
         height: 5,
     },
     instruction: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 15,
-        marginBottom: 18,
+        marginBottom: tokens.spacing.md,
     },
     photoGrid: {
         flexDirection: 'row',
@@ -238,73 +239,73 @@ const styles = StyleSheet.create({
     photoCard: {
         alignItems: 'center',
         aspectRatio: 1,
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 12,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         justifyContent: 'center',
         overflow: 'hidden',
         position: 'relative',
         width: '31%',
-        marginBottom: 12,
+        marginBottom: tokens.spacing.md,
     },
     photo: {
         height: '100%',
         width: '100%',
     },
     addPhotoText: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 12,
         fontWeight: '700',
-        marginTop: 6,
+        marginTop: tokens.spacing.xs,
     },
     coverBadge: {
-        backgroundColor: '#E85D04',
+        backgroundColor: tokens.colors.action,
         borderBottomRightRadius: 8,
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 11,
         fontWeight: '700',
         left: 0,
-        paddingHorizontal: 8,
-        paddingVertical: 5,
+        paddingHorizontal: tokens.spacing.sm,
+        paddingVertical: tokens.spacing.xs,
         position: 'absolute',
         top: 0,
     },
     tipsBox: {
-        backgroundColor: '#FFF1E8',
-        borderRadius: 12,
+        backgroundColor: tokens.colors.subtleSurface,
+        borderRadius: tokens.radii.lg,
         flexDirection: 'row',
-        marginTop: 24,
-        padding: 14,
+        marginTop: tokens.spacing.lg,
+        padding: tokens.spacing.md,
     },
     tipsCopy: {
         flex: 1,
-        marginLeft: 10,
+        marginLeft: tokens.spacing.sm,
     },
     tipsTitle: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '700',
-        marginBottom: 6,
+        marginBottom: tokens.spacing.xs,
     },
     tip: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 12,
         lineHeight: 19,
     },
     continueButton: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
         flexDirection: 'row',
         justifyContent: 'center',
-        marginTop: 24,
+        marginTop: tokens.spacing.lg,
         minHeight: 52,
     },
     continueButtonText: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 13,
         fontWeight: '700',
-        marginRight: 10,
+        marginRight: tokens.spacing.sm,
     },
 });

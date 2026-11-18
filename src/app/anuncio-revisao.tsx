@@ -1,5 +1,6 @@
 import { criarFerramenta, enviarFoto } from '@/services/api';
 import { goBackOrHome } from '@/utils/navigation';
+import { tokens } from '@/shared/theme/tokens';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -146,7 +147,7 @@ export default function AnuncioRevisao() {
                         activeOpacity={0.75}
                         accessibilityLabel="Voltar"
                     >
-                        <MaterialCommunityIcons name="arrow-left" size={24} color="#1F3D4A" />
+                        <MaterialCommunityIcons name="arrow-left" size={24} color={tokens.colors.text} />
                     </TouchableOpacity>
                     <View style={styles.headerCopy}>
                         <Text style={styles.eyebrow}>NOVO ANÚNCIO</Text>
@@ -173,20 +174,20 @@ export default function AnuncioRevisao() {
                         <Image source={{ uri: params.capaUri }} style={styles.previewImage} />
                     ) : (
                         <View style={styles.previewPlaceholder}>
-                            <MaterialCommunityIcons name="image-outline" size={42} color="#E85D04" />
+                            <MaterialCommunityIcons name="image-outline" size={42} color={tokens.colors.action} />
                             <Text style={styles.placeholderText}>Foto de capa</Text>
                         </View>
                     )}
                     <View style={styles.previewBody}>
                         <View style={styles.previewTopRow}>
                             <Text style={styles.previewCategory}>FERRAMENTA PARA ALUGAR</Text>
-                            <MaterialCommunityIcons name="heart-outline" size={22} color="#8A8A8A" />
+                            <MaterialCommunityIcons name="heart-outline" size={22} color={tokens.colors.secondaryText} />
                         </View>
                         <Text style={styles.previewTitle}>{params.titulo || 'Título do anúncio'}</Text>
                         <Text style={styles.previewMeta}>{params.marca || 'Marca'} • {params.modelo || 'Modelo'}</Text>
                         <View style={styles.previewBottomRow}>
                             <View style={styles.locationInline}>
-                                <MaterialCommunityIcons name="map-marker-outline" size={16} color="#E85D04" />
+                                <MaterialCommunityIcons name="map-marker-outline" size={16} color={tokens.colors.action} />
                                 <Text style={styles.locationText}>{params.cidade || 'Cidade'}</Text>
                             </View>
                             <Text style={styles.previewPrice}>{formatCurrency(dailyPrice)}<Text style={styles.perDay}> / dia</Text></Text>
@@ -210,7 +211,7 @@ export default function AnuncioRevisao() {
 
                 <View style={styles.approvalBox}>
                     <View style={styles.approvalIcon}>
-                        <MaterialCommunityIcons name="shield-check-outline" size={24} color="#258653" />
+                        <MaterialCommunityIcons name="shield-check-outline" size={24} color={tokens.colors.success} />
                     </View>
                     <View style={styles.approvalCopy}>
                         <Text style={styles.approvalTitle}>Anúncio publicado com sucesso</Text>
@@ -225,7 +226,7 @@ export default function AnuncioRevisao() {
                         <MaterialCommunityIcons
                             name={feedback.type === 'success' ? 'check-circle-outline' : 'alert-circle-outline'}
                             size={22}
-                            color={feedback.type === 'success' ? '#258653' : '#B42318'}
+                            color={feedback.type === 'success' ? tokens.colors.success : tokens.colors.alert}
                         />
                         <Text style={[styles.feedbackText, feedback.type === 'success' ? styles.successText : styles.errorText]}>
                             {feedback.message}
@@ -240,7 +241,7 @@ export default function AnuncioRevisao() {
                     activeOpacity={0.8}
                 >
                     <Text style={styles.submitButtonText}>{publishing ? 'PUBLICANDO...' : 'PUBLICAR ANÚNCIO'}</Text>
-                    {!publishing && <MaterialCommunityIcons name="check" size={20} color="#FFFFFF" />}
+                    {!publishing && <MaterialCommunityIcons name="check" size={20} color={tokens.colors.onAction} />}
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
@@ -248,53 +249,53 @@ export default function AnuncioRevisao() {
 }
 
 const styles = StyleSheet.create({
-    container: { backgroundColor: '#F5F7FA', flex: 1 },
-    content: { paddingBottom: 32, paddingHorizontal: 24, paddingTop: 20 },
-    header: { alignItems: 'center', flexDirection: 'row', marginBottom: 24 },
-    backButton: { alignItems: 'center', height: 44, justifyContent: 'center', marginRight: 12, width: 44 },
+    container: { backgroundColor: tokens.colors.background, flex: 1 },
+    content: { paddingBottom: tokens.spacing.lg + tokens.spacing.sm, paddingHorizontal: tokens.spacing.lg, paddingTop: tokens.spacing.md },
+    header: { alignItems: 'center', flexDirection: 'row', marginBottom: tokens.spacing.lg },
+    backButton: { alignItems: 'center', height: 44, justifyContent: 'center', marginRight: tokens.spacing.md, width: 44 },
     headerCopy: { flex: 1 },
-    eyebrow: { color: '#E85D04', fontSize: 12, fontWeight: '700', letterSpacing: 1, marginBottom: 6 },
-    title: { color: '#1F3D4A', fontSize: 23, fontWeight: 'bold' },
-    stepBadge: { alignItems: 'center', backgroundColor: '#FFF1E8', borderRadius: 16, height: 40, justifyContent: 'center', width: 40 },
-    stepText: { color: '#E85D04', fontSize: 12, fontWeight: '700' },
-    progressRow: { flexDirection: 'row', gap: 6, marginBottom: 28 },
-    completedProgress: { backgroundColor: '#E85D04', borderRadius: 4, flex: 1, height: 5 },
-    activeProgress: { backgroundColor: '#E85D04', borderRadius: 4, flex: 1, height: 5 },
-    instruction: { color: '#6B7280', fontSize: 15, marginBottom: 20 },
-    previewCard: { backgroundColor: '#FFFFFF', borderColor: '#D5DCE3', borderRadius: 14, borderWidth: 1, overflow: 'hidden' },
+    eyebrow: { color: tokens.colors.action, fontSize: 12, fontWeight: '700', letterSpacing: 1, marginBottom: tokens.spacing.xs },
+    title: { color: tokens.colors.text, fontSize: 23, fontWeight: 'bold' },
+    stepBadge: { alignItems: 'center', backgroundColor: tokens.colors.subtleSurface, borderRadius: tokens.radii.xl, height: 40, justifyContent: 'center', width: 40 },
+    stepText: { color: tokens.colors.action, fontSize: 12, fontWeight: '700' },
+    progressRow: { flexDirection: 'row', gap: tokens.spacing.xs, marginBottom: tokens.spacing.lg },
+    completedProgress: { backgroundColor: tokens.colors.action, borderRadius: tokens.radii.sm, flex: 1, height: 5 },
+    activeProgress: { backgroundColor: tokens.colors.action, borderRadius: tokens.radii.sm, flex: 1, height: 5 },
+    instruction: { color: tokens.colors.supportingText, fontSize: 15, marginBottom: tokens.spacing.md },
+    previewCard: { backgroundColor: tokens.colors.surface, borderColor: tokens.colors.border, borderRadius: tokens.radii.lg, borderWidth: 1, overflow: 'hidden' },
     previewImage: { height: 180, width: '100%' },
-    previewPlaceholder: { alignItems: 'center', backgroundColor: '#FFF1E8', height: 180, justifyContent: 'center' },
-    placeholderText: { color: '#E85D04', fontSize: 13, fontWeight: '700', marginTop: 8 },
-    previewBody: { padding: 16 },
+    previewPlaceholder: { alignItems: 'center', backgroundColor: tokens.colors.subtleSurface, height: 180, justifyContent: 'center' },
+    placeholderText: { color: tokens.colors.action, fontSize: 13, fontWeight: '700', marginTop: tokens.spacing.sm },
+    previewBody: { padding: tokens.spacing.md },
     previewTopRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between' },
-    previewCategory: { color: '#E85D04', fontSize: 10, fontWeight: '700', letterSpacing: 0.8 },
-    previewTitle: { color: '#1F3D4A', fontSize: 19, fontWeight: '700', marginTop: 8 },
-    previewMeta: { color: '#6B7280', fontSize: 13, marginTop: 5 },
-    previewBottomRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginTop: 18 },
+    previewCategory: { color: tokens.colors.action, fontSize: 10, fontWeight: '700', letterSpacing: 0.8 },
+    previewTitle: { color: tokens.colors.text, fontSize: 19, fontWeight: '700', marginTop: tokens.spacing.sm },
+    previewMeta: { color: tokens.colors.supportingText, fontSize: 13, marginTop: tokens.spacing.xs },
+    previewBottomRow: { alignItems: 'center', flexDirection: 'row', justifyContent: 'space-between', marginTop: tokens.spacing.md },
     locationInline: { alignItems: 'center', flexDirection: 'row' },
-    locationText: { color: '#6B7280', fontSize: 12, marginLeft: 4 },
-    previewPrice: { color: '#E85D04', fontSize: 16, fontWeight: '700' },
-    perDay: { color: '#6B7280', fontSize: 11, fontWeight: '400' },
-    sectionTitle: { color: '#1F3D4A', fontSize: 17, fontWeight: '700', marginBottom: 10, marginTop: 24 },
-    table: { backgroundColor: '#FFFFFF', borderColor: '#D5DCE3', borderRadius: 12, borderWidth: 1, overflow: 'hidden' },
-    tableRow: { flexDirection: 'row', paddingHorizontal: 14, paddingVertical: 12 },
-    alternateRow: { backgroundColor: '#FAFBFC' },
-    tableLabel: { color: '#6B7280', fontSize: 12, width: '38%' },
-    tableValue: { color: '#1F3D4A', flex: 1, fontSize: 13, fontWeight: '600' },
-    descriptionRow: { borderTopColor: '#E5E7EB', borderTopWidth: 1, padding: 14 },
-    descriptionValue: { color: '#1F3D4A', fontSize: 13, lineHeight: 19, marginTop: 7 },
-    approvalBox: { alignItems: 'center', backgroundColor: '#F1FAF5', borderColor: '#9BD3B2', borderRadius: 12, borderWidth: 1, flexDirection: 'row', marginTop: 20, padding: 14 },
-    approvalIcon: { alignItems: 'center', backgroundColor: '#D9F2E3', borderRadius: 22, height: 44, justifyContent: 'center', width: 44 },
-    approvalCopy: { flex: 1, marginLeft: 11 },
-    approvalTitle: { color: '#216B45', fontSize: 14, fontWeight: '700' },
-    approvalText: { color: '#4E755F', fontSize: 12, lineHeight: 18, marginTop: 4 },
-    submitButton: { alignItems: 'center', backgroundColor: '#E85D04', borderRadius: 10, flexDirection: 'row', justifyContent: 'center', marginTop: 24, minHeight: 52 },
-    submitButtonText: { color: '#FFFFFF', fontSize: 13, fontWeight: '700', marginRight: 10 },
-    disabledButton: { backgroundColor: '#AEB7BF' },
-    feedbackBox: { alignItems: 'center', borderRadius: 10, flexDirection: 'row', marginTop: 16, padding: 13 },
-    successBox: { backgroundColor: '#F1FAF5', borderColor: '#9BD3B2', borderWidth: 1 },
-    errorBox: { backgroundColor: '#FFF4F2', borderColor: '#F1B5AD', borderWidth: 1 },
-    feedbackText: { flex: 1, fontSize: 13, lineHeight: 19, marginLeft: 9 },
-    successText: { color: '#216B45' },
-    errorText: { color: '#B42318' },
+    locationText: { color: tokens.colors.supportingText, fontSize: 12, marginLeft: tokens.spacing.xs },
+    previewPrice: { color: tokens.colors.action, fontSize: 16, fontWeight: '700' },
+    perDay: { color: tokens.colors.supportingText, fontSize: 11, fontWeight: '400' },
+    sectionTitle: { color: tokens.colors.text, fontSize: 17, fontWeight: '700', marginBottom: tokens.spacing.sm, marginTop: tokens.spacing.lg },
+    table: { backgroundColor: tokens.colors.surface, borderColor: tokens.colors.border, borderRadius: tokens.radii.lg, borderWidth: 1, overflow: 'hidden' },
+    tableRow: { flexDirection: 'row', paddingHorizontal: tokens.spacing.md, paddingVertical: tokens.spacing.md },
+    alternateRow: { backgroundColor: tokens.colors.alternateSurface },
+    tableLabel: { color: tokens.colors.supportingText, fontSize: 12, width: '38%' },
+    tableValue: { color: tokens.colors.text, flex: 1, fontSize: 13, fontWeight: '600' },
+    descriptionRow: { borderTopColor: tokens.colors.subtleBorder, borderTopWidth: 1, padding: tokens.spacing.md },
+    descriptionValue: { color: tokens.colors.text, fontSize: 13, lineHeight: 19, marginTop: tokens.spacing.sm },
+    approvalBox: { alignItems: 'center', backgroundColor: tokens.colors.successSurface, borderColor: tokens.colors.successBorder, borderRadius: tokens.radii.lg, borderWidth: 1, flexDirection: 'row', marginTop: tokens.spacing.md, padding: tokens.spacing.md },
+    approvalIcon: { alignItems: 'center', backgroundColor: tokens.colors.successIconSurface, borderRadius: tokens.radii.pill, height: 44, justifyContent: 'center', width: 44 },
+    approvalCopy: { flex: 1, marginLeft: tokens.spacing.sm },
+    approvalTitle: { color: tokens.colors.successText, fontSize: 14, fontWeight: '700' },
+    approvalText: { color: tokens.colors.successSupportingText, fontSize: 12, lineHeight: 18, marginTop: tokens.spacing.xs },
+    submitButton: { alignItems: 'center', backgroundColor: tokens.colors.action, borderRadius: tokens.radii.lg, flexDirection: 'row', justifyContent: 'center', marginTop: tokens.spacing.lg, minHeight: 52 },
+    submitButtonText: { color: tokens.colors.onAction, fontSize: 13, fontWeight: '700', marginRight: tokens.spacing.sm },
+    disabledButton: { backgroundColor: tokens.colors.disabledText },
+    feedbackBox: { alignItems: 'center', borderRadius: tokens.radii.lg, flexDirection: 'row', marginTop: tokens.spacing.md, padding: tokens.spacing.md },
+    successBox: { backgroundColor: tokens.colors.successSurface, borderColor: tokens.colors.successBorder, borderWidth: 1 },
+    errorBox: { backgroundColor: tokens.colors.alertSurface, borderColor: tokens.colors.alertBorder, borderWidth: 1 },
+    feedbackText: { flex: 1, fontSize: 13, lineHeight: 19, marginLeft: tokens.spacing.sm },
+    successText: { color: tokens.colors.successText },
+    errorText: { color: tokens.colors.alert },
 });
