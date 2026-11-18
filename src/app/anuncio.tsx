@@ -1,6 +1,8 @@
 import CategorySelection from '@/components/anuncio/CategorySelection';
 import { listarCategorias, type Categoria } from '@/services/api';
+import CabecalhoDoPasso from '@/shared/components/CabecalhoDoPasso';
 import { goBackOrHome } from '@/utils/navigation';
+import { tokens } from '@/shared/theme/tokens';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -45,30 +47,12 @@ export default function Anuncio() {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
-                <View style={styles.header}>
-                    <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={() => goBackOrHome(router, { usuarioId })}
-                        activeOpacity={0.75}
-                        accessibilityLabel="Voltar"
-                    >
-                        <MaterialCommunityIcons name="arrow-left" size={24} color="#1F3D4A" />
-                    </TouchableOpacity>
-                    <View style={styles.headerCopy}>
-                        <Text style={styles.eyebrow}>NOVO ANÚNCIO</Text>
-                        <Text style={styles.title}>O que você vai anunciar?</Text>
-                    </View>
-                    <View style={styles.logo}>
-                        <MaterialCommunityIcons name="wrench-outline" size={20} color="#FFFFFF" />
-                    </View>
-                </View>
-
-                <View style={styles.progressRow}>
-                    <View style={styles.activeProgress} />
-                    <View style={styles.progress} />
-                    <View style={styles.progress} />
-                    <View style={styles.progress} />
-                </View>
+                <CabecalhoDoPasso
+                    title="O que você vai anunciar?"
+                    currentStep={1}
+                    totalSteps={6}
+                    onBack={() => goBackOrHome(router, { usuarioId })}
+                />
 
                 <Text style={styles.instruction}>Selecione uma categoria para começar.</Text>
 
@@ -94,13 +78,18 @@ export default function Anuncio() {
                             },
                         } as Href)}
                         activeOpacity={0.8}
+                        accessibilityRole="button"
+                        accessibilityLabel={selectedCategoryId === null
+                            ? 'Selecione uma categoria para continuar'
+                            : 'Continuar para os detalhes'}
+                        accessibilityState={{ disabled: selectedCategoryId === null }}
                     >
                         {selectedCategoryId === null ? (
                             <Text style={styles.disabledButtonText}>SELECIONE UMA CATEGORIA</Text>
                         ) : (
                             <>
                                 <Text style={styles.continueButtonText}>CONTINUAR</Text>
-                                <MaterialCommunityIcons name="arrow-right" size={20} color="#FFFFFF" />
+                                <MaterialCommunityIcons name="arrow-right" size={20} color={tokens.colors.onAction} />
                             </>
                         )}
                     </TouchableOpacity>
@@ -112,92 +101,40 @@ export default function Anuncio() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#F5F7FA',
+        backgroundColor: tokens.colors.background,
         flex: 1,
     },
     content: {
-        paddingBottom: 32,
-        paddingHorizontal: 24,
-        paddingTop: 20,
-    },
-    header: {
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginBottom: 24,
-    },
-    backButton: {
-        alignItems: 'center',
-        height: 44,
-        justifyContent: 'center',
-        marginRight: 12,
-        width: 44,
-    },
-    headerCopy: {
-        flex: 1,
-    },
-    eyebrow: {
-        color: '#E85D04',
-        fontSize: 12,
-        fontWeight: '700',
-        letterSpacing: 1,
-        marginBottom: 6,
-    },
-    title: {
-        color: '#1F3D4A',
-        fontSize: 23,
-        fontWeight: 'bold',
-    },
-    logo: {
-        alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
-        height: 44,
-        justifyContent: 'center',
-        width: 44,
-    },
-    progressRow: {
-        flexDirection: 'row',
-        gap: 6,
-        marginBottom: 28,
-    },
-    activeProgress: {
-        backgroundColor: '#E85D04',
-        borderRadius: 4,
-        flex: 1,
-        height: 5,
-    },
-    progress: {
-        backgroundColor: '#D5DCE3',
-        borderRadius: 4,
-        flex: 1,
-        height: 5,
+        paddingBottom: tokens.spacing.lg + tokens.spacing.sm,
+        paddingHorizontal: tokens.spacing.lg,
+        paddingTop: tokens.spacing.md,
     },
     instruction: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 15,
-        marginBottom: 16,
+        marginBottom: tokens.spacing.md,
     },
     continueButton: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
         flexDirection: 'row',
         justifyContent: 'center',
-        marginTop: 24,
+        marginTop: tokens.spacing.lg,
         minHeight: 52,
-        paddingHorizontal: 20,
+        paddingHorizontal: tokens.spacing.md,
     },
     disabledButton: {
-        backgroundColor: '#D5DCE3',
+        backgroundColor: tokens.colors.border,
     },
     continueButtonText: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 13,
         fontWeight: '700',
-        marginRight: 10,
+        marginRight: tokens.spacing.sm,
     },
     disabledButtonText: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 13,
         fontWeight: '700',
     },

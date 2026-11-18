@@ -1,6 +1,8 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { Categoria } from '@/services/api';
+import EstadoVisual from '@/shared/components/EstadoVisual';
+import { tokens } from '@/shared/theme/tokens';
 
 type CategorySelectionProps = {
     categories: Categoria[];
@@ -20,36 +22,28 @@ export default function CategorySelection({
     onRetry,
 }: CategorySelectionProps) {
     if (loading) {
-        return (
-            <View style={styles.feedbackState}>
-                <ActivityIndicator size="large" color="#E85D04" />
-                <Text style={styles.feedbackText}>Carregando categorias...</Text>
-            </View>
-        );
+        return <EstadoVisual variant="loading" message="Carregando categorias..." />;
     }
 
     if (error) {
         return (
-            <View style={styles.feedbackState}>
-                <MaterialCommunityIcons name="cloud-alert-outline" size={44} color="#E85D04" />
-                <Text style={styles.feedbackTitle}>Não foi possível carregar as categorias</Text>
-                <Text style={styles.feedbackText}>{error}</Text>
-                <TouchableOpacity style={styles.retryButton} onPress={onRetry} activeOpacity={0.8}>
-                    <Text style={styles.retryButtonText}>TENTAR NOVAMENTE</Text>
-                </TouchableOpacity>
-            </View>
+            <EstadoVisual
+                variant="error"
+                title="Não foi possível carregar as categorias"
+                message={error}
+                actionLabel="TENTAR NOVAMENTE"
+                onAction={onRetry}
+            />
         );
     }
 
     if (categories.length === 0) {
         return (
-            <View style={styles.feedbackState}>
-                <MaterialCommunityIcons name="shape-outline" size={44} color="#E85D04" />
-                <Text style={styles.feedbackTitle}>Nenhuma categoria disponível</Text>
-                <Text style={styles.feedbackText}>
-                    Aguarde o cadastro de categorias para anunciar uma ferramenta.
-                </Text>
-            </View>
+            <EstadoVisual
+                variant="empty"
+                title="Nenhuma categoria disponível"
+                message="Aguarde o cadastro de categorias para anunciar uma ferramenta."
+            />
         );
     }
 
@@ -64,12 +58,15 @@ export default function CategorySelection({
                         style={[styles.category, isSelected && styles.selectedCategory]}
                         onPress={() => onSelect(category.id)}
                         activeOpacity={0.8}
+                        accessibilityRole="radio"
+                        accessibilityLabel={`${category.nome}. ${category.descricao}`}
+                        accessibilityState={{ selected: isSelected }}
                     >
                         <View style={[styles.categoryIcon, isSelected && styles.selectedCategoryIcon]}>
                             <MaterialCommunityIcons
                                 name="tools"
                                 size={24}
-                                color={isSelected ? '#FFFFFF' : '#E85D04'}
+                                color={isSelected ? tokens.colors.surface : tokens.colors.action}
                             />
                         </View>
                         <View style={styles.categoryContent}>
@@ -81,7 +78,7 @@ export default function CategorySelection({
                         <MaterialCommunityIcons
                             name={isSelected ? 'check-circle' : 'chevron-right'}
                             size={24}
-                            color={isSelected ? '#E85D04' : '#8A8A8A'}
+                            color={isSelected ? tokens.colors.action : tokens.colors.secondaryText}
                         />
                     </TouchableOpacity>
                 );
@@ -92,78 +89,46 @@ export default function CategorySelection({
 
 const styles = StyleSheet.create({
     list: {
-        gap: 12,
+        gap: tokens.spacing.md,
     },
     category: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 14,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flexDirection: 'row',
         minHeight: 82,
-        padding: 14,
+        padding: tokens.spacing.md,
     },
     selectedCategory: {
-        borderColor: '#E85D04',
+        borderColor: tokens.colors.action,
         borderWidth: 2,
     },
     categoryIcon: {
         alignItems: 'center',
-        backgroundColor: '#FFF1E8',
-        borderRadius: 12,
+        backgroundColor: tokens.colors.subtleSurface,
+        borderRadius: tokens.radii.lg,
         height: 48,
         justifyContent: 'center',
         width: 48,
     },
     selectedCategoryIcon: {
-        backgroundColor: '#E85D04',
+        backgroundColor: tokens.colors.action,
     },
     categoryContent: {
         flex: 1,
-        marginHorizontal: 12,
+        marginHorizontal: tokens.spacing.md,
     },
     categoryName: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 16,
         fontWeight: '700',
     },
     categoryDescription: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 13,
         lineHeight: 18,
-        marginTop: 4,
-    },
-    feedbackState: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 260,
-        paddingHorizontal: 24,
-    },
-    feedbackTitle: {
-        color: '#1F3D4A',
-        fontSize: 17,
-        fontWeight: '700',
-        marginTop: 16,
-        textAlign: 'center',
-    },
-    feedbackText: {
-        color: '#6B7280',
-        fontSize: 14,
-        lineHeight: 21,
-        marginTop: 8,
-        textAlign: 'center',
-    },
-    retryButton: {
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
-        marginTop: 18,
-        paddingHorizontal: 18,
-        paddingVertical: 13,
-    },
-    retryButtonText: {
-        color: '#FFFFFF',
-        fontSize: 13,
-        fontWeight: '700',
+        marginTop: tokens.spacing.xs,
     },
 });

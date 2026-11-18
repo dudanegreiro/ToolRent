@@ -1,5 +1,6 @@
 import { Link } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { tokens } from '@/shared/theme/tokens';
 
 export default function RegisterLink() {
   return (
@@ -7,7 +8,10 @@ export default function RegisterLink() {
       <Text style={styles.text}>Ainda não possui uma conta?</Text>
 
       <Link href="/cadastro" asChild>
-        <TouchableOpacity>
+        <TouchableOpacity
+          accessibilityRole="link"
+          accessibilityLabel="Criar conta"
+        >
           <Text style={styles.link}>Criar conta</Text>
         </TouchableOpacity>
       </Link>
@@ -20,20 +24,20 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 25,
+    marginTop: tokens.spacing.lg,
     fontFamily: 'sans-serif',
   },
 
   text: {
     fontSize: 14,
-    color: '#6B7280',
+    color: tokens.colors.supportingText,
     opacity: 0.7
   },
 
   link: {
     fontSize: 14,
-    color: '#E85D04',
+    color: tokens.colors.action,
     fontWeight: 'bold',
-    marginLeft: 5,
+    marginLeft: tokens.spacing.xs,
   },
 });

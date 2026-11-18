@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { tokens } from '@/shared/theme/tokens';
 
 interface PasswordInputProps {
   value: string;
@@ -19,8 +20,10 @@ export default function PasswordInput({
     <View style={styles.container}>
       <TextInput
         style={styles.input}
+        accessibilityLabel="Senha"
+        accessibilityRole="text"
         placeholder="Digite sua senha"
-        placeholderTextColor="#8A8A8A"
+        placeholderTextColor={tokens.colors.placeholderMuted}
         value={value}
         onChangeText={onChangeText}
         secureTextEntry={!showPassword}
@@ -35,6 +38,9 @@ export default function PasswordInput({
         onPress={onToggleShowPassword}
         style={styles.showPasswordButton}
         hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+        accessibilityRole="button"
+        accessibilityLabel={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+        accessibilityState={{ expanded: showPassword }}
       >
         <Text style={styles.showPasswordText}>
           {showPassword ? 'Ocultar' : 'Mostrar'}
@@ -50,28 +56,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#D5DCE3',
-    borderRadius: 10,
-    backgroundColor: '#FAFBFC',
-    marginBottom: 8,
+    borderColor: tokens.colors.border,
+    borderRadius: tokens.radii.lg,
+    backgroundColor: tokens.colors.alternateSurface,
+    marginBottom: tokens.spacing.sm,
   },
 
   input: {
     flex: 1,
     height: '100%',
-    paddingHorizontal: 15,
+    paddingHorizontal: tokens.spacing.md,
     fontSize: 15,
-    color: '#1F2937',
+    color: tokens.colors.inputText,
     opacity: 0.5
   },
 
   showPasswordButton: {
-    paddingHorizontal: 12,
+    paddingHorizontal: tokens.spacing.md,
   },
 
   showPasswordText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#374151',
+    color: tokens.colors.bodyText,
   },
 });

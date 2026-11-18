@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   View
 } from 'react-native';
+import { tokens } from '@/shared/theme/tokens';
 import PasswordInput from './PasswordInput';
 
 interface LoginFormProps {
@@ -38,8 +39,10 @@ export default function LoginForm({
 
       <TextInput
         style={styles.input}
+        accessibilityLabel="E-mail"
+        accessibilityRole="text"
         placeholder="Digite seu e-mail"
-        placeholderTextColor="#8A8A8A"
+        placeholderTextColor={tokens.colors.placeholderMuted}
         value={email}
         onChangeText={onEmailChange}
         keyboardType="email-address"
@@ -67,6 +70,8 @@ export default function LoginForm({
       <TouchableOpacity
         style={styles.forgotContainer}
         onPress={onForgotPassword}
+        accessibilityRole="button"
+        accessibilityLabel="Esqueci minha senha"
       >
         <Text style={styles.forgotText}>Esqueci minha senha</Text>
       </TouchableOpacity>
@@ -76,6 +81,9 @@ export default function LoginForm({
         onPress={onLogin}
         disabled={loading}
         activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel={loading ? 'Entrando' : 'Entrar'}
+        accessibilityState={{ disabled: loading }}
       >
         <Text style={styles.loginButtonText}>
           {loading ? 'AGUARDE...' : 'ENTRAR'}
@@ -87,65 +95,65 @@ export default function LoginForm({
 
 const styles = StyleSheet.create({
   form: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 24,
+    backgroundColor: tokens.colors.surface,
+    borderRadius: tokens.radii.xl,
+    padding: tokens.spacing.lg,
     fontFamily: 'sans-serif',
-    boxShadow: '0px 8px 16px rgba(17, 24, 39, 0.08)',
+    boxShadow: tokens.shadows.form,
     elevation: 4,
   },
 
   formTitle: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#1F3D4A',
-    marginBottom: 25,
+    color: tokens.colors.text,
+    marginBottom: tokens.spacing.lg,
   },
 
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#374151',
-    marginBottom: 8,
+    color: tokens.colors.bodyText,
+    marginBottom: tokens.spacing.sm,
     opacity: 0.5
   },
 
   input: {
     height: 52,
     borderWidth: 1,
-    borderColor: '#D5DCE3',
-    borderRadius: 10,
-    paddingHorizontal: 15,
+    borderColor: tokens.colors.border,
+    borderRadius: tokens.radii.lg,
+    paddingHorizontal: tokens.spacing.md,
     fontSize: 15,
-    color: '#1F2937',
-    backgroundColor: '#FAFBFC',
-    marginBottom: 20,
+    color: tokens.colors.inputText,
+    backgroundColor: tokens.colors.alternateSurface,
+    marginBottom: tokens.spacing.md,
     opacity: 0.5
   },
 
   errorText: {
-    color: '#B42318',
+    color: tokens.colors.alert,
     fontSize: 13,
     fontWeight: '600',
-    marginBottom: 14,
+    marginBottom: tokens.spacing.md,
     lineHeight: 18,
   },
 
   forgotContainer: {
     alignItems: 'flex-end',
-    marginBottom: 25,
+    marginBottom: tokens.spacing.lg,
   },
 
   forgotText: {
-    color: '#E85D04',
+    color: tokens.colors.action,
     fontSize: 13,
     fontWeight: '600',
   },
 
   loginButton: {
     height: 52,
-    backgroundColor: '#E85D04',
-    borderRadius: 10,
+    backgroundColor: tokens.colors.action,
+    borderRadius: tokens.radii.lg,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -155,7 +163,7 @@ const styles = StyleSheet.create({
   },
 
   loginButtonText: {
-    color: '#FFFFFF',
+    color: tokens.colors.onAction,
     fontSize: 16,
     fontWeight: '700',
   },

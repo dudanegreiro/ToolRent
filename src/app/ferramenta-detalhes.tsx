@@ -1,6 +1,7 @@
 import { atualizarFerramenta, excluirFerramenta } from '@/services/api';
 import { getSession } from '@/services/session';
 import { goBackOrHome } from '@/utils/navigation';
+import { tokens } from '@/shared/theme/tokens';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -79,7 +80,7 @@ function ToolImageGallery({
                     <Image source={{ uri: cover }} style={styles.cover} resizeMode="cover" />
                 ) : (
                     <View style={styles.coverPlaceholder}>
-                        <MaterialCommunityIcons name="wrench-outline" size={42} color="#E85D04" />
+                        <MaterialCommunityIcons name="wrench-outline" size={42} color={tokens.colors.action} />
                         <Text style={styles.placeholderText}>Sem foto disponível</Text>
                     </View>
                 )}
@@ -91,8 +92,11 @@ function ToolImageGallery({
                             onPress={onPrevious}
                             disabled={!canGoPrevious}
                             activeOpacity={0.8}
+                            accessibilityRole="button"
+                            accessibilityLabel="Foto anterior"
+                            accessibilityState={{ disabled: !canGoPrevious }}
                         >
-                            <MaterialCommunityIcons name="chevron-left" size={22} color="#FFFFFF" />
+                            <MaterialCommunityIcons name="chevron-left" size={22} color={tokens.colors.onAction} />
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -100,8 +104,11 @@ function ToolImageGallery({
                             onPress={onNext}
                             disabled={!canGoNext}
                             activeOpacity={0.8}
+                            accessibilityRole="button"
+                            accessibilityLabel="Próxima foto"
+                            accessibilityState={{ disabled: !canGoNext }}
                         >
-                            <MaterialCommunityIcons name="chevron-right" size={22} color="#FFFFFF" />
+                            <MaterialCommunityIcons name="chevron-right" size={22} color={tokens.colors.onAction} />
                         </TouchableOpacity>
                     </>
                 )}
@@ -114,6 +121,9 @@ function ToolImageGallery({
                             key={`${url}-${index}`}
                             activeOpacity={0.8}
                             onPress={() => onSelect(index)}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Selecionar foto ${index + 1}`}
+                            accessibilityState={{ selected: selectedImageIndex === index }}
                         >
                             <Image
                                 source={{ uri: url }}
@@ -145,12 +155,24 @@ function OwnerActionButtons({
 
     return (
         <View style={styles.ownerActions}>
-            <TouchableOpacity style={styles.editButton} onPress={onEdit} activeOpacity={0.85}>
-                <MaterialCommunityIcons name="pencil" size={18} color="#FFFFFF" />
+            <TouchableOpacity
+                style={styles.editButton}
+                onPress={onEdit}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel="Editar anúncio"
+            >
+                <MaterialCommunityIcons name="pencil" size={18} color={tokens.colors.onAction} />
                 <Text style={styles.editButtonText}>Editar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={onDelete} activeOpacity={0.85}>
-                <MaterialCommunityIcons name="delete-outline" size={18} color="#FFFFFF" />
+            <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={onDelete}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel="Excluir anúncio"
+            >
+                <MaterialCommunityIcons name="delete-outline" size={18} color={tokens.colors.onAction} />
                 <Text style={styles.deleteButtonText}>Excluir</Text>
             </TouchableOpacity>
         </View>
@@ -192,6 +214,8 @@ function EditToolForm({
                         value={form.nome}
                         onChangeText={(value) => onChange('nome', value)}
                         style={styles.input}
+                        accessibilityLabel="Título do anúncio"
+                        accessibilityRole="text"
                         placeholder="Ex: Furadeira sem fio"
                     />
                 </View>
@@ -203,6 +227,8 @@ function EditToolForm({
                             value={form.marca}
                             onChangeText={(value) => onChange('marca', value)}
                             style={styles.input}
+                            accessibilityLabel="Marca"
+                            accessibilityRole="text"
                             placeholder="Bosch"
                         />
                     </View>
@@ -212,6 +238,8 @@ function EditToolForm({
                             value={form.modelo}
                             onChangeText={(value) => onChange('modelo', value)}
                             style={styles.input}
+                            accessibilityLabel="Modelo"
+                            accessibilityRole="text"
                             placeholder="GSR 12V"
                         />
                     </View>
@@ -223,6 +251,9 @@ function EditToolForm({
                         value={params.categoria_nome || 'Categoria'}
                         editable={false}
                         style={[styles.input, styles.inputReadOnly]}
+                        accessibilityLabel="Categoria"
+                        accessibilityRole="text"
+                        accessibilityState={{ disabled: true }}
                     />
                 </View>
             </View>
@@ -235,6 +266,8 @@ function EditToolForm({
                         value={form.estado_conservacao}
                         onChangeText={(value) => onChange('estado_conservacao', value)}
                         style={styles.input}
+                        accessibilityLabel="Estado de conservação"
+                        accessibilityRole="text"
                         placeholder="Novo, seminovo, usado"
                     />
                 </View>
@@ -246,6 +279,8 @@ function EditToolForm({
                         onChangeText={(value) => onChange('descricao', value)}
                         multiline
                         style={[styles.input, styles.textArea]}
+                        accessibilityLabel="Descrição"
+                        accessibilityRole="text"
                         placeholder="Conte detalhes da ferramenta, acessórios e uso."
                     />
                 </View>
@@ -256,6 +291,8 @@ function EditToolForm({
                         value={form.itens_inclusos}
                         onChangeText={(value) => onChange('itens_inclusos', value)}
                         style={styles.input}
+                        accessibilityLabel="Itens inclusos"
+                        accessibilityRole="text"
                         placeholder="Carregador, maleta, empunhadeira"
                     />
                 </View>
@@ -271,6 +308,8 @@ function EditToolForm({
                             onChangeText={(value) => onChange('preco_diaria', value)}
                             keyboardType="decimal-pad"
                             style={styles.input}
+                            accessibilityLabel="Preço da diária em reais"
+                            accessibilityRole="text"
                             placeholder="120"
                         />
                     </View>
@@ -281,6 +320,8 @@ function EditToolForm({
                             onChangeText={(value) => onChange('preco_semanal', value)}
                             keyboardType="decimal-pad"
                             style={styles.input}
+                            accessibilityLabel="Preço semanal em reais"
+                            accessibilityRole="text"
                             placeholder="650"
                         />
                     </View>
@@ -293,6 +334,8 @@ function EditToolForm({
                         onChangeText={(value) => onChange('periodo_minimo', value)}
                         keyboardType="number-pad"
                         style={styles.input}
+                        accessibilityLabel="Período mínimo em dias"
+                        accessibilityRole="text"
                         placeholder="1"
                     />
                 </View>
@@ -303,6 +346,8 @@ function EditToolForm({
                         value={form.politica_cancelamento}
                         onChangeText={(value) => onChange('politica_cancelamento', value)}
                         style={styles.input}
+                        accessibilityLabel="Política de cancelamento"
+                        accessibilityRole="text"
                         placeholder="Flexível, Moderada ou Rigorosa"
                     />
                 </View>
@@ -315,7 +360,13 @@ function EditToolForm({
                         <Text style={styles.toggleLabel}>Exige caução</Text>
                         <Text style={styles.toggleHint}>Reforça a segurança para o aluguel.</Text>
                     </View>
-                    <Switch value={form.exige_caucao} onValueChange={(value) => onChange('exige_caucao', value)} />
+                    <Switch
+                        value={form.exige_caucao}
+                        onValueChange={(value) => onChange('exige_caucao', value)}
+                        accessibilityLabel="Exige caução"
+                        accessibilityRole="switch"
+                        accessibilityState={{ checked: form.exige_caucao }}
+                    />
                 </View>
 
                 <View style={styles.toggleRow}>
@@ -323,7 +374,13 @@ function EditToolForm({
                         <Text style={styles.toggleLabel}>Entrega disponível</Text>
                         <Text style={styles.toggleHint}>Você pode entregar a ferramenta.</Text>
                     </View>
-                    <Switch value={form.entrega} onValueChange={(value) => onChange('entrega', value)} />
+                    <Switch
+                        value={form.entrega}
+                        onValueChange={(value) => onChange('entrega', value)}
+                        accessibilityLabel="Entrega disponível"
+                        accessibilityRole="switch"
+                        accessibilityState={{ checked: form.entrega }}
+                    />
                 </View>
 
                 <View style={styles.toggleRow}>
@@ -331,15 +388,35 @@ function EditToolForm({
                         <Text style={styles.toggleLabel}>Disponível para aluguel</Text>
                         <Text style={styles.toggleHint}>Anúncio visível para outros usuários.</Text>
                     </View>
-                    <Switch value={form.disponibilidade} onValueChange={(value) => onChange('disponibilidade', value)} />
+                    <Switch
+                        value={form.disponibilidade}
+                        onValueChange={(value) => onChange('disponibilidade', value)}
+                        accessibilityLabel="Disponível para aluguel"
+                        accessibilityRole="switch"
+                        accessibilityState={{ checked: form.disponibilidade }}
+                    />
                 </View>
             </View>
 
             <View style={styles.editActions}>
-                <TouchableOpacity style={styles.cancelButton} onPress={onCancel} activeOpacity={0.8}>
+                <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={onCancel}
+                    activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Cancelar edição"
+                >
                     <Text style={styles.cancelButtonText}>Cancelar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.saveButton} onPress={onSave} activeOpacity={0.8} disabled={saving}>
+                <TouchableOpacity
+                    style={styles.saveButton}
+                    onPress={onSave}
+                    activeOpacity={0.8}
+                    disabled={saving}
+                    accessibilityRole="button"
+                    accessibilityLabel={saving ? 'Salvando alterações' : 'Salvar alterações'}
+                    accessibilityState={{ disabled: saving }}
+                >
                     <Text style={styles.saveButtonText}>{saving ? 'Salvando...' : 'Salvar alterações'}</Text>
                 </TouchableOpacity>
             </View>
@@ -645,9 +722,10 @@ export default function FerramentaDetalhes() {
                         style={styles.backButton}
                         onPress={() => goBackOrHome(router, { usuarioId: params.usuario_id })}
                         accessibilityLabel="Voltar"
+                        accessibilityRole="button"
                         activeOpacity={0.75}
                     >
-                        <MaterialCommunityIcons name="arrow-left" size={24} color="#1F3D4A" />
+                        <MaterialCommunityIcons name="arrow-left" size={24} color={tokens.colors.text} />
                     </TouchableOpacity>
 
                     <View style={styles.headerCopy}>
@@ -696,37 +774,37 @@ export default function FerramentaDetalhes() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F7FA',
+        backgroundColor: tokens.colors.background,
     },
     content: {
-        paddingHorizontal: 20,
-        paddingBottom: 30,
+        paddingHorizontal: tokens.spacing.md,
+        paddingBottom: tokens.spacing.lg + tokens.spacing.sm,
     },
     header: {
         alignItems: 'center',
         flexDirection: 'row',
-        marginTop: 18,
-        marginBottom: 16,
+        marginTop: tokens.spacing.md,
+        marginBottom: tokens.spacing.md,
     },
     backButton: {
         alignItems: 'center',
         height: 44,
         justifyContent: 'center',
-        marginRight: 12,
+        marginRight: tokens.spacing.md,
         width: 44,
     },
     headerCopy: {
         flex: 1,
     },
     eyebrow: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 12,
         fontWeight: '700',
         letterSpacing: 1,
-        marginBottom: 4,
+        marginBottom: tokens.spacing.xs,
     },
     title: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 22,
         fontWeight: '700',
     },
@@ -734,14 +812,14 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
     cover: {
-        borderRadius: 16,
+        borderRadius: tokens.radii.xl,
         height: 220,
         width: '100%',
     },
     navButton: {
         alignItems: 'center',
-        backgroundColor: 'rgba(17, 24, 39, 0.45)',
-        borderRadius: 999,
+        backgroundColor: tokens.colors.scrim,
+        borderRadius: tokens.radii.pill,
         height: 36,
         justifyContent: 'center',
         position: 'absolute',
@@ -757,141 +835,141 @@ const styles = StyleSheet.create({
     },
     coverPlaceholder: {
         alignItems: 'center',
-        backgroundColor: '#FFF1E8',
-        borderRadius: 16,
+        backgroundColor: tokens.colors.subtleSurface,
+        borderRadius: tokens.radii.xl,
         height: 220,
         justifyContent: 'center',
         width: '100%',
     },
     placeholderText: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '600',
-        marginTop: 10,
+        marginTop: tokens.spacing.sm,
     },
     galleryRow: {
         flexDirection: 'row',
-        gap: 10,
-        marginTop: 14,
+        gap: tokens.spacing.sm,
+        marginTop: tokens.spacing.md,
     },
     galleryImage: {
-        borderRadius: 10,
+        borderRadius: tokens.radii.lg,
         borderWidth: 2,
         borderColor: 'transparent',
         height: 80,
         width: 80,
     },
     galleryImageActive: {
-        borderColor: '#E85D04',
+        borderColor: tokens.colors.action,
     },
     ownerActions: {
         flexDirection: 'row',
-        gap: 12,
-        marginBottom: 16,
-        marginTop: 18,
+        gap: tokens.spacing.md,
+        marginBottom: tokens.spacing.md,
+        marginTop: tokens.spacing.md,
     },
     editButton: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
         flex: 1,
         flexDirection: 'row',
-        gap: 8,
+        gap: tokens.spacing.sm,
         justifyContent: 'center',
-        paddingHorizontal: 14,
-        paddingVertical: 12,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.md,
     },
     editButtonText: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 13,
         fontWeight: '700',
     },
     deleteButton: {
         alignItems: 'center',
-        backgroundColor: '#B42318',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.alert,
+        borderRadius: tokens.radii.lg,
         flex: 1,
         flexDirection: 'row',
-        gap: 8,
+        gap: tokens.spacing.sm,
         justifyContent: 'center',
-        paddingHorizontal: 14,
-        paddingVertical: 12,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.md,
     },
     deleteButtonText: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 13,
         fontWeight: '700',
     },
     editCard: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#E6EAF0',
-        borderRadius: 18,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.detailBorder,
+        borderRadius: tokens.radii.xl,
         borderWidth: 1,
-        marginBottom: 18,
-        marginTop: 18,
+        marginBottom: tokens.spacing.md,
+        marginTop: tokens.spacing.md,
         overflow: 'hidden',
         padding: 0,
     },
     editHeader: {
         alignItems: 'center',
-        backgroundColor: '#FFF5EE',
+        backgroundColor: tokens.colors.actionSurfaceWarm,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingHorizontal: 16,
-        paddingVertical: 14,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.md,
     },
     pillInfo: {
-        backgroundColor: '#FDE7D8',
-        borderRadius: 999,
-        paddingHorizontal: 10,
-        paddingVertical: 6,
+        backgroundColor: tokens.colors.infoSurface,
+        borderRadius: tokens.radii.pill,
+        paddingHorizontal: tokens.spacing.sm,
+        paddingVertical: tokens.spacing.xs,
     },
     pillInfoText: {
-        color: '#C75A00',
+        color: tokens.colors.actionTextStrong,
         fontSize: 10,
         fontWeight: '700',
     },
     formSection: {
-        borderTopColor: '#EEF2F7',
+        borderTopColor: tokens.colors.fieldDivider,
         borderTopWidth: 1,
-        padding: 16,
+        padding: tokens.spacing.md,
     },
     sectionSubtitle: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '700',
-        marginBottom: 12,
+        marginBottom: tokens.spacing.md,
     },
     inputGroup: {
-        marginBottom: 12,
+        marginBottom: tokens.spacing.md,
     },
     inputRow: {
         flexDirection: 'row',
-        gap: 12,
-        marginBottom: 12,
+        gap: tokens.spacing.md,
+        marginBottom: tokens.spacing.md,
     },
     inputHalf: {
         flex: 1,
     },
     fieldLabel: {
-        color: '#475467',
+        color: tokens.colors.mutedText,
         fontSize: 12,
         fontWeight: '600',
-        marginBottom: 6,
+        marginBottom: tokens.spacing.xs,
     },
     input: {
-        backgroundColor: '#F9FAFB',
-        borderColor: '#D5DCE3',
-        borderRadius: 12,
+        backgroundColor: tokens.colors.inputSurface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
-        paddingHorizontal: 12,
-        paddingVertical: 10,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.sm,
     },
     inputReadOnly: {
-        backgroundColor: '#F3F4F6',
-        color: '#52606D',
+        backgroundColor: tokens.colors.neutralSurface,
+        color: tokens.colors.disabledInputText,
     },
     textArea: {
         minHeight: 110,
@@ -899,111 +977,111 @@ const styles = StyleSheet.create({
     },
     toggleRow: {
         alignItems: 'center',
-        borderColor: '#EEF2F7',
+        borderColor: tokens.colors.fieldDivider,
         borderTopWidth: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingTop: 16,
-        marginTop: 16,
+        paddingTop: tokens.spacing.md,
+        marginTop: tokens.spacing.md,
     },
     toggleTextWrap: {
         flex: 1,
-        paddingRight: 12,
+        paddingRight: tokens.spacing.md,
     },
     toggleLabel: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '600',
     },
     toggleHint: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 11,
-        marginTop: 4,
+        marginTop: tokens.spacing.xs,
     },
     editActions: {
         flexDirection: 'row',
-        gap: 12,
-        padding: 16,
-        paddingTop: 8,
+        gap: tokens.spacing.md,
+        padding: tokens.spacing.md,
+        paddingTop: tokens.spacing.sm,
     },
     cancelButton: {
         alignItems: 'center',
-        backgroundColor: '#F3F4F6',
-        borderRadius: 12,
+        backgroundColor: tokens.colors.neutralSurface,
+        borderRadius: tokens.radii.lg,
         flex: 1,
-        paddingVertical: 12,
+        paddingVertical: tokens.spacing.md,
     },
     cancelButtonText: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 13,
         fontWeight: '700',
     },
     saveButton: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 12,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
         flex: 1,
-        paddingVertical: 12,
+        paddingVertical: tokens.spacing.md,
     },
     saveButtonText: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 13,
         fontWeight: '700',
     },
     priceCard: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#E5E7EB',
-        borderRadius: 14,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.subtleBorder,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
-        marginTop: 18,
-        paddingHorizontal: 16,
-        paddingVertical: 14,
+        marginTop: tokens.spacing.md,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.md,
     },
     priceLabel: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 12,
         fontWeight: '600',
     },
     priceText: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 28,
         fontWeight: '700',
-        marginTop: 6,
+        marginTop: tokens.spacing.xs,
     },
     section: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#E5E7EB',
-        borderRadius: 14,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.subtleBorder,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
-        marginTop: 18,
-        padding: 16,
+        marginTop: tokens.spacing.md,
+        padding: tokens.spacing.md,
     },
     sectionTitle: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 16,
         fontWeight: '700',
-        marginBottom: 12,
+        marginBottom: tokens.spacing.md,
     },
     infoRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: 8,
+        paddingVertical: tokens.spacing.sm,
     },
     infoLabel: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 14,
         fontWeight: '600',
     },
     infoValue: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '700',
         flex: 1,
-        marginLeft: 16,
+        marginLeft: tokens.spacing.md,
         textAlign: 'right',
     },
     description: {
-        color: '#374151',
+        color: tokens.colors.bodyText,
         fontSize: 14,
         lineHeight: 22,
     },

@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { tokens } from '@/shared/theme/tokens';
 
 export type NavigationItem = 'Perfil' | 'Anunciar' | 'Meus anúncios' | 'Explorar';
 
@@ -32,11 +33,14 @@ export default function BottomNavBar({ activeItem, onItemPress }: BottomNavBarPr
                         style={styles.navItem}
                         onPress={() => onItemPress(item.label)}
                         activeOpacity={0.75}
+                        accessibilityRole="tab"
+                        accessibilityLabel={item.label}
+                        accessibilityState={{ selected: isActive }}
                     >
                         <MaterialCommunityIcons
                             name={item.icon}
                             size={23}
-                            color={isActive ? '#E85D04' : '#8A8A8A'}
+                            color={isActive ? tokens.colors.action : tokens.colors.secondaryText}
                         />
                         <Text style={[styles.navLabel, isActive && styles.activeNavLabel]}>
                             {item.label}
@@ -51,14 +55,14 @@ export default function BottomNavBar({ activeItem, onItemPress }: BottomNavBarPr
 const styles = StyleSheet.create({
     navbar: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderTopColor: '#E5E7EB',
+        backgroundColor: tokens.colors.surface,
+        borderTopColor: tokens.colors.subtleBorder,
         borderTopWidth: 1,
         flexDirection: 'row',
         justifyContent: 'space-around',
         minHeight: 76,
-        paddingHorizontal: 6,
-        paddingTop: 7,
+        paddingHorizontal: tokens.spacing.xs,
+        paddingTop: tokens.spacing.xs,
     },
     navItem: {
         alignItems: 'center',
@@ -67,13 +71,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     navLabel: {
-        color: '#8A8A8A',
+        color: tokens.colors.secondaryText,
         fontSize: 11,
         fontWeight: '600',
-        marginTop: 5,
+        marginTop: tokens.spacing.xs,
         textAlign: 'center',
     },
     activeNavLabel: {
-        color: '#E85D04',
+        color: tokens.colors.action,
     },
 });

@@ -1,5 +1,7 @@
 import AdDetailsForm, { type ConservationState } from '@/components/anuncio/AdDetailsForm';
 import { goBackOrHome } from '@/utils/navigation';
+import CabecalhoDoPasso from '@/shared/components/CabecalhoDoPasso';
+import { tokens } from '@/shared/theme/tokens';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -57,30 +59,12 @@ export default function AnuncioDetalhes() {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-                <View style={styles.header}>
-                    <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={() => goBackOrHome(router, { usuarioId })}
-                        activeOpacity={0.75}
-                        accessibilityLabel="Voltar"
-                    >
-                        <MaterialCommunityIcons name="arrow-left" size={24} color="#1F3D4A" />
-                    </TouchableOpacity>
-                    <View style={styles.headerCopy}>
-                        <Text style={styles.eyebrow}>NOVO ANÚNCIO</Text>
-                        <Text style={styles.title}>Detalhes da ferramenta</Text>
-                    </View>
-                    <View style={styles.stepBadge}>
-                        <Text style={styles.stepText}>2/4</Text>
-                    </View>
-                </View>
-
-                <View style={styles.progressRow}>
-                    <View style={styles.completedProgress} />
-                    <View style={styles.activeProgress} />
-                    <View style={styles.progress} />
-                    <View style={styles.progress} />
-                </View>
+                <CabecalhoDoPasso
+                    title="Detalhes da ferramenta"
+                    currentStep={2}
+                    totalSteps={6}
+                    onBack={() => goBackOrHome(router, { usuarioId })}
+                />
 
                 <Text style={styles.instruction}>Apresente sua ferramenta para quem vai alugar.</Text>
 
@@ -103,9 +87,11 @@ export default function AnuncioDetalhes() {
                     style={styles.continueButton}
                     onPress={handleContinue}
                     activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Continuar para adicionar fotos"
                 >
                     <Text style={styles.continueButtonText}>CONTINUAR</Text>
-                    <MaterialCommunityIcons name="arrow-right" size={20} color="#FFFFFF" />
+                    <MaterialCommunityIcons name="arrow-right" size={20} color={tokens.colors.onAction} />
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
@@ -114,95 +100,32 @@ export default function AnuncioDetalhes() {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#F5F7FA',
+        backgroundColor: tokens.colors.background,
         flex: 1,
     },
     content: {
-        paddingBottom: 32,
-        paddingHorizontal: 24,
-        paddingTop: 20,
-    },
-    header: {
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginBottom: 24,
-    },
-    backButton: {
-        alignItems: 'center',
-        height: 44,
-        justifyContent: 'center',
-        marginRight: 12,
-        width: 44,
-    },
-    headerCopy: {
-        flex: 1,
-    },
-    eyebrow: {
-        color: '#E85D04',
-        fontSize: 12,
-        fontWeight: '700',
-        letterSpacing: 1,
-        marginBottom: 6,
-    },
-    title: {
-        color: '#1F3D4A',
-        fontSize: 23,
-        fontWeight: 'bold',
-    },
-    stepBadge: {
-        alignItems: 'center',
-        backgroundColor: '#FFF1E8',
-        borderRadius: 16,
-        height: 40,
-        justifyContent: 'center',
-        width: 40,
-    },
-    stepText: {
-        color: '#E85D04',
-        fontSize: 12,
-        fontWeight: '700',
-    },
-    progressRow: {
-        flexDirection: 'row',
-        gap: 6,
-        marginBottom: 28,
-    },
-    completedProgress: {
-        backgroundColor: '#E85D04',
-        borderRadius: 4,
-        flex: 1,
-        height: 5,
-    },
-    activeProgress: {
-        backgroundColor: '#E85D04',
-        borderRadius: 4,
-        flex: 1,
-        height: 5,
-    },
-    progress: {
-        backgroundColor: '#D5DCE3',
-        borderRadius: 4,
-        flex: 1,
-        height: 5,
+        paddingBottom: tokens.spacing.lg + tokens.spacing.sm,
+        paddingHorizontal: tokens.spacing.lg,
+        paddingTop: tokens.spacing.md,
     },
     instruction: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 15,
-        marginBottom: 20,
+        marginBottom: tokens.spacing.md,
     },
     continueButton: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
         flexDirection: 'row',
         justifyContent: 'center',
-        marginTop: 28,
+        marginTop: tokens.spacing.lg,
         minHeight: 52,
     },
     continueButtonText: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 13,
         fontWeight: '700',
-        marginRight: 10,
+        marginRight: tokens.spacing.sm,
     },
 });

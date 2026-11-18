@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { tokens } from '@/shared/theme/tokens';
 
 export type ConservationState = 'Novo' | 'Excelente' | 'Bom' | 'Usado';
 
@@ -48,11 +49,13 @@ export default function AdDetailsForm({
                 </View>
                 <TextInput
                     style={styles.input}
+                    accessibilityLabel="Título"
+                    accessibilityRole="text"
                     value={title}
                     onChangeText={onTitleChange}
                     maxLength={80}
                     placeholder="Ex.: Furadeira de impacto"
-                    placeholderTextColor="#9AA3AD"
+                    placeholderTextColor={tokens.colors.placeholderText}
                 />
             </View>
 
@@ -61,27 +64,31 @@ export default function AdDetailsForm({
                     <Text style={styles.label}>Marca</Text>
                     <TextInput
                         style={styles.input}
+                        accessibilityLabel="Marca"
+                        accessibilityRole="text"
                         value={brand}
                         onChangeText={onBrandChange}
                         placeholder="Ex.: Bosch"
-                        placeholderTextColor="#9AA3AD"
+                        placeholderTextColor={tokens.colors.placeholderText}
                     />
                 </View>
                 <View style={styles.halfField}>
                     <Text style={styles.label}>Modelo</Text>
                     <TextInput
                         style={styles.input}
+                        accessibilityLabel="Modelo"
+                        accessibilityRole="text"
                         value={model}
                         onChangeText={onModelChange}
                         placeholder="Ex.: GSB 13 RE"
-                        placeholderTextColor="#9AA3AD"
+                        placeholderTextColor={tokens.colors.placeholderText}
                     />
                 </View>
             </View>
 
             <View style={styles.fieldGroup}>
                 <Text style={styles.label}>Estado de conservação</Text>
-                <View style={styles.conservationGrid}>
+                <View style={styles.conservationGrid} accessibilityRole="radiogroup">
                     {conservationOptions.map((option) => {
                         const isSelected = conservation === option.label;
 
@@ -91,11 +98,14 @@ export default function AdDetailsForm({
                                 style={[styles.conservationCard, isSelected && styles.selectedCard]}
                                 onPress={() => onConservationChange(option.label)}
                                 activeOpacity={0.8}
+                                accessibilityRole="radio"
+                                accessibilityLabel={option.label}
+                                accessibilityState={{ selected: isSelected }}
                             >
                                 <MaterialCommunityIcons
                                     name={option.icon}
                                     size={22}
-                                    color={isSelected ? '#E85D04' : '#6B7280'}
+                                    color={isSelected ? tokens.colors.action : tokens.colors.supportingText}
                                 />
                                 <Text style={[styles.conservationText, isSelected && styles.selectedText]}>
                                     {option.label}
@@ -113,13 +123,15 @@ export default function AdDetailsForm({
                 </View>
                 <TextInput
                     style={[styles.input, styles.textArea]}
+                    accessibilityLabel="Descrição"
+                    accessibilityRole="text"
                     value={description}
                     onChangeText={onDescriptionChange}
                     maxLength={500}
                     multiline
                     textAlignVertical="top"
                     placeholder="Conte os detalhes importantes da ferramenta"
-                    placeholderTextColor="#9AA3AD"
+                    placeholderTextColor={tokens.colors.placeholderText}
                 />
             </View>
 
@@ -130,10 +142,12 @@ export default function AdDetailsForm({
                 </View>
                 <TextInput
                     style={[styles.input, styles.textAreaSmall]}
+                    accessibilityLabel="Itens inclusos, opcional"
+                    accessibilityRole="text"
                     value={includedItems}
                     onChangeText={onIncludedItemsChange}
                     placeholder="Ex.: maleta, brocas e manual"
-                    placeholderTextColor="#9AA3AD"
+                    placeholderTextColor={tokens.colors.placeholderText}
                     multiline
                     textAlignVertical="top"
                 />
@@ -145,10 +159,10 @@ export default function AdDetailsForm({
 
 const styles = StyleSheet.create({
     form: {
-        gap: 20,
+        gap: tokens.spacing.md,
     },
     fieldGroup: {
-        gap: 8,
+        gap: tokens.spacing.sm,
     },
     labelRow: {
         alignItems: 'center',
@@ -156,72 +170,72 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     label: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '700',
     },
     counter: {
-        color: '#8A8A8A',
+        color: tokens.colors.secondaryText,
         fontSize: 12,
     },
     optional: {
-        color: '#8A8A8A',
+        color: tokens.colors.secondaryText,
         fontSize: 12,
     },
     input: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 15,
         minHeight: 50,
-        paddingHorizontal: 14,
+        paddingHorizontal: tokens.spacing.md,
     },
     row: {
         flexDirection: 'row',
-        gap: 12,
+        gap: tokens.spacing.md,
     },
     halfField: {
         flex: 1,
-        gap: 8,
+        gap: tokens.spacing.sm,
     },
     conservationGrid: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        gap: 10,
+        gap: tokens.spacing.sm,
     },
     conservationCard: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flex: 1,
-        gap: 6,
+        gap: tokens.spacing.xs,
         minWidth: '46%',
-        paddingHorizontal: 8,
-        paddingVertical: 14,
+        paddingHorizontal: tokens.spacing.sm,
+        paddingVertical: tokens.spacing.md,
     },
     selectedCard: {
-        backgroundColor: '#FFF1E8',
-        borderColor: '#E85D04',
+        backgroundColor: tokens.colors.subtleSurface,
+        borderColor: tokens.colors.action,
         borderWidth: 2,
     },
     conservationText: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 13,
         fontWeight: '600',
     },
     selectedText: {
-        color: '#E85D04',
+        color: tokens.colors.action,
     },
     textArea: {
         minHeight: 120,
-        paddingTop: 14,
+        paddingTop: tokens.spacing.md,
     },
     textAreaSmall: {
         minHeight: 82,
-        paddingTop: 14,
+        paddingTop: tokens.spacing.md,
     },
 });
