@@ -1,5 +1,6 @@
 import { listarFerramentas, type Ferramenta } from '@/services/api';
 import { goBackOrHome } from '@/utils/navigation';
+import { tokens } from '@/shared/theme/tokens';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -56,7 +57,7 @@ export default function MeusAnuncios() {
                     activeOpacity={0.75}
                     accessibilityLabel="Voltar"
                 >
-                    <MaterialCommunityIcons name="arrow-left" size={24} color="#1F3D4A" />
+                    <MaterialCommunityIcons name="arrow-left" size={24} color={tokens.colors.text} />
                 </TouchableOpacity>
 
                 <View style={styles.headerCopy}>
@@ -69,18 +70,18 @@ export default function MeusAnuncios() {
                     onPress={() => router.push({ pathname: '/anuncio', params: { usuarioId } } as Href)}
                     activeOpacity={0.8}
                 >
-                    <MaterialCommunityIcons name="plus" size={20} color="#FFFFFF" />
+                    <MaterialCommunityIcons name="plus" size={20} color={tokens.colors.onAction} />
                 </TouchableOpacity>
             </View>
 
             {loading ? (
                 <View style={styles.centeredBox}>
-                    <ActivityIndicator size="large" color="#E85D04" />
+                    <ActivityIndicator size="large" color={tokens.colors.action} />
                     <Text style={styles.loadingText}>Carregando seus anúncios...</Text>
                 </View>
             ) : error ? (
                 <View style={styles.centeredBox}>
-                    <MaterialCommunityIcons name="alert-circle-outline" size={42} color="#E85D04" />
+                    <MaterialCommunityIcons name="alert-circle-outline" size={42} color={tokens.colors.action} />
                     <Text style={styles.emptyTitle}>Não foi possível carregar</Text>
                     <Text style={styles.emptySubtitle}>{error}</Text>
                     <TouchableOpacity
@@ -92,7 +93,7 @@ export default function MeusAnuncios() {
                 </View>
             ) : tools.length === 0 ? (
                 <View style={styles.centeredBox}>
-                    <MaterialCommunityIcons name="clipboard-text-outline" size={52} color="#E85D04" />
+                    <MaterialCommunityIcons name="clipboard-text-outline" size={52} color={tokens.colors.action} />
                     <Text style={styles.emptyTitle}>Você ainda não tem anúncios</Text>
                     <Text style={styles.emptySubtitle}>
                         Publique sua primeira ferramenta e ela aparecerá aqui.
@@ -147,7 +148,7 @@ export default function MeusAnuncios() {
                                     />
                                 ) : (
                                     <View style={[styles.cardImage, styles.cardImagePlaceholder]}>
-                                        <MaterialCommunityIcons name="wrench-outline" size={28} color="#E85D04" />
+                                        <MaterialCommunityIcons name="wrench-outline" size={28} color={tokens.colors.action} />
                                     </View>
                                 )}
 
@@ -173,41 +174,41 @@ export default function MeusAnuncios() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F7FA',
+        backgroundColor: tokens.colors.background,
     },
     header: {
         alignItems: 'center',
         flexDirection: 'row',
-        paddingHorizontal: 20,
-        paddingTop: 18,
-        paddingBottom: 12,
+        paddingHorizontal: tokens.spacing.md,
+        paddingTop: tokens.spacing.md,
+        paddingBottom: tokens.spacing.md,
     },
     backButton: {
         alignItems: 'center',
         height: 44,
         justifyContent: 'center',
-        marginRight: 12,
+        marginRight: tokens.spacing.md,
         width: 44,
     },
     headerCopy: {
         flex: 1,
     },
     eyebrow: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 12,
         fontWeight: '700',
         letterSpacing: 1,
-        marginBottom: 4,
+        marginBottom: tokens.spacing.xs,
     },
     title: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 22,
         fontWeight: '700',
     },
     addButton: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
         height: 40,
         justifyContent: 'center',
         width: 40,
@@ -216,116 +217,116 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flex: 1,
         justifyContent: 'center',
-        paddingHorizontal: 28,
+        paddingHorizontal: tokens.spacing.lg + tokens.spacing.xs,
     },
     loadingText: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 15,
-        marginTop: 12,
+        marginTop: tokens.spacing.md,
     },
     emptyTitle: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 20,
         fontWeight: '700',
-        marginTop: 16,
-        marginBottom: 8,
+        marginTop: tokens.spacing.md,
+        marginBottom: tokens.spacing.sm,
         textAlign: 'center',
     },
     emptySubtitle: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 15,
         lineHeight: 22,
         textAlign: 'center',
     },
     primaryButton: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
-        marginTop: 20,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
+        marginTop: tokens.spacing.md,
         minHeight: 48,
         justifyContent: 'center',
-        paddingHorizontal: 20,
+        paddingHorizontal: tokens.spacing.md,
     },
     primaryButtonText: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 14,
         fontWeight: '700',
     },
     retryButton: {
         alignItems: 'center',
-        backgroundColor: '#1F3D4A',
-        borderRadius: 10,
-        marginTop: 20,
+        backgroundColor: tokens.colors.text,
+        borderRadius: tokens.radii.lg,
+        marginTop: tokens.spacing.md,
         minHeight: 46,
         justifyContent: 'center',
-        paddingHorizontal: 20,
+        paddingHorizontal: tokens.spacing.md,
     },
     retryButtonText: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 14,
         fontWeight: '700',
     },
     listContent: {
-        paddingHorizontal: 18,
-        paddingBottom: 24,
+        paddingHorizontal: tokens.spacing.md,
+        paddingBottom: tokens.spacing.lg,
     },
     card: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#E5E7EB',
-        borderRadius: 14,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.subtleBorder,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flexDirection: 'row',
-        marginBottom: 16,
+        marginBottom: tokens.spacing.md,
         overflow: 'hidden',
     },
     cardImage: {
-        backgroundColor: '#E5E7EB',
+        backgroundColor: tokens.colors.subtleBorder,
         height: 122,
         width: 120,
     },
     cardImagePlaceholder: {
         alignItems: 'center',
-        backgroundColor: '#FFF1E8',
+        backgroundColor: tokens.colors.subtleSurface,
         justifyContent: 'center',
     },
     cardBody: {
         flex: 1,
-        padding: 14,
+        padding: tokens.spacing.md,
     },
     cardTitle: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 17,
         fontWeight: '700',
     },
     cardMeta: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 13,
-        marginTop: 4,
+        marginTop: tokens.spacing.xs,
     },
     cardPrice: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 16,
         fontWeight: '700',
-        marginTop: 10,
+        marginTop: tokens.spacing.sm,
     },
     rowInfo: {
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 12,
+        marginTop: tokens.spacing.md,
     },
     badge: {
-        backgroundColor: '#E8F7EE',
-        borderRadius: 999,
-        color: '#1C7C54',
+        backgroundColor: tokens.colors.listingStatusSurface,
+        borderRadius: tokens.radii.pill,
+        color: tokens.colors.listingStatusText,
         fontSize: 11,
         fontWeight: '700',
         overflow: 'hidden',
-        paddingHorizontal: 8,
-        paddingVertical: 5,
+        paddingHorizontal: tokens.spacing.sm,
+        paddingVertical: tokens.spacing.xs,
     },
     status: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 11,
         fontWeight: '600',
         textTransform: 'capitalize',
