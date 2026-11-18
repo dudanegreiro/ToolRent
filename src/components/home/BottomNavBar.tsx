@@ -33,6 +33,9 @@ export default function BottomNavBar({ activeItem, onItemPress }: BottomNavBarPr
                         style={styles.navItem}
                         onPress={() => onItemPress(item.label)}
                         activeOpacity={0.75}
+                        accessibilityRole="tab"
+                        accessibilityLabel={item.label}
+                        accessibilityState={{ selected: isActive }}
                     >
                         <MaterialCommunityIcons
                             name={item.icon}

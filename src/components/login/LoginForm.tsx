@@ -39,6 +39,8 @@ export default function LoginForm({
 
       <TextInput
         style={styles.input}
+        accessibilityLabel="E-mail"
+        accessibilityRole="text"
         placeholder="Digite seu e-mail"
         placeholderTextColor={tokens.colors.placeholderMuted}
         value={email}
@@ -68,6 +70,8 @@ export default function LoginForm({
       <TouchableOpacity
         style={styles.forgotContainer}
         onPress={onForgotPassword}
+        accessibilityRole="button"
+        accessibilityLabel="Esqueci minha senha"
       >
         <Text style={styles.forgotText}>Esqueci minha senha</Text>
       </TouchableOpacity>
@@ -77,6 +81,9 @@ export default function LoginForm({
         onPress={onLogin}
         disabled={loading}
         activeOpacity={0.8}
+        accessibilityRole="button"
+        accessibilityLabel={loading ? 'Entrando' : 'Entrar'}
+        accessibilityState={{ disabled: loading }}
       >
         <Text style={styles.loginButtonText}>
           {loading ? 'AGUARDE...' : 'ENTRAR'}

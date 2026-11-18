@@ -56,6 +56,7 @@ export default function MeusAnuncios() {
                     onPress={() => goBackOrHome(router, { usuarioId })}
                     activeOpacity={0.75}
                     accessibilityLabel="Voltar"
+                    accessibilityRole="button"
                 >
                     <MaterialCommunityIcons name="arrow-left" size={24} color={tokens.colors.text} />
                 </TouchableOpacity>
@@ -69,6 +70,8 @@ export default function MeusAnuncios() {
                     style={styles.addButton}
                     onPress={() => router.push({ pathname: '/anuncio', params: { usuarioId } } as Href)}
                     activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Criar anúncio"
                 >
                     <MaterialCommunityIcons name="plus" size={20} color={tokens.colors.onAction} />
                 </TouchableOpacity>
@@ -76,7 +79,12 @@ export default function MeusAnuncios() {
 
             {loading ? (
                 <View style={styles.centeredBox}>
-                    <ActivityIndicator size="large" color={tokens.colors.action} />
+                    <ActivityIndicator
+                        size="large"
+                        color={tokens.colors.action}
+                        accessibilityLabel="Carregando seus anúncios"
+                        accessibilityRole="progressbar"
+                    />
                     <Text style={styles.loadingText}>Carregando seus anúncios...</Text>
                 </View>
             ) : error ? (
@@ -87,6 +95,8 @@ export default function MeusAnuncios() {
                     <TouchableOpacity
                         style={styles.retryButton}
                         onPress={() => router.replace({ pathname: '/meus-anuncios', params: { usuarioId } } as Href)}
+                        accessibilityRole="button"
+                        accessibilityLabel="Tentar carregar anúncios novamente"
                     >
                         <Text style={styles.retryButtonText}>Tentar novamente</Text>
                     </TouchableOpacity>
@@ -101,6 +111,8 @@ export default function MeusAnuncios() {
                     <TouchableOpacity
                         style={styles.primaryButton}
                         onPress={() => router.push({ pathname: '/anuncio', params: { usuarioId } } as Href)}
+                        accessibilityRole="button"
+                        accessibilityLabel="Anunciar ferramenta"
                     >
                         <Text style={styles.primaryButtonText}>Anunciar ferramenta</Text>
                     </TouchableOpacity>
@@ -139,6 +151,8 @@ export default function MeusAnuncios() {
                                     pathname: '/ferramenta-detalhes',
                                     params: toolParams,
                                 } as Href)}
+                                accessibilityRole="button"
+                                accessibilityLabel={`${tool.nome}, ${tool.marca} ${tool.modelo}. R$ ${Number(tool.preco_diaria).toFixed(2)} por dia. ${tool.disponibilidade ? 'Disponível' : 'Indisponível'}. Status: ${tool.status_aprovacao}. Abrir detalhes`}
                             >
                                 {cover ? (
                                     <Image

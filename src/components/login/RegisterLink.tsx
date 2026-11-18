@@ -8,7 +8,10 @@ export default function RegisterLink() {
       <Text style={styles.text}>Ainda não possui uma conta?</Text>
 
       <Link href="/cadastro" asChild>
-        <TouchableOpacity>
+        <TouchableOpacity
+          accessibilityRole="link"
+          accessibilityLabel="Criar conta"
+        >
           <Text style={styles.link}>Criar conta</Text>
         </TouchableOpacity>
       </Link>

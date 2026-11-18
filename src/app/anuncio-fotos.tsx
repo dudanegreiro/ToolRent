@@ -101,6 +101,10 @@ export default function AnuncioFotos() {
                             style={styles.photoCard}
                             onPress={() => void addPhoto(photo.id)}
                             activeOpacity={0.8}
+                            accessibilityRole="button"
+                            accessibilityLabel={photo.uri
+                                ? `Alterar ${photo.id === 0 ? 'foto de capa' : `foto ${photo.id + 1}`}`
+                                : `Adicionar ${photo.id === 0 ? 'foto de capa' : `foto ${photo.id + 1}`}`}
                         >
                             {photo.uri ? (
                                 <Image source={{ uri: photo.uri }} style={styles.photo} />
@@ -125,7 +129,13 @@ export default function AnuncioFotos() {
                     </View>
                 </View>
 
-                <TouchableOpacity style={styles.continueButton} onPress={handleContinue} activeOpacity={0.8}>
+                <TouchableOpacity
+                    style={styles.continueButton}
+                    onPress={handleContinue}
+                    activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Continuar para definir preços"
+                >
                     <Text style={styles.continueButtonText}>CONTINUAR</Text>
                     <MaterialCommunityIcons name="arrow-right" size={20} color={tokens.colors.onAction} />
                 </TouchableOpacity>

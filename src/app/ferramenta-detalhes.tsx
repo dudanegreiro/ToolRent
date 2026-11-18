@@ -92,6 +92,9 @@ function ToolImageGallery({
                             onPress={onPrevious}
                             disabled={!canGoPrevious}
                             activeOpacity={0.8}
+                            accessibilityRole="button"
+                            accessibilityLabel="Foto anterior"
+                            accessibilityState={{ disabled: !canGoPrevious }}
                         >
                             <MaterialCommunityIcons name="chevron-left" size={22} color={tokens.colors.onAction} />
                         </TouchableOpacity>
@@ -101,6 +104,9 @@ function ToolImageGallery({
                             onPress={onNext}
                             disabled={!canGoNext}
                             activeOpacity={0.8}
+                            accessibilityRole="button"
+                            accessibilityLabel="Próxima foto"
+                            accessibilityState={{ disabled: !canGoNext }}
                         >
                             <MaterialCommunityIcons name="chevron-right" size={22} color={tokens.colors.onAction} />
                         </TouchableOpacity>
@@ -115,6 +121,9 @@ function ToolImageGallery({
                             key={`${url}-${index}`}
                             activeOpacity={0.8}
                             onPress={() => onSelect(index)}
+                            accessibilityRole="button"
+                            accessibilityLabel={`Selecionar foto ${index + 1}`}
+                            accessibilityState={{ selected: selectedImageIndex === index }}
                         >
                             <Image
                                 source={{ uri: url }}
@@ -146,11 +155,23 @@ function OwnerActionButtons({
 
     return (
         <View style={styles.ownerActions}>
-            <TouchableOpacity style={styles.editButton} onPress={onEdit} activeOpacity={0.85}>
+            <TouchableOpacity
+                style={styles.editButton}
+                onPress={onEdit}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel="Editar anúncio"
+            >
                 <MaterialCommunityIcons name="pencil" size={18} color={tokens.colors.onAction} />
                 <Text style={styles.editButtonText}>Editar</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteButton} onPress={onDelete} activeOpacity={0.85}>
+            <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={onDelete}
+                activeOpacity={0.85}
+                accessibilityRole="button"
+                accessibilityLabel="Excluir anúncio"
+            >
                 <MaterialCommunityIcons name="delete-outline" size={18} color={tokens.colors.onAction} />
                 <Text style={styles.deleteButtonText}>Excluir</Text>
             </TouchableOpacity>
@@ -193,6 +214,8 @@ function EditToolForm({
                         value={form.nome}
                         onChangeText={(value) => onChange('nome', value)}
                         style={styles.input}
+                        accessibilityLabel="Título do anúncio"
+                        accessibilityRole="text"
                         placeholder="Ex: Furadeira sem fio"
                     />
                 </View>
@@ -204,6 +227,8 @@ function EditToolForm({
                             value={form.marca}
                             onChangeText={(value) => onChange('marca', value)}
                             style={styles.input}
+                            accessibilityLabel="Marca"
+                            accessibilityRole="text"
                             placeholder="Bosch"
                         />
                     </View>
@@ -213,6 +238,8 @@ function EditToolForm({
                             value={form.modelo}
                             onChangeText={(value) => onChange('modelo', value)}
                             style={styles.input}
+                            accessibilityLabel="Modelo"
+                            accessibilityRole="text"
                             placeholder="GSR 12V"
                         />
                     </View>
@@ -224,6 +251,9 @@ function EditToolForm({
                         value={params.categoria_nome || 'Categoria'}
                         editable={false}
                         style={[styles.input, styles.inputReadOnly]}
+                        accessibilityLabel="Categoria"
+                        accessibilityRole="text"
+                        accessibilityState={{ disabled: true }}
                     />
                 </View>
             </View>
@@ -236,6 +266,8 @@ function EditToolForm({
                         value={form.estado_conservacao}
                         onChangeText={(value) => onChange('estado_conservacao', value)}
                         style={styles.input}
+                        accessibilityLabel="Estado de conservação"
+                        accessibilityRole="text"
                         placeholder="Novo, seminovo, usado"
                     />
                 </View>
@@ -247,6 +279,8 @@ function EditToolForm({
                         onChangeText={(value) => onChange('descricao', value)}
                         multiline
                         style={[styles.input, styles.textArea]}
+                        accessibilityLabel="Descrição"
+                        accessibilityRole="text"
                         placeholder="Conte detalhes da ferramenta, acessórios e uso."
                     />
                 </View>
@@ -257,6 +291,8 @@ function EditToolForm({
                         value={form.itens_inclusos}
                         onChangeText={(value) => onChange('itens_inclusos', value)}
                         style={styles.input}
+                        accessibilityLabel="Itens inclusos"
+                        accessibilityRole="text"
                         placeholder="Carregador, maleta, empunhadeira"
                     />
                 </View>
@@ -272,6 +308,8 @@ function EditToolForm({
                             onChangeText={(value) => onChange('preco_diaria', value)}
                             keyboardType="decimal-pad"
                             style={styles.input}
+                            accessibilityLabel="Preço da diária em reais"
+                            accessibilityRole="text"
                             placeholder="120"
                         />
                     </View>
@@ -282,6 +320,8 @@ function EditToolForm({
                             onChangeText={(value) => onChange('preco_semanal', value)}
                             keyboardType="decimal-pad"
                             style={styles.input}
+                            accessibilityLabel="Preço semanal em reais"
+                            accessibilityRole="text"
                             placeholder="650"
                         />
                     </View>
@@ -294,6 +334,8 @@ function EditToolForm({
                         onChangeText={(value) => onChange('periodo_minimo', value)}
                         keyboardType="number-pad"
                         style={styles.input}
+                        accessibilityLabel="Período mínimo em dias"
+                        accessibilityRole="text"
                         placeholder="1"
                     />
                 </View>
@@ -304,6 +346,8 @@ function EditToolForm({
                         value={form.politica_cancelamento}
                         onChangeText={(value) => onChange('politica_cancelamento', value)}
                         style={styles.input}
+                        accessibilityLabel="Política de cancelamento"
+                        accessibilityRole="text"
                         placeholder="Flexível, Moderada ou Rigorosa"
                     />
                 </View>
@@ -316,7 +360,13 @@ function EditToolForm({
                         <Text style={styles.toggleLabel}>Exige caução</Text>
                         <Text style={styles.toggleHint}>Reforça a segurança para o aluguel.</Text>
                     </View>
-                    <Switch value={form.exige_caucao} onValueChange={(value) => onChange('exige_caucao', value)} />
+                    <Switch
+                        value={form.exige_caucao}
+                        onValueChange={(value) => onChange('exige_caucao', value)}
+                        accessibilityLabel="Exige caução"
+                        accessibilityRole="switch"
+                        accessibilityState={{ checked: form.exige_caucao }}
+                    />
                 </View>
 
                 <View style={styles.toggleRow}>
@@ -324,7 +374,13 @@ function EditToolForm({
                         <Text style={styles.toggleLabel}>Entrega disponível</Text>
                         <Text style={styles.toggleHint}>Você pode entregar a ferramenta.</Text>
                     </View>
-                    <Switch value={form.entrega} onValueChange={(value) => onChange('entrega', value)} />
+                    <Switch
+                        value={form.entrega}
+                        onValueChange={(value) => onChange('entrega', value)}
+                        accessibilityLabel="Entrega disponível"
+                        accessibilityRole="switch"
+                        accessibilityState={{ checked: form.entrega }}
+                    />
                 </View>
 
                 <View style={styles.toggleRow}>
@@ -332,15 +388,35 @@ function EditToolForm({
                         <Text style={styles.toggleLabel}>Disponível para aluguel</Text>
                         <Text style={styles.toggleHint}>Anúncio visível para outros usuários.</Text>
                     </View>
-                    <Switch value={form.disponibilidade} onValueChange={(value) => onChange('disponibilidade', value)} />
+                    <Switch
+                        value={form.disponibilidade}
+                        onValueChange={(value) => onChange('disponibilidade', value)}
+                        accessibilityLabel="Disponível para aluguel"
+                        accessibilityRole="switch"
+                        accessibilityState={{ checked: form.disponibilidade }}
+                    />
                 </View>
             </View>
 
             <View style={styles.editActions}>
-                <TouchableOpacity style={styles.cancelButton} onPress={onCancel} activeOpacity={0.8}>
+                <TouchableOpacity
+                    style={styles.cancelButton}
+                    onPress={onCancel}
+                    activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Cancelar edição"
+                >
                     <Text style={styles.cancelButtonText}>Cancelar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.saveButton} onPress={onSave} activeOpacity={0.8} disabled={saving}>
+                <TouchableOpacity
+                    style={styles.saveButton}
+                    onPress={onSave}
+                    activeOpacity={0.8}
+                    disabled={saving}
+                    accessibilityRole="button"
+                    accessibilityLabel={saving ? 'Salvando alterações' : 'Salvar alterações'}
+                    accessibilityState={{ disabled: saving }}
+                >
                     <Text style={styles.saveButtonText}>{saving ? 'Salvando...' : 'Salvar alterações'}</Text>
                 </TouchableOpacity>
             </View>
@@ -646,6 +722,7 @@ export default function FerramentaDetalhes() {
                         style={styles.backButton}
                         onPress={() => goBackOrHome(router, { usuarioId: params.usuario_id })}
                         accessibilityLabel="Voltar"
+                        accessibilityRole="button"
                         activeOpacity={0.75}
                     >
                         <MaterialCommunityIcons name="arrow-left" size={24} color={tokens.colors.text} />

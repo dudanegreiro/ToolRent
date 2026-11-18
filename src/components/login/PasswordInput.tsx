@@ -20,6 +20,8 @@ export default function PasswordInput({
     <View style={styles.container}>
       <TextInput
         style={styles.input}
+        accessibilityLabel="Senha"
+        accessibilityRole="text"
         placeholder="Digite sua senha"
         placeholderTextColor={tokens.colors.placeholderMuted}
         value={value}
@@ -36,6 +38,9 @@ export default function PasswordInput({
         onPress={onToggleShowPassword}
         style={styles.showPasswordButton}
         hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+        accessibilityRole="button"
+        accessibilityLabel={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
+        accessibilityState={{ expanded: showPassword }}
       >
         <Text style={styles.showPasswordText}>
           {showPassword ? 'Ocultar' : 'Mostrar'}

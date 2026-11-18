@@ -78,6 +78,11 @@ export default function Anuncio() {
                             },
                         } as Href)}
                         activeOpacity={0.8}
+                        accessibilityRole="button"
+                        accessibilityLabel={selectedCategoryId === null
+                            ? 'Selecione uma categoria para continuar'
+                            : 'Continuar para os detalhes'}
+                        accessibilityState={{ disabled: selectedCategoryId === null }}
                     >
                         {selectedCategoryId === null ? (
                             <Text style={styles.disabledButtonText}>SELECIONE UMA CATEGORIA</Text>

@@ -43,7 +43,10 @@ export default function Cadastro() {
             </Text>
 
             <Link href="/login" asChild>
-              <TouchableOpacity>
+              <TouchableOpacity
+                accessibilityRole="link"
+                accessibilityLabel="Entrar"
+              >
                 <Text style={styles.loginLink}>
                   Entrar
                 </Text>

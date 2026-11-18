@@ -50,6 +50,8 @@ export default function PriceForm({
                         <Text style={styles.currency}>R$</Text>
                         <TextInput
                             style={styles.input}
+                            accessibilityLabel="Preço da diária em reais"
+                            accessibilityRole="text"
                             value={dailyPrice}
                             onChangeText={onDailyPriceChange}
                             keyboardType="decimal-pad"
@@ -64,6 +66,9 @@ export default function PriceForm({
                         <Text style={styles.currency}>R$</Text>
                         <TextInput
                             style={[styles.input, styles.calculatedInput]}
+                            accessibilityLabel="Preço semanal calculado em reais"
+                            accessibilityRole="text"
+                            accessibilityState={{ disabled: true }}
                             value={weeklyPrice > 0 ? weeklyPrice.toFixed(2).replace('.', ',') : ''}
                             editable={false}
                             placeholder="Calculado"
@@ -87,13 +92,16 @@ export default function PriceForm({
 
             <View style={styles.section}>
                 <Text style={styles.label}>Período mínimo de aluguel</Text>
-                <View style={styles.optionsRow}>
+                <View style={styles.optionsRow} accessibilityRole="radiogroup">
                     {[1, 3, 7].map((period) => (
                         <TouchableOpacity
                             key={period}
                             style={[styles.periodOption, minimumPeriod === period && styles.selectedOption]}
                             onPress={() => onMinimumPeriodChange(period as MinimumPeriod)}
                             activeOpacity={0.8}
+                            accessibilityRole="radio"
+                            accessibilityLabel={`Período mínimo: ${period} ${period === 1 ? 'dia' : 'dias'}`}
+                            accessibilityState={{ selected: minimumPeriod === period }}
                         >
                             <Text style={[styles.optionValue, minimumPeriod === period && styles.selectedText]}>
                                 {period}
@@ -112,6 +120,9 @@ export default function PriceForm({
                     <Text style={styles.switchHint}>Solicitar um valor de segurança ao locatário</Text>
                 </View>
                 <Switch
+                    accessibilityLabel="Exigir caução"
+                    accessibilityRole="switch"
+                    accessibilityState={{ checked: depositEnabled }}
                     value={depositEnabled}
                     onValueChange={onDepositChange}
                     trackColor={{ false: tokens.colors.border, true: tokens.colors.actionTrack }}
@@ -121,7 +132,7 @@ export default function PriceForm({
 
             <View style={styles.section}>
                 <Text style={styles.label}>Política de cancelamento</Text>
-                <View style={styles.policyList}>
+                <View style={styles.policyList} accessibilityRole="radiogroup">
                     {policies.map((policy) => {
                         const isSelected = cancellationPolicy === policy.label;
 
@@ -131,6 +142,9 @@ export default function PriceForm({
                                 style={[styles.policyCard, isSelected && styles.selectedPolicy]}
                                 onPress={() => onCancellationPolicyChange(policy.label)}
                                 activeOpacity={0.8}
+                                accessibilityRole="radio"
+                                accessibilityLabel={`${policy.label}. ${policy.description}`}
+                                accessibilityState={{ selected: isSelected }}
                             >
                                 <View style={[styles.radio, isSelected && styles.selectedRadio]}>
                                     {isSelected && <View style={styles.radioDot} />}

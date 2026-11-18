@@ -156,6 +156,8 @@ export default function CadastroForm() {
                     <Text style={styles.label}>Nome Completo</Text>
                     <TextInput
                         style={styles.input}
+                        accessibilityLabel="Nome completo"
+                        accessibilityRole="text"
                         placeholder="Digite seu nome"
                         value={nome}
                         onChangeText={setNome}
@@ -165,6 +167,8 @@ export default function CadastroForm() {
                     <Text style={styles.label}>E-mail</Text>
                     <TextInput
                         style={styles.input}
+                        accessibilityLabel="E-mail"
+                        accessibilityRole="text"
                         placeholder="Digite seu e-mail"
                         placeholderTextColor={tokens.colors.placeholderMuted}
                         value={email}
@@ -178,6 +182,8 @@ export default function CadastroForm() {
                             <Text style={styles.label}>Telefone</Text>
                             <TextInput
                                 style={[styles.input, styles.inputTel]}
+                                accessibilityLabel="Telefone"
+                                accessibilityRole="text"
                                 placeholder="(11) 99999-9999"
                                 placeholderTextColor={tokens.colors.placeholderMuted}
                                 value={telefone}
@@ -190,6 +196,8 @@ export default function CadastroForm() {
                             <Text style={styles.label}>Cpf</Text>
                             <TextInput
                                 style={[styles.input, styles.inputTel]}
+                                accessibilityLabel="CPF"
+                                accessibilityRole="text"
                                 placeholder='000.000.000-00'
                                 placeholderTextColor={tokens.colors.placeholderMuted}
                                 value={cpf}
@@ -205,6 +213,8 @@ export default function CadastroForm() {
                     <Text style={styles.label}>Senha</Text>
                     <TextInput
                         style={styles.input}
+                        accessibilityLabel="Senha"
+                        accessibilityRole="text"
                         placeholder="Digite sua senha"
                         placeholderTextColor={tokens.colors.placeholderMuted}
                         value={senha}
@@ -215,6 +225,8 @@ export default function CadastroForm() {
                     <Text style={styles.label}>Confirmar senha</Text>
                     <TextInput
                         style={styles.input}
+                        accessibilityLabel="Confirmar senha"
+                        accessibilityRole="text"
                         placeholder="Confirme sua senha"
                         placeholderTextColor={tokens.colors.placeholderMuted}
                         value={confirmSenha}
@@ -230,6 +242,9 @@ export default function CadastroForm() {
                         style={[styles.button, styles.backButton]}
                         onPress={() => setEtapa(1)}
                         disabled={carregando}
+                        accessibilityRole="button"
+                        accessibilityLabel="Voltar para a etapa anterior"
+                        accessibilityState={{ disabled: carregando }}
                     >
                         <Text style={styles.backButtonText}>VOLTAR</Text>
                     </TouchableOpacity>
@@ -239,6 +254,13 @@ export default function CadastroForm() {
                     style={styles.button}
                     onPress={handleCadastro}
                     disabled={carregando}
+                    accessibilityRole="button"
+                    accessibilityLabel={carregando
+                        ? 'Aguarde'
+                        : etapa === 1
+                            ? 'Continuar cadastro'
+                            : 'Criar conta'}
+                    accessibilityState={{ disabled: carregando }}
                 >
                     <Text style={styles.buttonText}>
                         {carregando

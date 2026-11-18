@@ -95,7 +95,13 @@ export default function AnuncioLocalizacao() {
                     pinScale={pinScale}
                 />
 
-                <TouchableOpacity style={styles.continueButton} onPress={handleContinue} activeOpacity={0.8}>
+                <TouchableOpacity
+                    style={styles.continueButton}
+                    onPress={handleContinue}
+                    activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Revisar anúncio"
+                >
                     <Text style={styles.continueButtonText}>REVISAR ANÚNCIO</Text>
                     <MaterialCommunityIcons name="arrow-right" size={20} color={tokens.colors.onAction} />
                 </TouchableOpacity>

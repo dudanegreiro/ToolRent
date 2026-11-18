@@ -33,6 +33,8 @@ export default function LocationForm({
                     <MaterialCommunityIcons name="map-marker-outline" size={20} color={tokens.colors.secondaryText} />
                     <TextInput
                         style={styles.input}
+                        accessibilityLabel="Endereço"
+                        accessibilityRole="text"
                         value={address}
                         onChangeText={onAddressChange}
                         placeholder="Rua, número e complemento"
@@ -46,6 +48,8 @@ export default function LocationForm({
                     <Text style={styles.label}>Bairro</Text>
                     <TextInput
                         style={styles.standaloneInput}
+                        accessibilityLabel="Bairro"
+                        accessibilityRole="text"
                         value={neighborhood}
                         onChangeText={onNeighborhoodChange}
                         placeholder="Ex.: Centro"
@@ -56,6 +60,8 @@ export default function LocationForm({
                     <Text style={styles.label}>Cidade</Text>
                     <TextInput
                         style={styles.standaloneInput}
+                        accessibilityLabel="Cidade"
+                        accessibilityRole="text"
                         value={city}
                         onChangeText={onCityChange}
                         placeholder="Ex.: São Paulo"
@@ -97,6 +103,9 @@ export default function LocationForm({
                     </Text>
                 </View>
                 <Switch
+                    accessibilityLabel="Ofereço entrega"
+                    accessibilityRole="switch"
+                    accessibilityState={{ checked: deliveryEnabled }}
                     value={deliveryEnabled}
                     onValueChange={onDeliveryChange}
                     trackColor={{ false: tokens.colors.border, true: tokens.colors.actionTrack }}

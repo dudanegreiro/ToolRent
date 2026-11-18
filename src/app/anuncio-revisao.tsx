@@ -220,6 +220,9 @@ export default function AnuncioRevisao() {
                     onPress={() => void publishAd()}
                     disabled={publishing}
                     activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel={publishing ? 'Publicando anúncio' : 'Publicar anúncio'}
+                    accessibilityState={{ disabled: publishing }}
                 >
                     <Text style={styles.submitButtonText}>{publishing ? 'PUBLICANDO...' : 'PUBLICAR ANÚNCIO'}</Text>
                     {!publishing && <MaterialCommunityIcons name="check" size={20} color={tokens.colors.onAction} />}

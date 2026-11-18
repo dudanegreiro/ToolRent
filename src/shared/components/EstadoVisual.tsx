@@ -24,7 +24,12 @@ export default function EstadoVisual(props: EstadoVisualProps) {
     return (
         <View style={styles.container}>
             {props.variant === 'loading' ? (
-                <ActivityIndicator size="large" color={tokens.colors.action} />
+                <ActivityIndicator
+                    size="large"
+                    color={tokens.colors.action}
+                    accessibilityLabel="Carregando"
+                    accessibilityRole="progressbar"
+                />
             ) : (
                 <>
                     <MaterialCommunityIcons
@@ -43,6 +48,8 @@ export default function EstadoVisual(props: EstadoVisualProps) {
                     style={styles.action}
                     onPress={props.onAction}
                     activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel={props.actionLabel}
                 >
                     <Text style={styles.actionText}>{props.actionLabel}</Text>
                 </TouchableOpacity>

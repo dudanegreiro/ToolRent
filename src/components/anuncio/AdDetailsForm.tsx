@@ -49,6 +49,8 @@ export default function AdDetailsForm({
                 </View>
                 <TextInput
                     style={styles.input}
+                    accessibilityLabel="Título"
+                    accessibilityRole="text"
                     value={title}
                     onChangeText={onTitleChange}
                     maxLength={80}
@@ -62,6 +64,8 @@ export default function AdDetailsForm({
                     <Text style={styles.label}>Marca</Text>
                     <TextInput
                         style={styles.input}
+                        accessibilityLabel="Marca"
+                        accessibilityRole="text"
                         value={brand}
                         onChangeText={onBrandChange}
                         placeholder="Ex.: Bosch"
@@ -72,6 +76,8 @@ export default function AdDetailsForm({
                     <Text style={styles.label}>Modelo</Text>
                     <TextInput
                         style={styles.input}
+                        accessibilityLabel="Modelo"
+                        accessibilityRole="text"
                         value={model}
                         onChangeText={onModelChange}
                         placeholder="Ex.: GSB 13 RE"
@@ -82,7 +88,7 @@ export default function AdDetailsForm({
 
             <View style={styles.fieldGroup}>
                 <Text style={styles.label}>Estado de conservação</Text>
-                <View style={styles.conservationGrid}>
+                <View style={styles.conservationGrid} accessibilityRole="radiogroup">
                     {conservationOptions.map((option) => {
                         const isSelected = conservation === option.label;
 
@@ -92,6 +98,9 @@ export default function AdDetailsForm({
                                 style={[styles.conservationCard, isSelected && styles.selectedCard]}
                                 onPress={() => onConservationChange(option.label)}
                                 activeOpacity={0.8}
+                                accessibilityRole="radio"
+                                accessibilityLabel={option.label}
+                                accessibilityState={{ selected: isSelected }}
                             >
                                 <MaterialCommunityIcons
                                     name={option.icon}
@@ -114,6 +123,8 @@ export default function AdDetailsForm({
                 </View>
                 <TextInput
                     style={[styles.input, styles.textArea]}
+                    accessibilityLabel="Descrição"
+                    accessibilityRole="text"
                     value={description}
                     onChangeText={onDescriptionChange}
                     maxLength={500}
@@ -131,6 +142,8 @@ export default function AdDetailsForm({
                 </View>
                 <TextInput
                     style={[styles.input, styles.textAreaSmall]}
+                    accessibilityLabel="Itens inclusos, opcional"
+                    accessibilityRole="text"
                     value={includedItems}
                     onChangeText={onIncludedItemsChange}
                     placeholder="Ex.: maleta, brocas e manual"

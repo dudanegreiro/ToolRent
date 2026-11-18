@@ -87,6 +87,8 @@ export default function AnuncioDetalhes() {
                     style={styles.continueButton}
                     onPress={handleContinue}
                     activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Continuar para adicionar fotos"
                 >
                     <Text style={styles.continueButtonText}>CONTINUAR</Text>
                     <MaterialCommunityIcons name="arrow-right" size={20} color={tokens.colors.onAction} />

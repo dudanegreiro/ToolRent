@@ -335,7 +335,9 @@ export default function Home() {
                             style={styles.logo}
                             onPress={() => setMenuVisible((value) => !value)}
                             activeOpacity={0.8}
-                            accessibilityLabel="Abrir configurações"
+                            accessibilityRole="button"
+                            accessibilityLabel={menuVisible ? 'Fechar configurações' : 'Abrir configurações'}
+                            accessibilityState={{ expanded: menuVisible }}
                         >
                             <MaterialCommunityIcons name="wrench-outline" size={20} color={tokens.colors.onAction} />
                         </TouchableOpacity>
@@ -346,6 +348,8 @@ export default function Home() {
                                     style={styles.menuItem}
                                     onPress={handleOpenSettings}
                                     activeOpacity={0.8}
+                                    accessibilityRole="button"
+                                    accessibilityLabel="Configurações"
                                 >
                                     <MaterialCommunityIcons name="cog-outline" size={18} color={tokens.colors.text} />
                                     <Text style={styles.menuItemText}>Configurações</Text>
@@ -356,9 +360,17 @@ export default function Home() {
                                     onPress={handleLogout}
                                     activeOpacity={0.8}
                                     disabled={loggingOut}
+                                    accessibilityRole="button"
+                                    accessibilityLabel={loggingOut ? 'Saindo da conta' : 'Sair da conta'}
+                                    accessibilityState={{ disabled: loggingOut }}
                                 >
                                     {loggingOut ? (
-                                        <ActivityIndicator size="small" color={tokens.colors.alert} />
+                                        <ActivityIndicator
+                                            size="small"
+                                            color={tokens.colors.alert}
+                                            accessibilityLabel="Saindo da conta"
+                                            accessibilityRole="progressbar"
+                                        />
                                     ) : (
                                         <MaterialCommunityIcons name="logout" size={18} color={tokens.colors.alert} />
                                     )}
@@ -384,6 +396,8 @@ export default function Home() {
                             <TextInput
                                 value={profileName}
                                 onChangeText={setProfileName}
+                                accessibilityLabel="Nome"
+                                accessibilityRole="text"
                                 placeholder="Seu nome completo"
                                 style={styles.input}
                                 autoCapitalize="words"
@@ -398,6 +412,8 @@ export default function Home() {
                             <TextInput
                                 value={profilePhone}
                                 onChangeText={(value) => setProfilePhone(formatPhone(value))}
+                                accessibilityLabel="Telefone"
+                                accessibilityRole="text"
                                 placeholder="(11) 99999-9999"
                                 keyboardType="phone-pad"
                                 style={styles.input}
@@ -407,6 +423,8 @@ export default function Home() {
                             <TextInput
                                 value={profilePassword}
                                 onChangeText={setProfilePassword}
+                                accessibilityLabel="Nova senha, opcional"
+                                accessibilityRole="text"
                                 placeholder="Digite uma nova senha"
                                 secureTextEntry
                                 style={styles.input}
@@ -417,6 +435,9 @@ export default function Home() {
                                 onPress={handleSaveProfile}
                                 disabled={profileLoading}
                                 activeOpacity={0.9}
+                                accessibilityRole="button"
+                                accessibilityLabel={profileLoading ? 'Salvando alterações' : 'Salvar alterações'}
+                                accessibilityState={{ disabled: profileLoading }}
                             >
                                 <Text style={styles.saveProfileButtonText}>
                                     {profileLoading ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES'}
@@ -435,6 +456,8 @@ export default function Home() {
                                 <TextInput
                                     value={searchTerm}
                                     onChangeText={setSearchTerm}
+                                    accessibilityLabel="Buscar ferramentas"
+                                    accessibilityRole="search"
                                     placeholder="Buscar ferramentas"
                                     placeholderTextColor={tokens.colors.placeholderMuted}
                                     style={styles.searchInput}
@@ -447,10 +470,14 @@ export default function Home() {
                                 horizontal
                                 showsHorizontalScrollIndicator={false}
                                 contentContainerStyle={styles.filterRow}
+                                accessibilityRole="radiogroup"
                             >
                                 <TouchableOpacity
                                     style={[styles.filterChip, selectedCategoryId === null && styles.filterChipActive]}
                                     onPress={() => setSelectedCategoryId(null)}
+                                    accessibilityRole="radio"
+                                    accessibilityLabel="Todas as categorias"
+                                    accessibilityState={{ selected: selectedCategoryId === null }}
                                 >
                                     <Text style={[styles.filterChipText, selectedCategoryId === null && styles.filterChipTextActive]}>Todas</Text>
                                 </TouchableOpacity>
@@ -460,6 +487,9 @@ export default function Home() {
                                         key={category.id}
                                         style={[styles.filterChip, selectedCategoryId === category.id && styles.filterChipActive]}
                                         onPress={() => setSelectedCategoryId(category.id)}
+                                        accessibilityRole="radio"
+                                        accessibilityLabel={category.nome}
+                                        accessibilityState={{ selected: selectedCategoryId === category.id }}
                                     >
                                         <Text style={[styles.filterChipText, selectedCategoryId === category.id && styles.filterChipTextActive]}>{category.nome}</Text>
                                     </TouchableOpacity>
@@ -472,6 +502,8 @@ export default function Home() {
                                     <TextInput
                                         value={minPrice}
                                         onChangeText={setMinPrice}
+                                        accessibilityLabel="Preço mínimo em reais"
+                                        accessibilityRole="text"
                                         placeholder="0"
                                         keyboardType="numeric"
                                         style={styles.priceInput}
@@ -483,6 +515,8 @@ export default function Home() {
                                     <TextInput
                                         value={maxPrice}
                                         onChangeText={setMaxPrice}
+                                        accessibilityLabel="Preço máximo em reais"
+                                        accessibilityRole="text"
                                         placeholder="500"
                                         keyboardType="numeric"
                                         style={styles.priceInput}
@@ -494,6 +528,9 @@ export default function Home() {
                                 <TouchableOpacity
                                     style={[styles.toggleButton, showOnlyAvailable && styles.toggleButtonActive]}
                                     onPress={() => setShowOnlyAvailable((value) => !value)}
+                                    accessibilityRole="checkbox"
+                                    accessibilityLabel="Apenas disponíveis"
+                                    accessibilityState={{ checked: showOnlyAvailable }}
                                 >
                                     <MaterialCommunityIcons
                                         name={showOnlyAvailable ? 'checkbox-marked' : 'checkbox-blank-outline'}
@@ -508,12 +545,14 @@ export default function Home() {
                                 <TouchableOpacity
                                     style={styles.clearButton}
                                     onPress={clearFilters}
+                                    accessibilityRole="button"
+                                    accessibilityLabel="Limpar filtros"
                                 >
                                     <Text style={styles.clearButtonText}>Limpar filtros</Text>
                                 </TouchableOpacity>
                             </View>
 
-                            <View style={styles.sortRow}>
+                            <View style={styles.sortRow} accessibilityRole="radiogroup">
                                 {[
                                     { key: 'padrao', label: 'Padrão' },
                                     { key: 'menor', label: 'Menor preço' },
@@ -523,6 +562,9 @@ export default function Home() {
                                         key={option.key}
                                         style={[styles.sortChip, sortOrder === option.key && styles.sortChipActive]}
                                         onPress={() => setSortOrder(option.key as 'padrao' | 'menor' | 'maior')}
+                                        accessibilityRole="radio"
+                                        accessibilityLabel={`Ordenar: ${option.label}`}
+                                        accessibilityState={{ selected: sortOrder === option.key }}
                                     >
                                         <Text style={[styles.sortChipText, sortOrder === option.key && styles.sortChipTextActive]}>{option.label}</Text>
                                     </TouchableOpacity>
@@ -539,7 +581,12 @@ export default function Home() {
 
                         {exploreLoading ? (
                             <View style={styles.centeredBox}>
-                                <ActivityIndicator size="large" color={tokens.colors.action} />
+                                <ActivityIndicator
+                                    size="large"
+                                    color={tokens.colors.action}
+                                    accessibilityLabel="Carregando anúncios"
+                                    accessibilityRole="progressbar"
+                                />
                                 <Text style={styles.centeredText}>Carregando anúncios...</Text>
                             </View>
                         ) : exploreError ? (
@@ -577,6 +624,8 @@ export default function Home() {
                                             style={styles.toolCard}
                                             activeOpacity={0.9}
                                             onPress={() => openToolDetails(tool)}
+                                            accessibilityRole="button"
+                                            accessibilityLabel={`${tool.nome}, ${tool.marca} ${tool.modelo}. R$ ${Number(tool.preco_diaria).toFixed(2)} por dia. ${tool.disponibilidade ? 'Disponível' : 'Indisponível'}. Categoria ${categoryName}. Abrir detalhes`}
                                         >
                                             {cover ? (
                                                 <Image source={{ uri: cover }} style={styles.toolImage} resizeMode="cover" />

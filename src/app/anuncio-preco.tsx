@@ -82,7 +82,13 @@ export default function AnuncioPreco() {
                     onCancellationPolicyChange={setCancellationPolicy}
                 />
 
-                <TouchableOpacity style={styles.continueButton} onPress={handleContinue} activeOpacity={0.8}>
+                <TouchableOpacity
+                    style={styles.continueButton}
+                    onPress={handleContinue}
+                    activeOpacity={0.8}
+                    accessibilityRole="button"
+                    accessibilityLabel="Continuar para informar a localização"
+                >
                     <Text style={styles.continueButtonText}>CONTINUAR</Text>
                     <MaterialCommunityIcons name="arrow-right" size={20} color={tokens.colors.onAction} />
                 </TouchableOpacity>

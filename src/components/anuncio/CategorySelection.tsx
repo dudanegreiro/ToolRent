@@ -58,6 +58,9 @@ export default function CategorySelection({
                         style={[styles.category, isSelected && styles.selectedCategory]}
                         onPress={() => onSelect(category.id)}
                         activeOpacity={0.8}
+                        accessibilityRole="radio"
+                        accessibilityLabel={`${category.nome}. ${category.descricao}`}
+                        accessibilityState={{ selected: isSelected }}
                     >
                         <View style={[styles.categoryIcon, isSelected && styles.selectedCategoryIcon]}>
                             <MaterialCommunityIcons
