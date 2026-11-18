@@ -16,7 +16,7 @@ export default function CabecalhoDoPasso({
     onBack,
 }: CabecalhoDoPassoProps) {
     return (
-        <View style={styles.container}>
+        <View>
             <View style={styles.header}>
                 <TouchableOpacity
                     accessibilityLabel="Voltar"
@@ -56,13 +56,10 @@ export default function CabecalhoDoPasso({
 }
 
 const styles = StyleSheet.create({
-    container: {
-        marginBottom: tokens.spacing.lg,
-    },
     header: {
         alignItems: 'center',
         flexDirection: 'row',
-        marginBottom: tokens.spacing.md,
+        marginBottom: tokens.spacing.lg,
     },
     backButton: {
         alignItems: 'center',
@@ -88,7 +85,7 @@ const styles = StyleSheet.create({
     },
     stepBadge: {
         alignItems: 'center',
-        backgroundColor: tokens.colors.surface,
+        backgroundColor: tokens.colors.subtleSurface,
         borderRadius: tokens.radii.xl,
         height: 40,
         justifyContent: 'center',
@@ -102,6 +99,7 @@ const styles = StyleSheet.create({
     progressRow: {
         flexDirection: 'row',
         gap: tokens.spacing.xs,
+        marginBottom: tokens.spacing.lg,
     },
     progress: {
         backgroundColor: tokens.colors.border,

@@ -1,5 +1,6 @@
 import CategorySelection from '@/components/anuncio/CategorySelection';
 import { listarCategorias, type Categoria } from '@/services/api';
+import CabecalhoDoPasso from '@/shared/components/CabecalhoDoPasso';
 import { goBackOrHome } from '@/utils/navigation';
 import { tokens } from '@/shared/theme/tokens';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -46,30 +47,12 @@ export default function Anuncio() {
     return (
         <SafeAreaView style={styles.container}>
             <ScrollView contentContainerStyle={styles.content}>
-                <View style={styles.header}>
-                    <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={() => goBackOrHome(router, { usuarioId })}
-                        activeOpacity={0.75}
-                        accessibilityLabel="Voltar"
-                    >
-                        <MaterialCommunityIcons name="arrow-left" size={24} color={tokens.colors.text} />
-                    </TouchableOpacity>
-                    <View style={styles.headerCopy}>
-                        <Text style={styles.eyebrow}>NOVO ANÚNCIO</Text>
-                        <Text style={styles.title}>O que você vai anunciar?</Text>
-                    </View>
-                    <View style={styles.logo}>
-                        <MaterialCommunityIcons name="wrench-outline" size={20} color={tokens.colors.onAction} />
-                    </View>
-                </View>
-
-                <View style={styles.progressRow}>
-                    <View style={styles.activeProgress} />
-                    <View style={styles.progress} />
-                    <View style={styles.progress} />
-                    <View style={styles.progress} />
-                </View>
+                <CabecalhoDoPasso
+                    title="O que você vai anunciar?"
+                    currentStep={1}
+                    totalSteps={6}
+                    onBack={() => goBackOrHome(router, { usuarioId })}
+                />
 
                 <Text style={styles.instruction}>Selecione uma categoria para começar.</Text>
 
@@ -120,58 +103,6 @@ const styles = StyleSheet.create({
         paddingBottom: tokens.spacing.lg + tokens.spacing.sm,
         paddingHorizontal: tokens.spacing.lg,
         paddingTop: tokens.spacing.md,
-    },
-    header: {
-        alignItems: 'center',
-        flexDirection: 'row',
-        marginBottom: tokens.spacing.lg,
-    },
-    backButton: {
-        alignItems: 'center',
-        height: 44,
-        justifyContent: 'center',
-        marginRight: tokens.spacing.md,
-        width: 44,
-    },
-    headerCopy: {
-        flex: 1,
-    },
-    eyebrow: {
-        color: tokens.colors.action,
-        fontSize: 12,
-        fontWeight: '700',
-        letterSpacing: 1,
-        marginBottom: tokens.spacing.xs,
-    },
-    title: {
-        color: tokens.colors.text,
-        fontSize: 23,
-        fontWeight: 'bold',
-    },
-    logo: {
-        alignItems: 'center',
-        backgroundColor: tokens.colors.action,
-        borderRadius: tokens.radii.lg,
-        height: 44,
-        justifyContent: 'center',
-        width: 44,
-    },
-    progressRow: {
-        flexDirection: 'row',
-        gap: tokens.spacing.xs,
-        marginBottom: tokens.spacing.lg,
-    },
-    activeProgress: {
-        backgroundColor: tokens.colors.action,
-        borderRadius: tokens.radii.sm,
-        flex: 1,
-        height: 5,
-    },
-    progress: {
-        backgroundColor: tokens.colors.border,
-        borderRadius: tokens.radii.sm,
-        flex: 1,
-        height: 5,
     },
     instruction: {
         color: tokens.colors.supportingText,

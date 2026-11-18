@@ -1,6 +1,7 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import type { Categoria } from '@/services/api';
+import EstadoVisual from '@/shared/components/EstadoVisual';
 import { tokens } from '@/shared/theme/tokens';
 
 type CategorySelectionProps = {
@@ -21,36 +22,28 @@ export default function CategorySelection({
     onRetry,
 }: CategorySelectionProps) {
     if (loading) {
-        return (
-            <View style={styles.feedbackState}>
-                <ActivityIndicator size="large" color={tokens.colors.action} />
-                <Text style={styles.feedbackText}>Carregando categorias...</Text>
-            </View>
-        );
+        return <EstadoVisual variant="loading" message="Carregando categorias..." />;
     }
 
     if (error) {
         return (
-            <View style={styles.feedbackState}>
-                <MaterialCommunityIcons name="cloud-alert-outline" size={44} color={tokens.colors.action} />
-                <Text style={styles.feedbackTitle}>Não foi possível carregar as categorias</Text>
-                <Text style={styles.feedbackText}>{error}</Text>
-                <TouchableOpacity style={styles.retryButton} onPress={onRetry} activeOpacity={0.8}>
-                    <Text style={styles.retryButtonText}>TENTAR NOVAMENTE</Text>
-                </TouchableOpacity>
-            </View>
+            <EstadoVisual
+                variant="error"
+                title="Não foi possível carregar as categorias"
+                message={error}
+                actionLabel="TENTAR NOVAMENTE"
+                onAction={onRetry}
+            />
         );
     }
 
     if (categories.length === 0) {
         return (
-            <View style={styles.feedbackState}>
-                <MaterialCommunityIcons name="shape-outline" size={44} color={tokens.colors.action} />
-                <Text style={styles.feedbackTitle}>Nenhuma categoria disponível</Text>
-                <Text style={styles.feedbackText}>
-                    Aguarde o cadastro de categorias para anunciar uma ferramenta.
-                </Text>
-            </View>
+            <EstadoVisual
+                variant="empty"
+                title="Nenhuma categoria disponível"
+                message="Aguarde o cadastro de categorias para anunciar uma ferramenta."
+            />
         );
     }
 
@@ -134,37 +127,5 @@ const styles = StyleSheet.create({
         fontSize: 13,
         lineHeight: 18,
         marginTop: tokens.spacing.xs,
-    },
-    feedbackState: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        minHeight: 260,
-        paddingHorizontal: tokens.spacing.lg,
-    },
-    feedbackTitle: {
-        color: tokens.colors.text,
-        fontSize: 17,
-        fontWeight: '700',
-        marginTop: tokens.spacing.md,
-        textAlign: 'center',
-    },
-    feedbackText: {
-        color: tokens.colors.supportingText,
-        fontSize: 14,
-        lineHeight: 21,
-        marginTop: tokens.spacing.sm,
-        textAlign: 'center',
-    },
-    retryButton: {
-        backgroundColor: tokens.colors.action,
-        borderRadius: tokens.radii.lg,
-        marginTop: tokens.spacing.md,
-        paddingHorizontal: tokens.spacing.md,
-        paddingVertical: tokens.spacing.md,
-    },
-    retryButtonText: {
-        color: tokens.colors.onAction,
-        fontSize: 13,
-        fontWeight: '700',
     },
 });
