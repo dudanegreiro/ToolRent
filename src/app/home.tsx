@@ -1,6 +1,7 @@
 import { BottomNavBar, NavigationItem } from '@/components/home';
 import { atualizarUsuario, buscarUsuarioPorId, listarCategorias, listarFerramentas, type Categoria, type Ferramenta } from '@/services/api';
 import { clearSession, getSession, saveSession } from '@/services/session';
+import { tokens } from '@/shared/theme/tokens';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -336,7 +337,7 @@ export default function Home() {
                             activeOpacity={0.8}
                             accessibilityLabel="Abrir configurações"
                         >
-                            <MaterialCommunityIcons name="wrench-outline" size={20} color="#FFFFFF" />
+                            <MaterialCommunityIcons name="wrench-outline" size={20} color={tokens.colors.onAction} />
                         </TouchableOpacity>
 
                         {menuVisible && (
@@ -346,7 +347,7 @@ export default function Home() {
                                     onPress={handleOpenSettings}
                                     activeOpacity={0.8}
                                 >
-                                    <MaterialCommunityIcons name="cog-outline" size={18} color="#1F3D4A" />
+                                    <MaterialCommunityIcons name="cog-outline" size={18} color={tokens.colors.text} />
                                     <Text style={styles.menuItemText}>Configurações</Text>
                                 </TouchableOpacity>
 
@@ -357,9 +358,9 @@ export default function Home() {
                                     disabled={loggingOut}
                                 >
                                     {loggingOut ? (
-                                        <ActivityIndicator size="small" color="#B42318" />
+                                        <ActivityIndicator size="small" color={tokens.colors.alert} />
                                     ) : (
-                                        <MaterialCommunityIcons name="logout" size={18} color="#B42318" />
+                                        <MaterialCommunityIcons name="logout" size={18} color={tokens.colors.alert} />
                                     )}
                                     <Text style={[styles.menuItemText, styles.menuItemTextDanger]}>
                                         {loggingOut ? 'Saindo...' : 'Sair'}
@@ -430,12 +431,12 @@ export default function Home() {
                     >
                         <View style={styles.filterBox}>
                             <View style={styles.searchPlaceholder}>
-                                <MaterialCommunityIcons name="magnify" size={22} color="#6B7280" />
+                                <MaterialCommunityIcons name="magnify" size={22} color={tokens.colors.supportingText} />
                                 <TextInput
                                     value={searchTerm}
                                     onChangeText={setSearchTerm}
                                     placeholder="Buscar ferramentas"
-                                    placeholderTextColor="#8A8A8A"
+                                    placeholderTextColor={tokens.colors.placeholderMuted}
                                     style={styles.searchInput}
                                     autoCapitalize="none"
                                     autoCorrect={false}
@@ -497,7 +498,7 @@ export default function Home() {
                                     <MaterialCommunityIcons
                                         name={showOnlyAvailable ? 'checkbox-marked' : 'checkbox-blank-outline'}
                                         size={18}
-                                        color={showOnlyAvailable ? '#FFFFFF' : '#E85D04'}
+                                        color={showOnlyAvailable ? tokens.colors.surface : tokens.colors.action}
                                     />
                                     <Text style={[styles.toggleButtonText, showOnlyAvailable && styles.toggleButtonTextActive]}>
                                         Apenas disponíveis
@@ -531,25 +532,25 @@ export default function Home() {
 
                         {priceRangeError ? (
                             <View style={styles.inlineWarning}>
-                                <MaterialCommunityIcons name="alert-circle-outline" size={18} color="#B42318" />
+                                <MaterialCommunityIcons name="alert-circle-outline" size={18} color={tokens.colors.alert} />
                                 <Text style={styles.inlineWarningText}>{priceRangeError}</Text>
                             </View>
                         ) : null}
 
                         {exploreLoading ? (
                             <View style={styles.centeredBox}>
-                                <ActivityIndicator size="large" color="#E85D04" />
+                                <ActivityIndicator size="large" color={tokens.colors.action} />
                                 <Text style={styles.centeredText}>Carregando anúncios...</Text>
                             </View>
                         ) : exploreError ? (
                             <View style={styles.centeredBox}>
-                                <MaterialCommunityIcons name="alert-circle-outline" size={38} color="#E85D04" />
+                                <MaterialCommunityIcons name="alert-circle-outline" size={38} color={tokens.colors.action} />
                                 <Text style={styles.emptyTitle}>Não foi possível carregar</Text>
                                 <Text style={styles.emptySubtitle}>{exploreError}</Text>
                             </View>
                         ) : exploreTools.length === 0 ? (
                             <View style={styles.emptyState}>
-                                <MaterialCommunityIcons name="tools" size={54} color="#E85D04" />
+                                <MaterialCommunityIcons name="tools" size={54} color={tokens.colors.action} />
                                 <Text style={styles.emptyTitle}>
                                     {searchTerm || selectedCategoryId !== null || showOnlyAvailable || minPrice || maxPrice
                                         ? 'Nenhum anúncio encontrado com os filtros atuais.'
@@ -581,7 +582,7 @@ export default function Home() {
                                                 <Image source={{ uri: cover }} style={styles.toolImage} resizeMode="cover" />
                                             ) : (
                                                 <View style={[styles.toolImage, styles.placeholderImage]}>
-                                                    <MaterialCommunityIcons name="wrench-outline" size={30} color="#E85D04" />
+                                                    <MaterialCommunityIcons name="wrench-outline" size={30} color={tokens.colors.action} />
                                                 </View>
                                             )}
 
@@ -602,7 +603,7 @@ export default function Home() {
                     </ScrollView>
                 ) : (
                     <View style={styles.emptyState}>
-                        <MaterialCommunityIcons name="tools" size={54} color="#E85D04" />
+                        <MaterialCommunityIcons name="tools" size={54} color={tokens.colors.action} />
                         <Text style={styles.emptyTitle}>Encontre a ferramenta ideal</Text>
                         <Text style={styles.emptySubtitle}>
                             Explore ferramentas disponíveis para alugar perto de você.
@@ -622,12 +623,12 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F7FA',
+        backgroundColor: tokens.colors.background,
     },
     content: {
         flex: 1,
-        paddingHorizontal: 24,
-        paddingTop: 24,
+        paddingHorizontal: tokens.spacing.lg,
+        paddingTop: tokens.spacing.lg,
         position: 'relative',
         zIndex: 1,
     },
@@ -635,19 +636,19 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 28,
+        marginBottom: tokens.spacing.lg + tokens.spacing.xs,
         position: 'relative',
         zIndex: 10,
     },
     greeting: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 12,
         fontWeight: '700',
         letterSpacing: 1,
-        marginBottom: 6,
+        marginBottom: tokens.spacing.xs,
     },
     title: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 24,
         fontWeight: 'bold',
     },
@@ -657,20 +658,20 @@ const styles = StyleSheet.create({
     },
     logo: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
         height: 44,
         justifyContent: 'center',
         width: 44,
     },
     menuCard: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#E5E7EB',
-        borderRadius: 12,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.subtleBorder,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
-        boxShadow: '0px 4px 10px rgba(17, 24, 39, 0.12)',
+        boxShadow: tokens.shadows.menu,
         elevation: 20,
-        paddingVertical: 8,
+        paddingVertical: tokens.spacing.sm,
         position: 'absolute',
         right: 0,
         top: 54,
@@ -680,221 +681,221 @@ const styles = StyleSheet.create({
     menuItem: {
         alignItems: 'center',
         flexDirection: 'row',
-        gap: 10,
-        paddingHorizontal: 14,
-        paddingVertical: 12,
+        gap: tokens.spacing.sm,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.md,
     },
     menuItemDanger: {
-        borderTopColor: '#F1F5F9',
+        borderTopColor: tokens.colors.divider,
         borderTopWidth: 1,
     },
     menuItemDisabled: {
         opacity: 0.7,
     },
     menuItemText: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '600',
     },
     menuItemTextDanger: {
-        color: '#B42318',
+        color: tokens.colors.alert,
     },
     searchPlaceholder: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flexDirection: 'row',
         height: 52,
-        paddingHorizontal: 16,
+        paddingHorizontal: tokens.spacing.md,
         zIndex: 1,
     },
     searchInput: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         flex: 1,
         fontSize: 15,
-        marginLeft: 10,
+        marginLeft: tokens.spacing.sm,
     },
     filterBox: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        marginBottom: 14,
-        padding: 12,
+        backgroundColor: tokens.colors.surface,
+        borderRadius: tokens.radii.xl,
+        marginBottom: tokens.spacing.md,
+        padding: tokens.spacing.md,
     },
     filterRow: {
-        gap: 8,
-        marginTop: 12,
-        paddingRight: 8,
+        gap: tokens.spacing.sm,
+        marginTop: tokens.spacing.md,
+        paddingRight: tokens.spacing.sm,
     },
     filterChip: {
-        backgroundColor: '#F3F4F6',
-        borderRadius: 999,
-        marginRight: 8,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
+        backgroundColor: tokens.colors.neutralSurface,
+        borderRadius: tokens.radii.pill,
+        marginRight: tokens.spacing.sm,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.sm,
     },
     filterChipActive: {
-        backgroundColor: '#E85D04',
+        backgroundColor: tokens.colors.action,
     },
     filterChipText: {
-        color: '#374151',
+        color: tokens.colors.bodyText,
         fontSize: 12,
         fontWeight: '700',
     },
     filterChipTextActive: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
     },
     priceFiltersRow: {
         flexDirection: 'row',
-        gap: 10,
-        marginTop: 12,
+        gap: tokens.spacing.sm,
+        marginTop: tokens.spacing.md,
     },
     priceInputWrap: {
         flex: 1,
     },
     fieldLabel: {
-        color: '#475467',
+        color: tokens.colors.mutedText,
         fontSize: 12,
         fontWeight: '600',
-        marginBottom: 6,
+        marginBottom: tokens.spacing.xs,
     },
     priceInput: {
-        backgroundColor: '#F9FAFB',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.inputSurface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
-        paddingHorizontal: 12,
-        paddingVertical: 10,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.sm,
     },
     optionsRow: {
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 12,
+        marginTop: tokens.spacing.md,
     },
     toggleButton: {
         alignItems: 'center',
-        backgroundColor: '#FFF4EC',
-        borderColor: '#F7C7A4',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.actionSurfaceAlt,
+        borderColor: tokens.colors.actionBorder,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flexDirection: 'row',
         justifyContent: 'center',
-        paddingHorizontal: 12,
-        paddingVertical: 10,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.sm,
     },
     toggleButtonActive: {
-        backgroundColor: '#E85D04',
-        borderColor: '#E85D04',
+        backgroundColor: tokens.colors.action,
+        borderColor: tokens.colors.action,
     },
     toggleButtonText: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 13,
         fontWeight: '700',
-        marginLeft: 8,
+        marginLeft: tokens.spacing.sm,
     },
     toggleButtonTextActive: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
     },
     clearButton: {
-        paddingHorizontal: 10,
-        paddingVertical: 8,
+        paddingHorizontal: tokens.spacing.sm,
+        paddingVertical: tokens.spacing.sm,
     },
     clearButtonText: {
-        color: '#475467',
+        color: tokens.colors.mutedText,
         fontSize: 12,
         fontWeight: '700',
     },
     profileScrollContent: {
-        paddingBottom: 20,
+        paddingBottom: tokens.spacing.md,
     },
     profileCard: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 18,
-        padding: 18,
+        backgroundColor: tokens.colors.surface,
+        borderRadius: tokens.radii.xl,
+        padding: tokens.spacing.md,
     },
     profileTitle: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 24,
         fontWeight: '700',
     },
     profileSubtitle: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 14,
-        marginBottom: 18,
-        marginTop: 6,
+        marginBottom: tokens.spacing.md,
+        marginTop: tokens.spacing.xs,
     },
     input: {
-        backgroundColor: '#F9FAFB',
-        borderColor: '#D5DCE3',
-        borderRadius: 12,
+        backgroundColor: tokens.colors.inputSurface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 15,
-        marginBottom: 14,
-        paddingHorizontal: 14,
-        paddingVertical: 12,
+        marginBottom: tokens.spacing.md,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.md,
     },
     disabledInput: {
         justifyContent: 'center',
     },
     disabledInputText: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 15,
     },
     saveProfileButton: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 12,
-        marginTop: 8,
-        paddingVertical: 14,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
+        marginTop: tokens.spacing.sm,
+        paddingVertical: tokens.spacing.md,
     },
     saveProfileButtonText: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 14,
         fontWeight: '700',
     },
     sortRow: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        gap: 8,
-        marginTop: 12,
+        gap: tokens.spacing.sm,
+        marginTop: tokens.spacing.md,
     },
     sortChip: {
-        backgroundColor: '#F3F4F6',
-        borderRadius: 999,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
+        backgroundColor: tokens.colors.neutralSurface,
+        borderRadius: tokens.radii.pill,
+        paddingHorizontal: tokens.spacing.sm,
+        paddingVertical: tokens.spacing.sm,
     },
     sortChipActive: {
-        backgroundColor: '#E85D04',
+        backgroundColor: tokens.colors.action,
     },
     sortChipText: {
-        color: '#475467',
+        color: tokens.colors.mutedText,
         fontSize: 12,
         fontWeight: '700',
     },
     sortChipTextActive: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
     },
     exploreSection: {
         flex: 1,
     },
     exploreScrollContent: {
-        paddingBottom: 20,
+        paddingBottom: tokens.spacing.md,
     },
     exploreList: {
-        paddingBottom: 20,
+        paddingBottom: tokens.spacing.md,
     },
     toolCard: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        marginBottom: 14,
+        backgroundColor: tokens.colors.surface,
+        borderRadius: tokens.radii.xl,
+        marginBottom: tokens.spacing.md,
         overflow: 'hidden',
-        shadowColor: '#111827',
+        shadowColor: tokens.colors.shadow,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.08,
         shadowRadius: 6,
@@ -905,105 +906,105 @@ const styles = StyleSheet.create({
     },
     placeholderImage: {
         alignItems: 'center',
-        backgroundColor: '#F8E9DF',
+        backgroundColor: tokens.colors.imagePlaceholder,
         justifyContent: 'center',
     },
     toolBody: {
-        padding: 14,
+        padding: tokens.spacing.md,
     },
     toolTitle: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 18,
         fontWeight: '700',
     },
     toolMeta: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 13,
-        marginTop: 4,
+        marginTop: tokens.spacing.xs,
     },
     toolPrice: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 16,
         fontWeight: '700',
-        marginTop: 10,
+        marginTop: tokens.spacing.sm,
     },
     badgeRow: {
         alignItems: 'center',
         flexDirection: 'row',
-        gap: 8,
-        marginTop: 12,
+        gap: tokens.spacing.sm,
+        marginTop: tokens.spacing.md,
     },
     badge: {
-        backgroundColor: '#E7F7EE',
-        borderRadius: 999,
-        color: '#0F8A4C',
+        backgroundColor: tokens.colors.availableTagSurface,
+        borderRadius: tokens.radii.pill,
+        color: tokens.colors.availableTagText,
         fontSize: 11,
         fontWeight: '700',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
+        paddingHorizontal: tokens.spacing.sm,
+        paddingVertical: tokens.spacing.xs,
     },
     badgeSecondary: {
-        backgroundColor: '#EEF2FF',
-        borderRadius: 999,
-        color: '#4F46E5',
+        backgroundColor: tokens.colors.categoryTagSurface,
+        borderRadius: tokens.radii.pill,
+        color: tokens.colors.categoryTagText,
         fontSize: 11,
         fontWeight: '700',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
+        paddingHorizontal: tokens.spacing.sm,
+        paddingVertical: tokens.spacing.xs,
     },
     centeredBox: {
         alignItems: 'center',
         flex: 1,
         justifyContent: 'center',
-        paddingBottom: 20,
+        paddingBottom: tokens.spacing.md,
     },
     centeredText: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '600',
-        marginTop: 12,
+        marginTop: tokens.spacing.md,
     },
     inlineWarning: {
         alignItems: 'center',
-        backgroundColor: '#FDECEC',
-        borderColor: '#F1B2B2',
-        borderRadius: 12,
+        backgroundColor: tokens.colors.alertSurfaceStrong,
+        borderColor: tokens.colors.alertBorderStrong,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flexDirection: 'row',
-        marginBottom: 12,
-        paddingHorizontal: 12,
-        paddingVertical: 10,
+        marginBottom: tokens.spacing.md,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.sm,
     },
     inlineWarningText: {
-        color: '#B42318',
+        color: tokens.colors.alert,
         fontSize: 12,
         fontWeight: '600',
-        marginLeft: 8,
+        marginLeft: tokens.spacing.sm,
     },
     resultsSummary: {
-        color: '#475467',
+        color: tokens.colors.mutedText,
         fontSize: 12,
         fontWeight: '700',
-        marginBottom: 12,
+        marginBottom: tokens.spacing.md,
     },
     emptyState: {
         alignItems: 'center',
         flex: 1,
         justifyContent: 'center',
-        paddingBottom: 48,
+        paddingBottom: tokens.spacing.lg * 2,
     },
     emptyTitle: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 20,
         fontWeight: '700',
-        marginTop: 18,
+        marginTop: tokens.spacing.md,
         textAlign: 'center',
     },
     emptySubtitle: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 16,
         lineHeight: 23,
-        marginTop: 8,
+        marginTop: tokens.spacing.sm,
         maxWidth: 290,
         textAlign: 'center',
     },

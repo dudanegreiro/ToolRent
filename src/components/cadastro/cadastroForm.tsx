@@ -1,4 +1,5 @@
 import { cadastrarUsuario } from '@/services/api';
+import { tokens } from '@/shared/theme/tokens';
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -165,7 +166,7 @@ export default function CadastroForm() {
                     <TextInput
                         style={styles.input}
                         placeholder="Digite seu e-mail"
-                        placeholderTextColor="#8A8A8A"
+                        placeholderTextColor={tokens.colors.placeholderMuted}
                         value={email}
                         onChangeText={setEmail}
                         keyboardType="email-address"
@@ -178,7 +179,7 @@ export default function CadastroForm() {
                             <TextInput
                                 style={[styles.input, styles.inputTel]}
                                 placeholder="(11) 99999-9999"
-                                placeholderTextColor="#8A8A8A"
+                                placeholderTextColor={tokens.colors.placeholderMuted}
                                 value={telefone}
                                 onChangeText={(text) => setTelefone(formatarTelefone(text))}
                                 keyboardType='phone-pad'
@@ -190,7 +191,7 @@ export default function CadastroForm() {
                             <TextInput
                                 style={[styles.input, styles.inputTel]}
                                 placeholder='000.000.000-00'
-                                placeholderTextColor="#8A8A8A"
+                                placeholderTextColor={tokens.colors.placeholderMuted}
                                 value={cpf}
                                 onChangeText={(text) => setCpf(formatarCpf(text))}
                                 keyboardType='numeric'
@@ -205,7 +206,7 @@ export default function CadastroForm() {
                     <TextInput
                         style={styles.input}
                         placeholder="Digite sua senha"
-                        placeholderTextColor="#8A8A8A"
+                        placeholderTextColor={tokens.colors.placeholderMuted}
                         value={senha}
                         onChangeText={setSenha}
                         secureTextEntry
@@ -215,7 +216,7 @@ export default function CadastroForm() {
                     <TextInput
                         style={styles.input}
                         placeholder="Confirme sua senha"
-                        placeholderTextColor="#8A8A8A"
+                        placeholderTextColor={tokens.colors.placeholderMuted}
                         value={confirmSenha}
                         onChangeText={setConfirmSenha}
                         secureTextEntry
@@ -265,29 +266,29 @@ export default function CadastroForm() {
 
 const styles = StyleSheet.create({
     form: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 20,
-        padding: 24,
-        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.08)',
+        backgroundColor: tokens.colors.surface,
+        borderRadius: tokens.radii.xl,
+        padding: tokens.spacing.lg,
+        boxShadow: tokens.shadows.registration,
         elevation: 4,
     },
     label: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#374151',
-        marginBottom: 8,
+        color: tokens.colors.bodyText,
+        marginBottom: tokens.spacing.sm,
         opacity: 0.5,
     },
     input: {
         height: 52,
         borderWidth: 1,
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
-        paddingHorizontal: 15,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
+        paddingHorizontal: tokens.spacing.md,
         fontSize: 15,
         opacity: 0.5,
-        backgroundColor: '#FAFBFC',
-        marginBottom: 18,
+        backgroundColor: tokens.colors.alternateSurface,
+        marginBottom: tokens.spacing.md,
     },
 
     cpfTel: {
@@ -302,45 +303,45 @@ const styles = StyleSheet.create({
     button: {
         flex: 1,
         height: 52,
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 5,
+        marginTop: tokens.spacing.xs,
     },
     buttonRow: {
         flexDirection: 'row',
         backgroundColor: 'transparent',
-        gap: 10,
+        gap: tokens.spacing.sm,
     },
     buttonText: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 16,
         fontWeight: '700',
     },
     backButton: {
         height: 52,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: tokens.colors.surface,
         borderWidth: 1,
-        borderColor: '#E85D04',
-        borderRadius: 10,
+        borderColor: tokens.colors.action,
+        borderRadius: tokens.radii.lg,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 5,
+        marginTop: tokens.spacing.xs,
     },
     backButtonText: {
-        color: '#E85D04',
+        color: tokens.colors.action,
         fontSize: 16,
         fontWeight: '700',
     },
     message: {
-        color: '#374151',
+        color: tokens.colors.bodyText,
         fontSize: 14,
-        marginTop: 12,
+        marginTop: tokens.spacing.md,
         textAlign: 'center',
     },
     successMessage: {
-        color: '#16803C',
+        color: tokens.colors.registrationSuccessText,
         fontWeight: '600',
     },
 });

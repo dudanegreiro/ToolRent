@@ -1,5 +1,6 @@
 import CadastroForm from '@/components/cadastro/cadastroForm';
 import { LogoSection } from '@/components/login';
+import { tokens } from '@/shared/theme/tokens';
 import { Link } from 'expo-router';
 import {
   KeyboardAvoidingView,
@@ -59,7 +60,7 @@ export default function Cadastro() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: tokens.colors.background,
   },
 
   scrollContainer: {
@@ -69,39 +70,39 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 25,
-    paddingVertical: 40,
-    paddingTop: 120,
+    paddingHorizontal: tokens.spacing.lg,
+    paddingVertical: tokens.spacing.lg + tokens.spacing.md,
+    paddingTop: tokens.spacing.lg * 5,
   },
 
   title: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#1F3D4A',
+    color: tokens.colors.text,
   },
 
   subtitle: {
     fontSize: 14,
     lineHeight: 20,
     opacity: 0.5,
-    marginBottom: 30,
+    marginBottom: tokens.spacing.lg + tokens.spacing.sm,
   },
 
   loginContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 25,
+    marginTop: tokens.spacing.lg,
   },
 
   loginText: {
-    color: '#6B7280',
+    color: tokens.colors.supportingText,
     fontSize: 14,
   },
 
   loginLink: {
-    color: '#E85D04',
+    color: tokens.colors.action,
     fontWeight: 'bold',
     fontSize: 14,
-    marginLeft: 5,
+    marginLeft: tokens.spacing.xs,
   },
 });
