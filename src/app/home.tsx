@@ -18,6 +18,20 @@ import {
     View,
 } from 'react-native';
 
+const sampleToolPresentations = [
+    { nome: 'Furadeira de impacto Bosch', descricao: 'Ideal para furos em concreto e madeira. Acompanha maleta e brocas.' },
+    { nome: 'Serra circular Makita', descricao: 'Cortes precisos em madeira para obras, reformas e projetos de marcenaria.' },
+    { nome: 'Lixadeira orbital', descricao: 'Acabamento uniforme em madeira e superfícies pintadas, com baixa vibração.' },
+    { nome: 'Betoneira 400L', descricao: 'Perfeita para preparar concreto e argamassa em pequenas e médias obras.' },
+    { nome: 'Escada de alumínio 6 degraus', descricao: 'Leve, estável e prática para pinturas, instalações e reparos domésticos.' },
+    { nome: 'Compressor de ar 50L', descricao: 'Indicado para pintura, limpeza e uso com ferramentas pneumáticas.' },
+    { nome: 'Parafusadeira a bateria', descricao: 'Compacta e versátil para montagem de móveis e fixações do dia a dia.' },
+    { nome: 'Nível a laser', descricao: 'Projeta linhas niveladas para instalações, revestimentos e acabamentos.' },
+    { nome: 'Martelete perfurador', descricao: 'Alta potência para perfuração e remoção em concreto, pedra e alvenaria.' },
+    { nome: 'Plaina elétrica', descricao: 'Remove imperfeições e nivela superfícies de madeira com rapidez e precisão.' },
+    { nome: 'Esmerilhadeira angular', descricao: 'Ideal para cortes, desbastes e acabamentos em metal e alvenaria.' },
+];
+
 export default function Home() {
     const router = useRouter();
     const { usuarioId } = useLocalSearchParams<{ usuarioId?: string }>();
@@ -31,12 +45,18 @@ export default function Home() {
     const [minPrice, setMinPrice] = useState('');
     const [maxPrice, setMaxPrice] = useState('');
     const [sortOrder, setSortOrder] = useState<'padrao' | 'menor' | 'maior'>('padrao');
+    const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+    const [favoriteTools, setFavoriteTools] = useState<number[]>([]);
     const [priceRangeError, setPriceRangeError] = useState<string | null>(null);
     const [profileName, setProfileName] = useState('');
     const [profileEmail, setProfileEmail] = useState('');
     const [profilePhone, setProfilePhone] = useState('');
     const [profilePassword, setProfilePassword] = useState('');
-    const [profileLoading, setProfileLoading] = useState(false);
+    const [profileLoadStatus, setProfileLoadStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
+    const [profileLoadError, setProfileLoadError] = useState('');
+    const [profileLoadAttempt, setProfileLoadAttempt] = useState(0);
+    const [profileFeedback, setProfileFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+    const [profileSaving, setProfileSaving] = useState(false);
     const [loggingOut, setLoggingOut] = useState(false);
     const [exploreTools, setExploreTools] = useState<Ferramenta[]>([]);
     const [exploreLoading, setExploreLoading] = useState(false);
@@ -53,6 +73,15 @@ export default function Home() {
             }
 
             setUserName((session.nome ?? 'USUÁRIO').trim() || 'USUÁRIO');
+
+            if ((session.nome ?? '').includes('@')) {
+                try {
+                    const usuario = await buscarUsuarioPorId(Number(session.usuarioId));
+                    setUserName((usuario.nome ?? session.nome ?? 'USUÁRIO').trim());
+                } catch {
+                    // Mantém o nome da sessão quando o perfil não estiver disponível.
+                }
+            }
 
             if (!usuarioId || usuarioId !== session.usuarioId) {
                 router.replace({
@@ -80,27 +109,48 @@ export default function Home() {
     }, []);
 
     useEffect(() => {
-        if (activeItem !== 'Perfil' || !usuarioId) {
+        if (activeItem !== 'Perfil') {
             return;
+        }
+
+        let isActive = true;
+        const parsedUserId = Number(usuarioId);
+        setProfileLoadStatus('loading');
+        setProfileLoadError('');
+        setProfileFeedback(null);
+
+        if (!usuarioId || !Number.isSafeInteger(parsedUserId) || parsedUserId <= 0) {
+            setProfileLoadStatus('error');
+            setProfileLoadError('Não foi possível identificar o usuário logado.');
+            return () => {
+                isActive = false;
+            };
         }
 
         const loadProfile = async () => {
             try {
-                const usuario = await buscarUsuarioPorId(Number(usuarioId));
+                const usuario = await buscarUsuarioPorId(parsedUserId);
+                if (!isActive) return;
+
                 setProfileName(usuario.nome ?? '');
                 setProfileEmail(usuario.email ?? '');
                 setProfilePhone(usuario.telefone ?? '');
                 setProfilePassword('');
-            } catch {
-                const session = await getSession();
-                setProfileName(session?.nome ?? '');
-                setProfileEmail(session?.email ?? '');
-                setProfilePhone('');
+                setProfileLoadStatus('ready');
+            } catch (error) {
+                if (!isActive) return;
+
+                setProfileLoadError(error instanceof Error ? error.message : 'Não foi possível carregar o perfil.');
+                setProfileLoadStatus('error');
             }
         };
 
         void loadProfile();
-    }, [activeItem, usuarioId]);
+
+        return () => {
+            isActive = false;
+        };
+    }, [activeItem, usuarioId, profileLoadAttempt]);
 
     useEffect(() => {
         if (activeItem !== 'Explorar') {
@@ -205,8 +255,14 @@ export default function Home() {
     };
 
     const handleSaveProfile = async () => {
-        if (!usuarioId) {
-            Alert.alert('Perfil', 'Não foi possível identificar o usuário logado.');
+        setProfileFeedback(null);
+        const parsedUserId = Number(usuarioId);
+
+        if (!usuarioId || !Number.isSafeInteger(parsedUserId) || parsedUserId <= 0) {
+            setProfileFeedback({
+                type: 'error',
+                message: 'Não foi possível identificar o usuário logado.',
+            });
             return;
         }
 
@@ -214,19 +270,25 @@ export default function Home() {
         const telefone = profilePhone.replace(/\D/g, '');
 
         if (!nome || !profileEmail.trim() || !telefone) {
-            Alert.alert('Dados incompletos', 'Preencha nome e telefone para continuar.');
+            setProfileFeedback({
+                type: 'error',
+                message: 'Preencha nome, e-mail e telefone para continuar.',
+            });
             return;
         }
 
         if (telefone.length < 10) {
-            Alert.alert('Telefone inválido', 'Informe um telefone com DDD e número válidos.');
+            setProfileFeedback({
+                type: 'error',
+                message: 'Informe um telefone com DDD e número válidos.',
+            });
             return;
         }
 
-        setProfileLoading(true);
+        setProfileSaving(true);
 
         try {
-            const usuarioAtualizado = await atualizarUsuario(Number(usuarioId), {
+            const usuarioAtualizado = await atualizarUsuario(parsedUserId, {
                 nome,
                 telefone: telefone,
                 ...(profilePassword.trim() ? { senha: profilePassword.trim() } : {}),
@@ -243,11 +305,17 @@ export default function Home() {
             setProfileEmail(usuarioAtualizado.email);
             setProfilePhone(formatPhone(usuarioAtualizado.telefone));
             setProfilePassword('');
-            Alert.alert('Perfil atualizado', 'Suas informações foram salvas com sucesso.');
+            setProfileFeedback({
+                type: 'success',
+                message: 'Perfil atualizado. Suas informações foram salvas com sucesso.',
+            });
         } catch (error) {
-            Alert.alert('Erro ao salvar', error instanceof Error ? error.message : 'Não foi possível atualizar o perfil.');
+            setProfileFeedback({
+                type: 'error',
+                message: error instanceof Error ? error.message : 'Não foi possível atualizar o perfil.',
+            });
         } finally {
-            setProfileLoading(false);
+            setProfileSaving(false);
         }
     };
 
@@ -321,11 +389,22 @@ export default function Home() {
         } as Href);
     };
 
+    const toggleFavorite = (toolId: number) => {
+        setFavoriteTools((current) => current.includes(toolId)
+            ? current.filter((id) => id !== toolId)
+            : [...current, toolId]);
+    };
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.content}>
                 <View style={styles.header}>
-                    <View>
+                    <TouchableOpacity style={styles.headerLocation} accessibilityLabel="Alterar localização">
+                        <MaterialCommunityIcons name="map-marker-outline" size={16} color={theme.colors.primary} />
+                        <Text style={styles.locationText}>Buscando em Palmas</Text>
+                        <MaterialCommunityIcons name="chevron-down" size={16} color={theme.colors.textMuted} />
+                    </TouchableOpacity>
+                    <View style={styles.headerCopy}>
                         <Text style={styles.greeting}>OLÁ, {userName.toUpperCase()}</Text>
                         <Text style={styles.title}>O que você precisa hoje?</Text>
                     </View>
@@ -372,6 +451,38 @@ export default function Home() {
                 </View>
 
                 {activeItem === 'Perfil' ? (
+                    profileLoadStatus === 'loading' || profileLoadStatus === 'idle' ? (
+                        <View style={styles.profileLoadState}>
+                            <ActivityIndicator
+                                size="large"
+                                color={theme.colors.primary}
+                                accessibilityLabel="Carregando perfil"
+                            />
+                            <Text style={styles.profileStateText} accessibilityLiveRegion="polite">
+                                Carregando seu perfil...
+                            </Text>
+                        </View>
+                    ) : profileLoadStatus === 'error' ? (
+                        <View style={styles.profileErrorCard}>
+                            <MaterialCommunityIcons
+                                name="alert-circle-outline"
+                                size={32}
+                                color={theme.states.error.foreground}
+                                accessibilityLabel="Erro"
+                            />
+                            <Text style={styles.profileStateText} accessibilityRole="alert">
+                                {profileLoadError}
+                            </Text>
+                            <TouchableOpacity
+                                style={styles.profileRetryButton}
+                                onPress={() => setProfileLoadAttempt((attempt) => attempt + 1)}
+                                accessibilityRole="button"
+                                accessibilityLabel="Tentar carregar o perfil novamente"
+                            >
+                                <Text style={styles.profileRetryButtonText}>TENTAR NOVAMENTE</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : (
                     <ScrollView
                         showsVerticalScrollIndicator={false}
                         contentContainerStyle={styles.profileScrollContent}
@@ -383,47 +494,116 @@ export default function Home() {
                             <Text style={styles.fieldLabel}>Nome</Text>
                             <TextInput
                                 value={profileName}
-                                onChangeText={setProfileName}
+                                onChangeText={(value) => {
+                                    setProfileName(value);
+                                    setProfileFeedback(null);
+                                }}
                                 placeholder="Seu nome completo"
+                                placeholderTextColor={theme.colors.textMuted}
                                 style={styles.input}
                                 autoCapitalize="words"
+                                accessibilityLabel="Nome"
                             />
 
                             <Text style={styles.fieldLabel}>E-mail</Text>
                             <View style={[styles.input, styles.disabledInput]}>
-                                <Text style={styles.disabledInputText}>{profileEmail}</Text>
+                                <Text
+                                    style={styles.disabledInputText}
+                                    accessibilityLabel={`E-mail: ${profileEmail}. Campo somente leitura.`}
+                                >
+                                    {profileEmail}
+                                </Text>
                             </View>
 
                             <Text style={styles.fieldLabel}>Telefone</Text>
                             <TextInput
                                 value={profilePhone}
-                                onChangeText={(value) => setProfilePhone(formatPhone(value))}
+                                onChangeText={(value) => {
+                                    setProfilePhone(formatPhone(value));
+                                    setProfileFeedback(null);
+                                }}
                                 placeholder="(11) 99999-9999"
+                                placeholderTextColor={theme.colors.textMuted}
                                 keyboardType="phone-pad"
                                 style={styles.input}
+                                accessibilityLabel="Telefone"
                             />
 
                             <Text style={styles.fieldLabel}>Nova senha (opcional)</Text>
                             <TextInput
                                 value={profilePassword}
-                                onChangeText={setProfilePassword}
+                                onChangeText={(value) => {
+                                    setProfilePassword(value);
+                                    setProfileFeedback(null);
+                                }}
                                 placeholder="Digite uma nova senha"
+                                placeholderTextColor={theme.colors.textMuted}
                                 secureTextEntry
                                 style={styles.input}
+                                accessibilityLabel="Nova senha, opcional"
                             />
 
+                            {profileFeedback && (
+                                <View
+                                    style={[
+                                        styles.profileFeedback,
+                                        profileFeedback.type === 'success'
+                                            ? styles.profileSuccessFeedback
+                                            : styles.profileErrorFeedback,
+                                    ]}
+                                >
+                                    <MaterialCommunityIcons
+                                        name={profileFeedback.type === 'success' ? 'check-circle-outline' : 'alert-circle-outline'}
+                                        size={20}
+                                        color={profileFeedback.type === 'success'
+                                            ? theme.states.success.foreground
+                                            : theme.states.error.foreground}
+                                    />
+                                    <Text
+                                        style={[
+                                            styles.profileFeedbackText,
+                                            profileFeedback.type === 'success'
+                                                ? styles.profileSuccessFeedbackText
+                                                : styles.profileErrorFeedbackText,
+                                        ]}
+                                        accessibilityLiveRegion="polite"
+                                    >
+                                        {profileFeedback.message}
+                                    </Text>
+                                </View>
+                            )}
+
                             <TouchableOpacity
-                                style={styles.saveProfileButton}
+                                style={[
+                                    styles.saveProfileButton,
+                                    profileSaving && styles.saveProfileButtonDisabled,
+                                ]}
                                 onPress={handleSaveProfile}
-                                disabled={profileLoading}
+                                disabled={profileSaving}
                                 activeOpacity={0.9}
+                                accessibilityRole="button"
+                                accessibilityState={{ disabled: profileSaving, busy: profileSaving }}
                             >
-                                <Text style={styles.saveProfileButtonText}>
-                                    {profileLoading ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES'}
+                                {profileSaving && (
+                                    <ActivityIndicator
+                                        size="small"
+                                        color={theme.states.disabled.foreground}
+                                        style={styles.profileSavingIndicator}
+                                        accessibilityLabel="Salvando alterações"
+                                    />
+                                )}
+                                <Text
+                                    style={[
+                                        styles.saveProfileButtonText,
+                                        profileSaving && styles.saveProfileButtonTextDisabled,
+                                    ]}
+                                >
+                                    {profileSaving ? 'SALVANDO...' : 'SALVAR ALTERAÇÕES'}
                                 </Text>
                             </TouchableOpacity>
                         </View>
                     </ScrollView>
+                    )
                 ) : activeItem === 'Explorar' ? (
                     <ScrollView
                         showsVerticalScrollIndicator={false}
@@ -435,7 +615,7 @@ export default function Home() {
                                 <TextInput
                                     value={searchTerm}
                                     onChangeText={setSearchTerm}
-                                    placeholder="Buscar ferramentas"
+                                    placeholder="Buscar furadeira, escada, serra..."
                                     placeholderTextColor={theme.colors.textMuted}
                                     style={styles.searchInput}
                                     autoCapitalize="none"
@@ -465,6 +645,29 @@ export default function Home() {
                                     </TouchableOpacity>
                                 ))}
                             </ScrollView>
+
+                            <View style={styles.dropdownRow}>
+                                <TouchableOpacity
+                                    style={styles.dropdownFilter}
+                                    onPress={() => setShowOnlyAvailable((value) => !value)}
+                                    accessibilityRole="button"
+                                    accessibilityLabel="Filtrar por tipo de anúncio"
+                                >
+                                    <Text style={styles.dropdownLabel}>Tipo de anúncio</Text>
+                                    <Text style={styles.dropdownValue}>{showOnlyAvailable ? 'Disponíveis hoje' : 'Todas as ferramentas'}</Text>
+                                    <MaterialCommunityIcons name="chevron-down" size={17} color={theme.colors.textMuted} />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    style={styles.dropdownFilter}
+                                    onPress={() => setSortOrder(sortOrder === 'menor' ? 'padrao' : 'menor')}
+                                    accessibilityRole="button"
+                                    accessibilityLabel="Ordenar resultados"
+                                >
+                                    <Text style={styles.dropdownLabel}>Ordenar por</Text>
+                                    <Text style={styles.dropdownValue}>{sortOrder === 'menor' ? 'Menor diária' : 'Mais relevantes'}</Text>
+                                    <MaterialCommunityIcons name="chevron-down" size={17} color={theme.colors.textMuted} />
+                                </TouchableOpacity>
+                            </View>
 
                             <View style={styles.priceFiltersRow}>
                                 <View style={styles.priceInputWrap}>
@@ -564,32 +767,61 @@ export default function Home() {
                             </View>
                         ) : (
                             <View style={styles.exploreList}>
+                                <View style={styles.resultsHeader}>
+                                    <View>
+                                        <Text style={styles.resultsTitle}>Ferramentas disponiveis em Palmas</Text>
+                                        <Text style={styles.resultsSummary}>{exploreTools.length} anuncios encontrados</Text>
+                                    </View>
+                                    <View style={styles.viewToggle}>
+                                        <TouchableOpacity style={[styles.viewToggleButton, viewMode === 'list' && styles.viewToggleActive]} onPress={() => setViewMode('list')} accessibilityLabel="Visualizacao em lista">
+                                            <MaterialCommunityIcons name="format-list-bulleted" size={20} color={viewMode === 'list' ? theme.colors.primary : theme.colors.textMuted} />
+                                        </TouchableOpacity>
+                                        <TouchableOpacity style={[styles.viewToggleButton, viewMode === 'grid' && styles.viewToggleActive]} onPress={() => setViewMode('grid')} accessibilityLabel="Visualizacao em grade">
+                                            <MaterialCommunityIcons name="view-grid-outline" size={20} color={viewMode === 'grid' ? theme.colors.primary : theme.colors.textMuted} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
                                 <Text style={styles.resultsSummary}>{exploreTools.length} anúncio{exploreTools.length === 1 ? '' : 's'} encontrado{exploreTools.length === 1 ? '' : 's'}</Text>
-                                {exploreTools.map((tool) => {
+                                <View style={viewMode === 'grid' ? styles.gridList : styles.listList}>
+                                {exploreTools.map((tool, index) => {
                                     const cover = (tool.fotos ?? [])
                                         .map((foto) => getSafeImageUrl(foto.url))
                                         .find((url): url is string => Boolean(url));
                                     const categoryName = categories.find((category) => category.id === tool.categoria_id)?.nome ?? 'Categoria';
+                                    const isExampleData = /^(a+|b+|furadeira)$/i.test(tool.nome.trim());
+                                    const presentation = isExampleData
+                                        ? sampleToolPresentations[index % sampleToolPresentations.length]
+                                        : { nome: tool.nome, descricao: tool.descricao };
+                                    const displayedTool = isExampleData
+                                        ? { ...tool, nome: presentation.nome, descricao: presentation.descricao }
+                                        : tool;
 
                                     return (
                                         <TouchableOpacity
                                             key={tool.id}
-                                            style={styles.toolCard}
+                                            style={[styles.toolCard, viewMode === 'grid' && styles.toolCardGrid]}
                                             activeOpacity={0.9}
-                                            onPress={() => openToolDetails(tool)}
+                                            onPress={() => openToolDetails(displayedTool)}
                                         >
                                             {cover ? (
-                                                <Image source={{ uri: cover }} style={styles.toolImage} resizeMode="cover" />
+                                                <Image source={{ uri: cover }} style={[styles.toolImage, viewMode === 'grid' && styles.toolImageGrid]} resizeMode="cover" />
                                             ) : (
-                                                <View style={[styles.toolImage, styles.placeholderImage]}>
+                                                <View style={[styles.toolImage, viewMode === 'grid' && styles.toolImageGrid, styles.placeholderImage]}>
                                                     <MaterialCommunityIcons name="wrench-outline" size={30} color={theme.colors.primary} />
                                                 </View>
                                             )}
 
+                                            <TouchableOpacity style={styles.favoriteButton} onPress={() => toggleFavorite(tool.id)} accessibilityLabel={favoriteTools.includes(tool.id) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}>
+                                                <MaterialCommunityIcons name={favoriteTools.includes(tool.id) ? 'heart' : 'heart-outline'} size={20} color={favoriteTools.includes(tool.id) ? theme.colors.danger : theme.colors.text} />
+                                            </TouchableOpacity>
                                             <View style={styles.toolBody}>
-                                                <Text style={styles.toolTitle}>{tool.nome}</Text>
+                                                <Text style={styles.toolTitle}>{presentation.nome}</Text>
+                                                <Text style={styles.toolDescription}>{presentation.descricao}</Text>
                                                 <Text style={styles.toolMeta}>{tool.marca} • {tool.modelo}</Text>
-                                                <Text style={styles.toolPrice}>R$ {Number(tool.preco_diaria).toFixed(2)}/dia</Text>
+                                                <Text style={styles.toolPrice}>R$ {Number(tool.preco_diaria).toFixed(2)} / dia</Text>
+                                                <Text style={styles.toolCondition}>{tool.exige_caucao ? 'Caucao opcional' : 'Sem caucao'} • Aluguel por diaria ou pacote semanal</Text>
+                                                <View style={styles.ownerRow}><View style={styles.onlineDot} /><Text style={styles.ownerText}>Locador ToolRent • 5.0 ★</Text></View>
+                                                <Text style={styles.toolFooter}><MaterialCommunityIcons name="map-marker-outline" size={14} color={theme.colors.textMuted} /> Palmas, Plano Diretor • Hoje</Text>
                                                 <View style={styles.badgeRow}>
                                                     <Text style={styles.badge}>{tool.disponibilidade ? 'Disponível' : 'Indisponível'}</Text>
                                                     <Text style={styles.badgeSecondary}>{categoryName}</Text>
@@ -598,6 +830,7 @@ export default function Home() {
                                         </TouchableOpacity>
                                     );
                                 })}
+                                </View>
                             </View>
                         )}
                     </ScrollView>
@@ -640,19 +873,44 @@ const styles = StyleSheet.create({
         position: 'relative',
         zIndex: 10,
     },
+    headerLocation: {
+        alignItems: 'center',
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.borderSubtle,
+        borderRadius: theme.radius.pill,
+        borderWidth: 1,
+        flexDirection: 'row',
+        gap: theme.spacing.xxs,
+        paddingHorizontal: theme.spacing.sm,
+        paddingVertical: theme.spacing.xs,
+        flexShrink: 1,
+    },
+    locationText: {
+        color: theme.colors.text,
+        fontSize: theme.typography.caption,
+        fontWeight: theme.typography.weight.semiBold,
+    },
+    headerCopy: {
+        alignItems: 'center',
+        flex: 1,
+        marginHorizontal: theme.spacing.sm,
+    },
     greeting: {
         color: theme.colors.primary,
         fontSize: theme.typography.caption,
         fontWeight: theme.typography.weight.bold,
         letterSpacing: 1,
         marginBottom: theme.spacing.xxs,
+        textAlign: 'center',
     },
     title: {
         color: theme.colors.text,
         fontSize: theme.typography.title,
         fontWeight: theme.typography.weight.bold,
+        textAlign: 'center',
     },
     headerActions: {
+        alignItems: 'flex-end',
         position: 'relative',
         zIndex: 30,
     },
@@ -704,10 +962,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: theme.colors.surface,
         borderColor: theme.colors.border,
-        borderRadius: theme.radius.medium,
+        borderRadius: theme.radius.pill,
         borderWidth: 1,
         flexDirection: 'row',
-        height: 52,
+        height: 56,
         paddingHorizontal: theme.spacing.md,
         zIndex: 1,
     },
@@ -721,7 +979,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.surface,
         borderRadius: theme.radius.card,
         marginBottom: theme.spacing.sm,
-        padding: theme.spacing.sm,
+        padding: theme.spacing.md,
     },
     filterRow: {
         gap: theme.spacing.xs,
@@ -734,6 +992,10 @@ const styles = StyleSheet.create({
         marginRight: theme.spacing.xs,
         paddingHorizontal: theme.spacing.sm,
         paddingVertical: theme.spacing.xs,
+        minHeight: 40,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: theme.spacing.xxs,
     },
     filterChipActive: {
         backgroundColor: theme.colors.primary,
@@ -751,6 +1013,36 @@ const styles = StyleSheet.create({
         gap: theme.spacing.xs,
         marginTop: theme.spacing.sm,
     },
+    dropdownRow: {
+        flexDirection: 'row',
+        gap: theme.spacing.xs,
+        marginTop: theme.spacing.md,
+    },
+    dropdownFilter: {
+        alignItems: 'center',
+        backgroundColor: theme.colors.surfaceSubtle,
+        borderColor: theme.colors.borderSubtle,
+        borderRadius: theme.radius.large,
+        borderWidth: 1,
+        flex: 1,
+        flexDirection: 'row',
+        minHeight: 56,
+        paddingHorizontal: theme.spacing.sm,
+    },
+    dropdownLabel: {
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.tiny,
+        left: theme.spacing.sm,
+        position: 'absolute',
+        top: theme.spacing.xs,
+    },
+    dropdownValue: {
+        color: theme.colors.text,
+        flex: 1,
+        fontSize: theme.typography.caption,
+        fontWeight: theme.typography.weight.semiBold,
+        marginTop: theme.spacing.sm,
+    },
     priceInputWrap: {
         flex: 1,
     },
@@ -763,18 +1055,19 @@ const styles = StyleSheet.create({
     priceInput: {
         backgroundColor: theme.colors.surfaceSubtle,
         borderColor: theme.colors.border,
-        borderRadius: theme.radius.medium,
+        borderRadius: theme.radius.large,
         borderWidth: 1,
         color: theme.colors.text,
         fontSize: theme.typography.label,
         paddingHorizontal: theme.spacing.sm,
-        paddingVertical: theme.spacing.xs,
+        minHeight: 48,
+        paddingVertical: theme.spacing.sm,
     },
     optionsRow: {
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: theme.spacing.sm,
+        marginTop: theme.spacing.md,
     },
     toggleButton: {
         alignItems: 'center',
@@ -812,6 +1105,43 @@ const styles = StyleSheet.create({
     profileScrollContent: {
         paddingBottom: theme.spacing.md,
     },
+    profileLoadState: {
+        alignItems: 'center',
+        flex: 1,
+        gap: theme.spacing.sm,
+        justifyContent: 'center',
+        minHeight: 220,
+        padding: theme.spacing.lg,
+    },
+    profileStateText: {
+        color: theme.colors.textSecondary,
+        fontSize: theme.typography.body,
+        textAlign: 'center',
+    },
+    profileErrorCard: {
+        alignItems: 'center',
+        backgroundColor: theme.states.error.background,
+        borderColor: theme.states.error.border,
+        borderRadius: theme.radius.card,
+        borderWidth: 1,
+        gap: theme.spacing.sm,
+        marginTop: theme.spacing.md,
+        padding: theme.spacing.lg,
+    },
+    profileRetryButton: {
+        alignItems: 'center',
+        backgroundColor: theme.colors.primary,
+        borderRadius: theme.radius.medium,
+        justifyContent: 'center',
+        marginTop: theme.spacing.xs,
+        minHeight: 44,
+        paddingHorizontal: theme.spacing.md,
+    },
+    profileRetryButtonText: {
+        color: theme.colors.surface,
+        fontSize: theme.typography.caption,
+        fontWeight: theme.typography.weight.bold,
+    },
     profileCard: {
         backgroundColor: theme.colors.surface,
         borderRadius: theme.radius.card,
@@ -827,6 +1157,34 @@ const styles = StyleSheet.create({
         fontSize: theme.typography.label,
         marginBottom: theme.spacing.md,
         marginTop: theme.spacing.xxs,
+    },
+    profileFeedback: {
+        alignItems: 'center',
+        borderRadius: theme.radius.medium,
+        borderWidth: 1,
+        flexDirection: 'row',
+        gap: theme.spacing.xs,
+        marginBottom: theme.spacing.sm,
+        padding: theme.spacing.sm,
+    },
+    profileSuccessFeedback: {
+        backgroundColor: theme.states.success.background,
+        borderColor: theme.states.success.border,
+    },
+    profileErrorFeedback: {
+        backgroundColor: theme.states.error.background,
+        borderColor: theme.states.error.border,
+    },
+    profileFeedbackText: {
+        flex: 1,
+        fontSize: theme.typography.small,
+        lineHeight: 19,
+    },
+    profileSuccessFeedbackText: {
+        color: theme.states.success.foreground,
+    },
+    profileErrorFeedbackText: {
+        color: theme.states.error.foreground,
     },
     input: {
         backgroundColor: theme.colors.surfaceSubtle,
@@ -850,19 +1208,32 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: theme.colors.primary,
         borderRadius: theme.radius.large,
+        flexDirection: 'row',
+        justifyContent: 'center',
         marginTop: theme.spacing.xs,
-        paddingVertical: theme.spacing.sm,
+        minHeight: 48,
+        paddingHorizontal: theme.spacing.md,
     },
     saveProfileButtonText: {
         color: theme.colors.surface,
         fontSize: theme.typography.label,
         fontWeight: theme.typography.weight.bold,
     },
+    saveProfileButtonDisabled: {
+        backgroundColor: theme.states.disabled.background,
+    },
+    saveProfileButtonTextDisabled: {
+        color: theme.states.disabled.foreground,
+    },
+    profileSavingIndicator: {
+        marginRight: theme.spacing.xs,
+    },
     sortRow: {
         flexDirection: 'row',
         flexWrap: 'wrap',
         gap: theme.spacing.xs,
         marginTop: theme.spacing.sm,
+        display: 'none',
     },
     sortChip: {
         backgroundColor: theme.states.disabled.background,
@@ -890,9 +1261,50 @@ const styles = StyleSheet.create({
     exploreList: {
         paddingBottom: theme.spacing.md,
     },
+    resultsHeader: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: theme.spacing.sm,
+    },
+    listList: {
+        width: '100%',
+    },
+    gridList: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: theme.spacing.sm,
+        justifyContent: 'space-between',
+    },
+    resultsTitle: {
+        color: theme.colors.text,
+        fontSize: theme.typography.subtitle,
+        fontWeight: theme.typography.weight.bold,
+    },
+    viewToggle: {
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.borderSubtle,
+        borderRadius: theme.radius.medium,
+        borderWidth: 1,
+        flexDirection: 'row',
+        padding: theme.spacing.xxs,
+    },
+    viewToggleButton: {
+        alignItems: 'center',
+        borderRadius: theme.radius.small,
+        height: 40,
+        justifyContent: 'center',
+        width: 40,
+    },
+    viewToggleActive: {
+        backgroundColor: theme.colors.primarySoft,
+    },
     toolCard: {
+        borderColor: theme.colors.borderSubtle,
+        borderWidth: 1,
         backgroundColor: theme.colors.surface,
         borderRadius: theme.radius.card,
+        flexDirection: 'row',
         marginBottom: theme.spacing.sm,
         overflow: 'hidden',
         shadowColor: theme.colors.shadow,
@@ -900,8 +1312,31 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.08,
         shadowRadius: 6,
     },
+    toolCardGrid: {
+        flexDirection: 'column',
+        marginBottom: 0,
+        width: '48%',
+    },
+    toolCardGridImage: {
+        width: '100%',
+    },
+    favoriteButton: {
+        alignItems: 'center',
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.radius.pill,
+        height: 40,
+        justifyContent: 'center',
+        position: 'absolute',
+        right: theme.spacing.sm,
+        top: theme.spacing.sm,
+        width: 40,
+        zIndex: 2,
+    },
     toolImage: {
         height: 150,
+        width: '38%',
+    },
+    toolImageGrid: {
         width: '100%',
     },
     placeholderImage: {
@@ -910,6 +1345,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     toolBody: {
+        flex: 1,
         padding: theme.spacing.sm,
     },
     toolTitle: {
@@ -922,11 +1358,45 @@ const styles = StyleSheet.create({
         fontSize: theme.typography.small,
         marginTop: theme.spacing.xxs,
     },
+    toolDescription: {
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.caption,
+        lineHeight: 17,
+        marginTop: theme.spacing.xxs,
+    },
     toolPrice: {
         color: theme.colors.primary,
         fontSize: theme.typography.bodyLarge,
         fontWeight: theme.typography.weight.bold,
         marginTop: theme.spacing.xs,
+    },
+    toolCondition: {
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.caption,
+        marginTop: theme.spacing.xs,
+    },
+    ownerRow: {
+        alignItems: 'center',
+        flexDirection: 'row',
+        marginTop: theme.spacing.sm,
+    },
+    onlineDot: {
+        backgroundColor: theme.colors.success,
+        borderRadius: theme.radius.pill,
+        height: 8,
+        marginRight: theme.spacing.xs,
+        width: 8,
+    },
+    ownerText: {
+        color: theme.colors.textSecondary,
+        fontSize: theme.typography.caption,
+        fontWeight: theme.typography.weight.semiBold,
+    },
+    toolFooter: {
+        alignItems: 'center',
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.tiny,
+        marginTop: theme.spacing.sm,
     },
     badgeRow: {
         alignItems: 'center',
