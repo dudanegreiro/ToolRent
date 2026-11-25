@@ -1,5 +1,6 @@
 import { atualizarFerramenta, excluirFerramenta } from '@/services/api';
 import { getSession } from '@/services/session';
+import { theme } from '@/theme';
 import { goBackOrHome } from '@/utils/navigation';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
@@ -347,16 +348,142 @@ function EditToolForm({
     );
 }
 
+function parseRentalDate(value: string) {
+    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
+    if (!match) return null;
+
+    const date = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    return date.getFullYear() === Number(match[1])
+        && date.getMonth() === Number(match[2]) - 1
+        && date.getDate() === Number(match[3])
+        ? date
+        : null;
+}
+
+function RentalRequestCard({
+    price,
+    weeklyPrice,
+    minimumPeriod,
+    available,
+    isOwner,
+}: {
+    price: number;
+    weeklyPrice: number;
+    minimumPeriod: number;
+    available: boolean;
+    isOwner: boolean;
+}) {
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
+    const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+
+    const start = parseRentalDate(startDate);
+    const end = parseRentalDate(endDate);
+    const days = start && end ? Math.floor((end.getTime() - start.getTime()) / 86400000) + 1 : 0;
+    const periodIsValid = days >= minimumPeriod;
+    const usesWeeklyRate = days >= 7 && weeklyPrice > 0;
+    const total = usesWeeklyRate
+        ? Math.floor(days / 7) * weeklyPrice + (days % 7) * price
+        : days * price;
+    const canConfirm = Boolean(start && end && days > 0 && periodIsValid && available && !isOwner);
+
+    const confirmRental = () => {
+        if (!available) {
+            setFeedback({ type: 'error', message: 'Esta ferramenta não está disponível para aluguel no momento.' });
+            return;
+        }
+
+        if (!start || !end || days <= 0) {
+            setFeedback({ type: 'error', message: 'Informe datas válidas de início e fim.' });
+            return;
+        }
+
+        if (!periodIsValid) {
+            setFeedback({ type: 'error', message: `O período mínimo para esta ferramenta é de ${minimumPeriod} ${minimumPeriod === 1 ? 'dia' : 'dias'}.` });
+            return;
+        }
+
+        setFeedback({ type: 'success', message: 'Solicitação preparada com sucesso. O locador receberá seu pedido para confirmação.' });
+    };
+
+    return (
+        <View style={styles.rentalCard} accessibilityLabel="Solicitar aluguel">
+            <View style={styles.rentalHeader}>
+                <View>
+                    <Text style={styles.sectionTitle}>Solicitar aluguel</Text>
+                    <Text style={styles.rentalHint}>Escolha o período desejado para ver o valor estimado.</Text>
+                </View>
+                <MaterialCommunityIcons name="calendar-range-outline" size={24} color={theme.colors.primary} />
+            </View>
+
+            <View style={styles.dateRow}>
+                <View style={styles.dateField}>
+                    <Text style={styles.rentalLabel}>Início</Text>
+                    <TextInput
+                        value={startDate}
+                        onChangeText={(value) => { setStartDate(value); setFeedback(null); }}
+                        placeholder="AAAA-MM-DD"
+                        placeholderTextColor={theme.colors.textMuted}
+                        keyboardType="numbers-and-punctuation"
+                        style={styles.dateInput}
+                        accessibilityLabel="Data de início no formato ano mês dia"
+                    />
+                </View>
+                <View style={styles.dateField}>
+                    <Text style={styles.rentalLabel}>Fim</Text>
+                    <TextInput
+                        value={endDate}
+                        onChangeText={(value) => { setEndDate(value); setFeedback(null); }}
+                        placeholder="AAAA-MM-DD"
+                        placeholderTextColor={theme.colors.textMuted}
+                        keyboardType="numbers-and-punctuation"
+                        style={styles.dateInput}
+                        accessibilityLabel="Data de fim no formato ano mês dia"
+                    />
+                </View>
+            </View>
+
+            <Text style={styles.dateHelp}>Use o formato AAAA-MM-DD. O período mínimo é de {minimumPeriod} {minimumPeriod === 1 ? 'dia' : 'dias'}.</Text>
+
+            <View style={styles.rentalSummary} accessibilityLiveRegion="polite">
+                <Text style={styles.summaryLabel}>Resumo do aluguel</Text>
+                <View style={styles.summaryRow}><Text style={styles.summaryText}>Período</Text><Text style={styles.summaryValue}>{days > 0 ? `${days} ${days === 1 ? 'dia' : 'dias'}` : 'Selecione as datas'}</Text></View>
+                <View style={styles.summaryRow}><Text style={styles.summaryText}>Valor estimado</Text><Text style={styles.summaryTotal}>{days > 0 ? `R$ ${total.toFixed(2)}` : '—'}</Text></View>
+                {usesWeeklyRate && <Text style={styles.weeklyHint}>Inclui o preço semanal para os períodos completos de 7 dias.</Text>}
+            </View>
+
+            {feedback && (
+                <View style={[styles.rentalFeedback, feedback.type === 'success' ? styles.successFeedback : styles.errorFeedback]} accessibilityRole={feedback.type === 'error' ? 'alert' : 'text'}>
+                    <MaterialCommunityIcons name={feedback.type === 'success' ? 'check-circle-outline' : 'alert-circle-outline'} size={20} color={feedback.type === 'success' ? theme.states.success.foreground : theme.states.error.foreground} />
+                    <Text style={[styles.feedbackText, feedback.type === 'success' ? styles.successFeedbackText : styles.errorFeedbackText]}>{feedback.message}</Text>
+                </View>
+            )}
+
+            <TouchableOpacity
+                style={[styles.confirmButton, !canConfirm && styles.confirmButtonDisabled]}
+                onPress={confirmRental}
+                disabled={isOwner}
+                accessibilityRole="button"
+                accessibilityState={{ disabled: isOwner }}
+            >
+                <Text style={[styles.confirmButtonText, !canConfirm && styles.confirmButtonTextDisabled]}>{isOwner ? 'Você é o proprietário' : 'Confirmar solicitação'}</Text>
+            </TouchableOpacity>
+        </View>
+    );
+}
+
 function ToolDetailsView({
     params,
     price,
     period,
     cancellationMeaning,
+    isOwner,
 }: {
     params: ToolDetailParams;
     price: number;
     period: number;
     cancellationMeaning: Record<string, string>;
+    isOwner: boolean;
 }) {
     const infoRows = [
         ['Categoria', params.categoria_nome || 'Não informado'],
@@ -377,6 +504,14 @@ function ToolDetailsView({
                 <Text style={styles.priceLabel}>Valor da diária</Text>
                 <Text style={styles.priceText}>R$ {price.toFixed(2)}</Text>
             </View>
+
+            <RentalRequestCard
+                price={price}
+                weeklyPrice={Number(params.preco_semanal ?? 0)}
+                minimumPeriod={period}
+                available={params.disponibilidade !== 'false'}
+                isOwner={isOwner}
+            />
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Informações</Text>
@@ -686,6 +821,7 @@ export default function FerramentaDetalhes() {
                         price={price}
                         period={period}
                         cancellationMeaning={cancellationMeaning}
+                        isOwner={isOwner}
                     />
                 )}
             </ScrollView>
@@ -969,6 +1105,139 @@ const styles = StyleSheet.create({
         fontSize: 28,
         fontWeight: '700',
         marginTop: 6,
+    },
+    rentalCard: {
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.borderSubtle,
+        borderRadius: theme.radius.card,
+        borderWidth: 1,
+        marginTop: theme.spacing.md,
+        padding: theme.spacing.md,
+    },
+    rentalHeader: {
+        alignItems: 'flex-start',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    rentalHint: {
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.caption,
+        lineHeight: 18,
+        maxWidth: 280,
+    },
+    dateRow: {
+        flexDirection: 'row',
+        gap: theme.spacing.sm,
+        marginTop: theme.spacing.md,
+    },
+    dateField: {
+        flex: 1,
+    },
+    rentalLabel: {
+        color: theme.colors.textSecondary,
+        fontSize: theme.typography.label,
+        fontWeight: theme.typography.weight.semiBold,
+        marginBottom: theme.spacing.xxs,
+    },
+    dateInput: {
+        backgroundColor: theme.colors.surfaceSubtle,
+        borderColor: theme.colors.border,
+        borderRadius: theme.radius.large,
+        borderWidth: 1,
+        color: theme.colors.text,
+        fontSize: theme.typography.caption,
+        minHeight: 48,
+        paddingHorizontal: theme.spacing.sm,
+    },
+    dateHelp: {
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.tiny,
+        lineHeight: 16,
+        marginTop: theme.spacing.xs,
+    },
+    rentalSummary: {
+        backgroundColor: theme.colors.surfaceSubtle,
+        borderRadius: theme.radius.large,
+        marginTop: theme.spacing.md,
+        padding: theme.spacing.sm,
+    },
+    summaryLabel: {
+        color: theme.colors.text,
+        fontSize: theme.typography.label,
+        fontWeight: theme.typography.weight.bold,
+        marginBottom: theme.spacing.xs,
+    },
+    summaryRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingVertical: theme.spacing.xxs,
+    },
+    summaryText: {
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.body,
+    },
+    summaryValue: {
+        color: theme.colors.text,
+        fontSize: theme.typography.body,
+        fontWeight: theme.typography.weight.semiBold,
+    },
+    summaryTotal: {
+        color: theme.colors.primary,
+        fontSize: theme.typography.subtitle,
+        fontWeight: theme.typography.weight.bold,
+    },
+    weeklyHint: {
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.tiny,
+        marginTop: theme.spacing.xxs,
+    },
+    rentalFeedback: {
+        alignItems: 'flex-start',
+        borderRadius: theme.radius.large,
+        borderWidth: 1,
+        flexDirection: 'row',
+        gap: theme.spacing.xs,
+        marginTop: theme.spacing.sm,
+        padding: theme.spacing.sm,
+    },
+    successFeedback: {
+        backgroundColor: theme.states.success.background,
+        borderColor: theme.states.success.border,
+    },
+    errorFeedback: {
+        backgroundColor: theme.states.error.background,
+        borderColor: theme.states.error.border,
+    },
+    feedbackText: {
+        flex: 1,
+        fontSize: theme.typography.small,
+        lineHeight: 19,
+    },
+    successFeedbackText: {
+        color: theme.states.success.foreground,
+    },
+    errorFeedbackText: {
+        color: theme.states.error.foreground,
+    },
+    confirmButton: {
+        alignItems: 'center',
+        backgroundColor: theme.colors.primary,
+        borderRadius: theme.radius.large,
+        justifyContent: 'center',
+        marginTop: theme.spacing.md,
+        minHeight: 48,
+        paddingHorizontal: theme.spacing.md,
+    },
+    confirmButtonDisabled: {
+        backgroundColor: theme.states.disabled.background,
+    },
+    confirmButtonText: {
+        color: theme.colors.surface,
+        fontSize: theme.typography.label,
+        fontWeight: theme.typography.weight.bold,
+    },
+    confirmButtonTextDisabled: {
+        color: theme.states.disabled.foreground,
     },
     section: {
         backgroundColor: '#FFFFFF',
