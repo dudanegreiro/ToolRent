@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, Switch, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { tokens } from '@/shared/theme/tokens';
 
 export type MinimumPeriod = 1 | 3 | 7;
 export type CancellationPolicy = 'Flexível' | 'Moderada' | 'Rigorosa';
@@ -53,7 +54,7 @@ export default function PriceForm({
                             onChangeText={onDailyPriceChange}
                             keyboardType="decimal-pad"
                             placeholder="0,00"
-                            placeholderTextColor="#9AA3AD"
+                            placeholderTextColor={tokens.colors.placeholderText}
                         />
                     </View>
                 </View>
@@ -66,7 +67,7 @@ export default function PriceForm({
                             value={weeklyPrice > 0 ? weeklyPrice.toFixed(2).replace('.', ',') : ''}
                             editable={false}
                             placeholder="Calculado"
-                            placeholderTextColor="#9AA3AD"
+                            placeholderTextColor={tokens.colors.placeholderText}
                         />
                     </View>
                     <Text style={styles.helper}>10% de desconto</Text>
@@ -75,7 +76,7 @@ export default function PriceForm({
 
             <View style={styles.estimateCard}>
                 <View style={styles.estimateIcon}>
-                    <MaterialCommunityIcons name="chart-line" size={22} color="#FFB067" />
+                    <MaterialCommunityIcons name="chart-line" size={22} color={tokens.colors.actionHighlight} />
                 </View>
                 <View style={styles.estimateCopy}>
                     <Text style={styles.estimateLabel}>Estimativa de ganhos mensais</Text>
@@ -113,8 +114,8 @@ export default function PriceForm({
                 <Switch
                     value={depositEnabled}
                     onValueChange={onDepositChange}
-                    trackColor={{ false: '#D5DCE3', true: '#F6A36B' }}
-                    thumbColor={depositEnabled ? '#E85D04' : '#FFFFFF'}
+                    trackColor={{ false: tokens.colors.border, true: tokens.colors.actionTrack }}
+                    thumbColor={depositEnabled ? tokens.colors.action : tokens.colors.surface}
                 />
             </View>
 
@@ -151,180 +152,180 @@ export default function PriceForm({
 
 const styles = StyleSheet.create({
     form: {
-        gap: 22,
+        gap: tokens.spacing.lg,
     },
     priceRow: {
         flexDirection: 'row',
-        gap: 12,
+        gap: tokens.spacing.md,
     },
     priceField: {
         flex: 1,
-        gap: 8,
+        gap: tokens.spacing.sm,
     },
     label: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '700',
     },
     currencyInput: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flexDirection: 'row',
         height: 52,
-        paddingLeft: 14,
+        paddingLeft: tokens.spacing.md,
     },
     currency: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 14,
         fontWeight: '700',
     },
     input: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         flex: 1,
         fontSize: 16,
-        paddingHorizontal: 8,
+        paddingHorizontal: tokens.spacing.sm,
     },
     calculatedInput: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
     },
     helper: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 11,
     },
     estimateCard: {
         alignItems: 'center',
-        backgroundColor: '#1F2933',
-        borderRadius: 14,
+        backgroundColor: tokens.colors.estimateSurface,
+        borderRadius: tokens.radii.lg,
         flexDirection: 'row',
-        padding: 18,
+        padding: tokens.spacing.md,
     },
     estimateIcon: {
         alignItems: 'center',
-        backgroundColor: '#4A3324',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.estimateAccent,
+        borderRadius: tokens.radii.lg,
         height: 44,
         justifyContent: 'center',
         width: 44,
     },
     estimateCopy: {
         flex: 1,
-        marginLeft: 12,
+        marginLeft: tokens.spacing.md,
     },
     estimateLabel: {
-        color: '#D5DCE3',
+        color: tokens.colors.border,
         fontSize: 13,
     },
     estimateValue: {
-        color: '#FFFFFF',
+        color: tokens.colors.onAction,
         fontSize: 24,
         fontWeight: '700',
-        marginTop: 4,
+        marginTop: tokens.spacing.xs,
     },
     estimateHint: {
-        color: '#AEB7BF',
+        color: tokens.colors.disabledText,
         fontSize: 11,
-        marginTop: 3,
+        marginTop: tokens.spacing.xs,
     },
     section: {
-        gap: 10,
+        gap: tokens.spacing.sm,
     },
     optionsRow: {
         flexDirection: 'row',
-        gap: 10,
+        gap: tokens.spacing.sm,
     },
     periodOption: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flex: 1,
-        paddingVertical: 12,
+        paddingVertical: tokens.spacing.md,
     },
     selectedOption: {
-        backgroundColor: '#FFF1E8',
-        borderColor: '#E85D04',
+        backgroundColor: tokens.colors.subtleSurface,
+        borderColor: tokens.colors.action,
         borderWidth: 2,
     },
     optionValue: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 17,
         fontWeight: '700',
     },
     optionLabel: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 12,
-        marginTop: 2,
+        marginTop: tokens.spacing.xs,
     },
     selectedText: {
-        color: '#E85D04',
+        color: tokens.colors.action,
     },
     switchRow: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flexDirection: 'row',
-        paddingHorizontal: 14,
-        paddingVertical: 12,
+        paddingHorizontal: tokens.spacing.md,
+        paddingVertical: tokens.spacing.md,
     },
     switchCopy: {
         flex: 1,
     },
     switchHint: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 12,
-        marginTop: 4,
+        marginTop: tokens.spacing.xs,
     },
     policyList: {
-        gap: 8,
+        gap: tokens.spacing.sm,
     },
     policyCard: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: tokens.colors.surface,
+        borderColor: tokens.colors.border,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         flexDirection: 'row',
-        padding: 13,
+        padding: tokens.spacing.md,
     },
     selectedPolicy: {
-        backgroundColor: '#FFF1E8',
-        borderColor: '#E85D04',
+        backgroundColor: tokens.colors.subtleSurface,
+        borderColor: tokens.colors.action,
     },
     radio: {
         alignItems: 'center',
-        borderColor: '#9AA3AD',
-        borderRadius: 10,
+        borderColor: tokens.colors.placeholderText,
+        borderRadius: tokens.radii.lg,
         borderWidth: 1,
         height: 20,
         justifyContent: 'center',
         width: 20,
     },
     selectedRadio: {
-        borderColor: '#E85D04',
+        borderColor: tokens.colors.action,
     },
     radioDot: {
-        backgroundColor: '#E85D04',
-        borderRadius: 5,
+        backgroundColor: tokens.colors.action,
+        borderRadius: tokens.radii.pill,
         height: 10,
         width: 10,
     },
     policyCopy: {
-        marginLeft: 11,
+        marginLeft: tokens.spacing.sm,
     },
     policyLabel: {
-        color: '#1F3D4A',
+        color: tokens.colors.text,
         fontSize: 14,
         fontWeight: '700',
     },
     policyDescription: {
-        color: '#6B7280',
+        color: tokens.colors.supportingText,
         fontSize: 12,
-        marginTop: 3,
+        marginTop: tokens.spacing.xs,
     },
 });
