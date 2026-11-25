@@ -1,5 +1,6 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { theme } from '@/theme';
 
 export type NavigationItem = 'Perfil' | 'Anunciar' | 'Meus anúncios' | 'Explorar';
 
@@ -36,7 +37,7 @@ export default function BottomNavBar({ activeItem, onItemPress }: BottomNavBarPr
                         <MaterialCommunityIcons
                             name={item.icon}
                             size={23}
-                            color={isActive ? '#E85D04' : '#8A8A8A'}
+                            color={isActive ? theme.colors.primary : theme.colors.textMuted}
                         />
                         <Text style={[styles.navLabel, isActive && styles.activeNavLabel]}>
                             {item.label}
@@ -51,13 +52,13 @@ export default function BottomNavBar({ activeItem, onItemPress }: BottomNavBarPr
 const styles = StyleSheet.create({
     navbar: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderTopColor: '#E5E7EB',
+        backgroundColor: theme.colors.surface,
+        borderTopColor: theme.colors.borderSubtle,
         borderTopWidth: 1,
         flexDirection: 'row',
         justifyContent: 'space-around',
         minHeight: 76,
-        paddingHorizontal: 6,
+        paddingHorizontal: theme.spacing.xxs,
         paddingTop: 7,
     },
     navItem: {
@@ -67,13 +68,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     navLabel: {
-        color: '#8A8A8A',
-        fontSize: 11,
-        fontWeight: '600',
-        marginTop: 5,
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.tiny,
+        fontWeight: theme.typography.weight.semiBold,
+        marginTop: theme.spacing.xxs,
         textAlign: 'center',
     },
     activeNavLabel: {
-        color: '#E85D04',
+        color: theme.colors.primary,
     },
 });

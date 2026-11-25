@@ -1,6 +1,7 @@
 import { BottomNavBar, NavigationItem } from '@/components/home';
 import { atualizarUsuario, buscarUsuarioPorId, listarCategorias, listarFerramentas, type Categoria, type Ferramenta } from '@/services/api';
 import { clearSession, getSession, saveSession } from '@/services/session';
+import { theme } from '@/theme';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Href, useLocalSearchParams, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -336,7 +337,7 @@ export default function Home() {
                             activeOpacity={0.8}
                             accessibilityLabel="Abrir configurações"
                         >
-                            <MaterialCommunityIcons name="wrench-outline" size={20} color="#FFFFFF" />
+                            <MaterialCommunityIcons name="wrench-outline" size={20} color={theme.colors.surface} />
                         </TouchableOpacity>
 
                         {menuVisible && (
@@ -346,7 +347,7 @@ export default function Home() {
                                     onPress={handleOpenSettings}
                                     activeOpacity={0.8}
                                 >
-                                    <MaterialCommunityIcons name="cog-outline" size={18} color="#1F3D4A" />
+                                    <MaterialCommunityIcons name="cog-outline" size={18} color={theme.colors.text} />
                                     <Text style={styles.menuItemText}>Configurações</Text>
                                 </TouchableOpacity>
 
@@ -357,9 +358,9 @@ export default function Home() {
                                     disabled={loggingOut}
                                 >
                                     {loggingOut ? (
-                                        <ActivityIndicator size="small" color="#B42318" />
+                                        <ActivityIndicator size="small" color={theme.states.error.foreground} />
                                     ) : (
-                                        <MaterialCommunityIcons name="logout" size={18} color="#B42318" />
+                                        <MaterialCommunityIcons name="logout" size={18} color={theme.states.error.foreground} />
                                     )}
                                     <Text style={[styles.menuItemText, styles.menuItemTextDanger]}>
                                         {loggingOut ? 'Saindo...' : 'Sair'}
@@ -430,12 +431,12 @@ export default function Home() {
                     >
                         <View style={styles.filterBox}>
                             <View style={styles.searchPlaceholder}>
-                                <MaterialCommunityIcons name="magnify" size={22} color="#6B7280" />
+                                <MaterialCommunityIcons name="magnify" size={22} color={theme.colors.textSubtle} />
                                 <TextInput
                                     value={searchTerm}
                                     onChangeText={setSearchTerm}
                                     placeholder="Buscar ferramentas"
-                                    placeholderTextColor="#8A8A8A"
+                                    placeholderTextColor={theme.colors.textMuted}
                                     style={styles.searchInput}
                                     autoCapitalize="none"
                                     autoCorrect={false}
@@ -497,7 +498,7 @@ export default function Home() {
                                     <MaterialCommunityIcons
                                         name={showOnlyAvailable ? 'checkbox-marked' : 'checkbox-blank-outline'}
                                         size={18}
-                                        color={showOnlyAvailable ? '#FFFFFF' : '#E85D04'}
+                                        color={showOnlyAvailable ? theme.colors.surface : theme.colors.primary}
                                     />
                                     <Text style={[styles.toggleButtonText, showOnlyAvailable && styles.toggleButtonTextActive]}>
                                         Apenas disponíveis
@@ -531,25 +532,25 @@ export default function Home() {
 
                         {priceRangeError ? (
                             <View style={styles.inlineWarning}>
-                                <MaterialCommunityIcons name="alert-circle-outline" size={18} color="#B42318" />
+                                <MaterialCommunityIcons name="alert-circle-outline" size={18} color={theme.states.error.foreground} />
                                 <Text style={styles.inlineWarningText}>{priceRangeError}</Text>
                             </View>
                         ) : null}
 
                         {exploreLoading ? (
                             <View style={styles.centeredBox}>
-                                <ActivityIndicator size="large" color="#E85D04" />
+                                <ActivityIndicator size="large" color={theme.colors.primary} />
                                 <Text style={styles.centeredText}>Carregando anúncios...</Text>
                             </View>
                         ) : exploreError ? (
                             <View style={styles.centeredBox}>
-                                <MaterialCommunityIcons name="alert-circle-outline" size={38} color="#E85D04" />
+                                <MaterialCommunityIcons name="alert-circle-outline" size={38} color={theme.colors.primary} />
                                 <Text style={styles.emptyTitle}>Não foi possível carregar</Text>
                                 <Text style={styles.emptySubtitle}>{exploreError}</Text>
                             </View>
                         ) : exploreTools.length === 0 ? (
                             <View style={styles.emptyState}>
-                                <MaterialCommunityIcons name="tools" size={54} color="#E85D04" />
+                                <MaterialCommunityIcons name="tools" size={54} color={theme.colors.primary} />
                                 <Text style={styles.emptyTitle}>
                                     {searchTerm || selectedCategoryId !== null || showOnlyAvailable || minPrice || maxPrice
                                         ? 'Nenhum anúncio encontrado com os filtros atuais.'
@@ -581,7 +582,7 @@ export default function Home() {
                                                 <Image source={{ uri: cover }} style={styles.toolImage} resizeMode="cover" />
                                             ) : (
                                                 <View style={[styles.toolImage, styles.placeholderImage]}>
-                                                    <MaterialCommunityIcons name="wrench-outline" size={30} color="#E85D04" />
+                                                    <MaterialCommunityIcons name="wrench-outline" size={30} color={theme.colors.primary} />
                                                 </View>
                                             )}
 
@@ -602,7 +603,7 @@ export default function Home() {
                     </ScrollView>
                 ) : (
                     <View style={styles.emptyState}>
-                        <MaterialCommunityIcons name="tools" size={54} color="#E85D04" />
+                        <MaterialCommunityIcons name="tools" size={54} color={theme.colors.primary} />
                         <Text style={styles.emptyTitle}>Encontre a ferramenta ideal</Text>
                         <Text style={styles.emptySubtitle}>
                             Explore ferramentas disponíveis para alugar perto de você.
@@ -622,12 +623,12 @@ export default function Home() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F5F7FA',
+        backgroundColor: theme.colors.background,
     },
     content: {
         flex: 1,
-        paddingHorizontal: 24,
-        paddingTop: 24,
+        paddingHorizontal: theme.spacing.lg,
+        paddingTop: theme.spacing.lg,
         position: 'relative',
         zIndex: 1,
     },
@@ -635,21 +636,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 28,
+        marginBottom: theme.spacing.xl,
         position: 'relative',
         zIndex: 10,
     },
     greeting: {
-        color: '#E85D04',
-        fontSize: 12,
-        fontWeight: '700',
+        color: theme.colors.primary,
+        fontSize: theme.typography.caption,
+        fontWeight: theme.typography.weight.bold,
         letterSpacing: 1,
-        marginBottom: 6,
+        marginBottom: theme.spacing.xxs,
     },
     title: {
-        color: '#1F3D4A',
-        fontSize: 24,
-        fontWeight: 'bold',
+        color: theme.colors.text,
+        fontSize: theme.typography.title,
+        fontWeight: theme.typography.weight.bold,
     },
     headerActions: {
         position: 'relative',
@@ -657,20 +658,20 @@ const styles = StyleSheet.create({
     },
     logo: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
+        backgroundColor: theme.colors.primary,
+        borderRadius: theme.radius.medium,
         height: 44,
         justifyContent: 'center',
         width: 44,
     },
     menuCard: {
-        backgroundColor: '#FFFFFF',
-        borderColor: '#E5E7EB',
-        borderRadius: 12,
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.borderSubtle,
+        borderRadius: theme.radius.large,
         borderWidth: 1,
-        boxShadow: '0px 4px 10px rgba(17, 24, 39, 0.12)',
+        boxShadow: theme.shadows.card,
         elevation: 20,
-        paddingVertical: 8,
+        paddingVertical: theme.spacing.xs,
         position: 'absolute',
         right: 0,
         top: 54,
@@ -680,221 +681,221 @@ const styles = StyleSheet.create({
     menuItem: {
         alignItems: 'center',
         flexDirection: 'row',
-        gap: 10,
-        paddingHorizontal: 14,
-        paddingVertical: 12,
+        gap: theme.spacing.xs,
+        paddingHorizontal: theme.spacing.sm,
+        paddingVertical: theme.spacing.sm,
     },
     menuItemDanger: {
-        borderTopColor: '#F1F5F9',
+        borderTopColor: theme.colors.borderSubtle,
         borderTopWidth: 1,
     },
     menuItemDisabled: {
-        opacity: 0.7,
+        backgroundColor: theme.states.disabled.background,
     },
     menuItemText: {
-        color: '#1F3D4A',
-        fontSize: 14,
-        fontWeight: '600',
+        color: theme.colors.text,
+        fontSize: theme.typography.label,
+        fontWeight: theme.typography.weight.semiBold,
     },
     menuItemTextDanger: {
-        color: '#B42318',
+        color: theme.states.error.foreground,
     },
     searchPlaceholder: {
         alignItems: 'center',
-        backgroundColor: '#FFFFFF',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.border,
+        borderRadius: theme.radius.medium,
         borderWidth: 1,
         flexDirection: 'row',
         height: 52,
-        paddingHorizontal: 16,
+        paddingHorizontal: theme.spacing.md,
         zIndex: 1,
     },
     searchInput: {
-        color: '#1F3D4A',
+        color: theme.colors.text,
         flex: 1,
-        fontSize: 15,
-        marginLeft: 10,
+        fontSize: theme.typography.body,
+        marginLeft: theme.spacing.xs,
     },
     filterBox: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        marginBottom: 14,
-        padding: 12,
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.radius.card,
+        marginBottom: theme.spacing.sm,
+        padding: theme.spacing.sm,
     },
     filterRow: {
-        gap: 8,
-        marginTop: 12,
-        paddingRight: 8,
+        gap: theme.spacing.xs,
+        marginTop: theme.spacing.sm,
+        paddingRight: theme.spacing.xs,
     },
     filterChip: {
-        backgroundColor: '#F3F4F6',
-        borderRadius: 999,
-        marginRight: 8,
-        paddingHorizontal: 12,
-        paddingVertical: 8,
+        backgroundColor: theme.states.disabled.background,
+        borderRadius: theme.radius.pill,
+        marginRight: theme.spacing.xs,
+        paddingHorizontal: theme.spacing.sm,
+        paddingVertical: theme.spacing.xs,
     },
     filterChipActive: {
-        backgroundColor: '#E85D04',
+        backgroundColor: theme.colors.primary,
     },
     filterChipText: {
-        color: '#374151',
-        fontSize: 12,
-        fontWeight: '700',
+        color: theme.colors.textSecondary,
+        fontSize: theme.typography.caption,
+        fontWeight: theme.typography.weight.bold,
     },
     filterChipTextActive: {
-        color: '#FFFFFF',
+        color: theme.colors.surface,
     },
     priceFiltersRow: {
         flexDirection: 'row',
-        gap: 10,
-        marginTop: 12,
+        gap: theme.spacing.xs,
+        marginTop: theme.spacing.sm,
     },
     priceInputWrap: {
         flex: 1,
     },
     fieldLabel: {
-        color: '#475467',
-        fontSize: 12,
-        fontWeight: '600',
-        marginBottom: 6,
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.caption,
+        fontWeight: theme.typography.weight.semiBold,
+        marginBottom: theme.spacing.xxs,
     },
     priceInput: {
-        backgroundColor: '#F9FAFB',
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
+        backgroundColor: theme.colors.surfaceSubtle,
+        borderColor: theme.colors.border,
+        borderRadius: theme.radius.medium,
         borderWidth: 1,
-        color: '#1F3D4A',
-        fontSize: 14,
-        paddingHorizontal: 12,
-        paddingVertical: 10,
+        color: theme.colors.text,
+        fontSize: theme.typography.label,
+        paddingHorizontal: theme.spacing.sm,
+        paddingVertical: theme.spacing.xs,
     },
     optionsRow: {
         alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginTop: 12,
+        marginTop: theme.spacing.sm,
     },
     toggleButton: {
         alignItems: 'center',
-        backgroundColor: '#FFF4EC',
-        borderColor: '#F7C7A4',
-        borderRadius: 10,
+        backgroundColor: theme.colors.primarySoft,
+        borderColor: theme.colors.primaryBorder,
+        borderRadius: theme.radius.medium,
         borderWidth: 1,
         flexDirection: 'row',
         justifyContent: 'center',
-        paddingHorizontal: 12,
-        paddingVertical: 10,
+        paddingHorizontal: theme.spacing.sm,
+        paddingVertical: theme.spacing.xs,
     },
     toggleButtonActive: {
-        backgroundColor: '#E85D04',
-        borderColor: '#E85D04',
+        backgroundColor: theme.colors.primary,
+        borderColor: theme.colors.primary,
     },
     toggleButtonText: {
-        color: '#E85D04',
-        fontSize: 13,
-        fontWeight: '700',
-        marginLeft: 8,
+        color: theme.colors.primary,
+        fontSize: theme.typography.small,
+        fontWeight: theme.typography.weight.bold,
+        marginLeft: theme.spacing.xs,
     },
     toggleButtonTextActive: {
-        color: '#FFFFFF',
+        color: theme.colors.surface,
     },
     clearButton: {
-        paddingHorizontal: 10,
-        paddingVertical: 8,
+        paddingHorizontal: theme.spacing.xs,
+        paddingVertical: theme.spacing.xs,
     },
     clearButtonText: {
-        color: '#475467',
-        fontSize: 12,
-        fontWeight: '700',
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.caption,
+        fontWeight: theme.typography.weight.bold,
     },
     profileScrollContent: {
-        paddingBottom: 20,
+        paddingBottom: theme.spacing.md,
     },
     profileCard: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 18,
-        padding: 18,
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.radius.card,
+        padding: theme.spacing.md,
     },
     profileTitle: {
-        color: '#1F3D4A',
-        fontSize: 24,
-        fontWeight: '700',
+        color: theme.colors.text,
+        fontSize: theme.typography.title,
+        fontWeight: theme.typography.weight.bold,
     },
     profileSubtitle: {
-        color: '#6B7280',
-        fontSize: 14,
-        marginBottom: 18,
-        marginTop: 6,
+        color: theme.colors.textSubtle,
+        fontSize: theme.typography.label,
+        marginBottom: theme.spacing.md,
+        marginTop: theme.spacing.xxs,
     },
     input: {
-        backgroundColor: '#F9FAFB',
-        borderColor: '#D5DCE3',
-        borderRadius: 12,
+        backgroundColor: theme.colors.surfaceSubtle,
+        borderColor: theme.colors.border,
+        borderRadius: theme.radius.large,
         borderWidth: 1,
-        color: '#1F3D4A',
-        fontSize: 15,
-        marginBottom: 14,
-        paddingHorizontal: 14,
-        paddingVertical: 12,
+        color: theme.colors.text,
+        fontSize: theme.typography.body,
+        marginBottom: theme.spacing.sm,
+        paddingHorizontal: theme.spacing.sm,
+        paddingVertical: theme.spacing.sm,
     },
     disabledInput: {
         justifyContent: 'center',
     },
     disabledInputText: {
-        color: '#6B7280',
-        fontSize: 15,
+        color: theme.colors.textSubtle,
+        fontSize: theme.typography.body,
     },
     saveProfileButton: {
         alignItems: 'center',
-        backgroundColor: '#E85D04',
-        borderRadius: 12,
-        marginTop: 8,
-        paddingVertical: 14,
+        backgroundColor: theme.colors.primary,
+        borderRadius: theme.radius.large,
+        marginTop: theme.spacing.xs,
+        paddingVertical: theme.spacing.sm,
     },
     saveProfileButtonText: {
-        color: '#FFFFFF',
-        fontSize: 14,
-        fontWeight: '700',
+        color: theme.colors.surface,
+        fontSize: theme.typography.label,
+        fontWeight: theme.typography.weight.bold,
     },
     sortRow: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        gap: 8,
-        marginTop: 12,
+        gap: theme.spacing.xs,
+        marginTop: theme.spacing.sm,
     },
     sortChip: {
-        backgroundColor: '#F3F4F6',
-        borderRadius: 999,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
+        backgroundColor: theme.states.disabled.background,
+        borderRadius: theme.radius.pill,
+        paddingHorizontal: theme.spacing.xs,
+        paddingVertical: theme.spacing.xs,
     },
     sortChipActive: {
-        backgroundColor: '#E85D04',
+        backgroundColor: theme.colors.primary,
     },
     sortChipText: {
-        color: '#475467',
-        fontSize: 12,
-        fontWeight: '700',
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.caption,
+        fontWeight: theme.typography.weight.bold,
     },
     sortChipTextActive: {
-        color: '#FFFFFF',
+        color: theme.colors.surface,
     },
     exploreSection: {
         flex: 1,
     },
     exploreScrollContent: {
-        paddingBottom: 20,
+        paddingBottom: theme.spacing.md,
     },
     exploreList: {
-        paddingBottom: 20,
+        paddingBottom: theme.spacing.md,
     },
     toolCard: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 16,
-        marginBottom: 14,
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.radius.card,
+        marginBottom: theme.spacing.sm,
         overflow: 'hidden',
-        shadowColor: '#111827',
+        shadowColor: theme.colors.shadow,
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.08,
         shadowRadius: 6,
@@ -905,105 +906,105 @@ const styles = StyleSheet.create({
     },
     placeholderImage: {
         alignItems: 'center',
-        backgroundColor: '#F8E9DF',
+        backgroundColor: theme.colors.imagePlaceholder,
         justifyContent: 'center',
     },
     toolBody: {
-        padding: 14,
+        padding: theme.spacing.sm,
     },
     toolTitle: {
-        color: '#1F3D4A',
-        fontSize: 18,
-        fontWeight: '700',
+        color: theme.colors.text,
+        fontSize: theme.typography.subtitle,
+        fontWeight: theme.typography.weight.bold,
     },
     toolMeta: {
-        color: '#6B7280',
-        fontSize: 13,
-        marginTop: 4,
+        color: theme.colors.textSubtle,
+        fontSize: theme.typography.small,
+        marginTop: theme.spacing.xxs,
     },
     toolPrice: {
-        color: '#E85D04',
-        fontSize: 16,
-        fontWeight: '700',
-        marginTop: 10,
+        color: theme.colors.primary,
+        fontSize: theme.typography.bodyLarge,
+        fontWeight: theme.typography.weight.bold,
+        marginTop: theme.spacing.xs,
     },
     badgeRow: {
         alignItems: 'center',
         flexDirection: 'row',
-        gap: 8,
-        marginTop: 12,
+        gap: theme.spacing.xs,
+        marginTop: theme.spacing.sm,
     },
     badge: {
-        backgroundColor: '#E7F7EE',
-        borderRadius: 999,
-        color: '#0F8A4C',
-        fontSize: 11,
-        fontWeight: '700',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
+        backgroundColor: theme.states.success.background,
+        borderRadius: theme.radius.pill,
+        color: theme.states.success.foreground,
+        fontSize: theme.typography.tiny,
+        fontWeight: theme.typography.weight.bold,
+        paddingHorizontal: theme.spacing.xs,
+        paddingVertical: theme.spacing.xxs,
     },
     badgeSecondary: {
-        backgroundColor: '#EEF2FF',
-        borderRadius: 999,
-        color: '#4F46E5',
-        fontSize: 11,
-        fontWeight: '700',
-        paddingHorizontal: 8,
-        paddingVertical: 4,
+        backgroundColor: theme.colors.infoBackground,
+        borderRadius: theme.radius.pill,
+        color: theme.colors.info,
+        fontSize: theme.typography.tiny,
+        fontWeight: theme.typography.weight.bold,
+        paddingHorizontal: theme.spacing.xs,
+        paddingVertical: theme.spacing.xxs,
     },
     centeredBox: {
         alignItems: 'center',
         flex: 1,
         justifyContent: 'center',
-        paddingBottom: 20,
+        paddingBottom: theme.spacing.md,
     },
     centeredText: {
-        color: '#1F3D4A',
-        fontSize: 14,
-        fontWeight: '600',
-        marginTop: 12,
+        color: theme.colors.text,
+        fontSize: theme.typography.label,
+        fontWeight: theme.typography.weight.semiBold,
+        marginTop: theme.spacing.sm,
     },
     inlineWarning: {
         alignItems: 'center',
-        backgroundColor: '#FDECEC',
-        borderColor: '#F1B2B2',
-        borderRadius: 12,
+        backgroundColor: theme.states.error.background,
+        borderColor: theme.states.error.border,
+        borderRadius: theme.radius.large,
         borderWidth: 1,
         flexDirection: 'row',
-        marginBottom: 12,
-        paddingHorizontal: 12,
-        paddingVertical: 10,
+        marginBottom: theme.spacing.sm,
+        paddingHorizontal: theme.spacing.sm,
+        paddingVertical: theme.spacing.xs,
     },
     inlineWarningText: {
-        color: '#B42318',
-        fontSize: 12,
-        fontWeight: '600',
-        marginLeft: 8,
+        color: theme.states.error.foreground,
+        fontSize: theme.typography.caption,
+        fontWeight: theme.typography.weight.semiBold,
+        marginLeft: theme.spacing.xs,
     },
     resultsSummary: {
-        color: '#475467',
-        fontSize: 12,
-        fontWeight: '700',
-        marginBottom: 12,
+        color: theme.colors.textMuted,
+        fontSize: theme.typography.caption,
+        fontWeight: theme.typography.weight.bold,
+        marginBottom: theme.spacing.sm,
     },
     emptyState: {
         alignItems: 'center',
         flex: 1,
         justifyContent: 'center',
-        paddingBottom: 48,
+        paddingBottom: theme.spacing.xxl,
     },
     emptyTitle: {
-        color: '#1F3D4A',
-        fontSize: 20,
-        fontWeight: '700',
-        marginTop: 18,
+        color: theme.colors.text,
+        fontSize: theme.typography.heading,
+        fontWeight: theme.typography.weight.bold,
+        marginTop: theme.spacing.md,
         textAlign: 'center',
     },
     emptySubtitle: {
-        color: '#6B7280',
-        fontSize: 16,
+        color: theme.colors.textSubtle,
+        fontSize: theme.typography.bodyLarge,
         lineHeight: 23,
-        marginTop: 8,
+        marginTop: theme.spacing.xs,
         maxWidth: 290,
         textAlign: 'center',
     },

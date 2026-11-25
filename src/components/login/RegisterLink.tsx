@@ -1,5 +1,6 @@
 import { Link } from 'expo-router';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { theme } from '@/theme';
 
 export default function RegisterLink() {
   return (
@@ -20,20 +21,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 25,
-    fontFamily: 'sans-serif',
+    marginTop: theme.spacing.lg,
+    fontFamily: theme.typography.fontFamily,
   },
 
   text: {
-    fontSize: 14,
-    color: '#6B7280',
-    opacity: 0.7
+    fontSize: theme.typography.label,
+    color: theme.colors.textSubtle,
   },
 
   link: {
-    fontSize: 14,
-    color: '#E85D04',
-    fontWeight: 'bold',
-    marginLeft: 5,
+    fontSize: theme.typography.label,
+    color: theme.colors.primary,
+    fontWeight: theme.typography.weight.bold,
+    marginLeft: theme.spacing.xxs,
   },
 });

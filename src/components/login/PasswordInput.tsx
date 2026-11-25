@@ -1,3 +1,4 @@
+import { theme } from '@/theme';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 
 interface PasswordInputProps {
@@ -20,7 +21,7 @@ export default function PasswordInput({
       <TextInput
         style={styles.input}
         placeholder="Digite sua senha"
-        placeholderTextColor="#8A8A8A"
+        placeholderTextColor={theme.colors.textMuted}
         value={value}
         onChangeText={onChangeText}
         secureTextEntry={!showPassword}
@@ -50,28 +51,27 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#D5DCE3',
-    borderRadius: 10,
-    backgroundColor: '#FAFBFC',
-    marginBottom: 8,
+    borderColor: theme.colors.border,
+    borderRadius: theme.radius.medium,
+    backgroundColor: theme.colors.surfaceSubtle,
+    marginBottom: theme.spacing.xs,
   },
 
   input: {
     flex: 1,
     height: '100%',
-    paddingHorizontal: 15,
-    fontSize: 15,
-    color: '#1F2937',
-    opacity: 0.5
+    paddingHorizontal: theme.spacing.md,
+    fontSize: theme.typography.body,
+    color: theme.colors.text,
   },
 
   showPasswordButton: {
-    paddingHorizontal: 12,
+    paddingHorizontal: theme.spacing.sm,
   },
 
   showPasswordText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#374151',
+    fontSize: theme.typography.small,
+    fontWeight: theme.typography.weight.bold,
+    color: theme.colors.textSecondary,
   },
 });
