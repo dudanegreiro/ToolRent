@@ -1,4 +1,5 @@
 import { cadastrarUsuario } from '@/services/api';
+import { theme } from '@/theme';
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -156,6 +157,7 @@ export default function CadastroForm() {
                     <TextInput
                         style={styles.input}
                         placeholder="Digite seu nome"
+                        placeholderTextColor={theme.colors.textMuted}
                         value={nome}
                         onChangeText={setNome}
                         autoCapitalize="words"
@@ -165,7 +167,7 @@ export default function CadastroForm() {
                     <TextInput
                         style={styles.input}
                         placeholder="Digite seu e-mail"
-                        placeholderTextColor="#8A8A8A"
+                        placeholderTextColor={theme.colors.textMuted}
                         value={email}
                         onChangeText={setEmail}
                         keyboardType="email-address"
@@ -178,7 +180,7 @@ export default function CadastroForm() {
                             <TextInput
                                 style={[styles.input, styles.inputTel]}
                                 placeholder="(11) 99999-9999"
-                                placeholderTextColor="#8A8A8A"
+                                placeholderTextColor={theme.colors.textMuted}
                                 value={telefone}
                                 onChangeText={(text) => setTelefone(formatarTelefone(text))}
                                 keyboardType='phone-pad'
@@ -190,7 +192,7 @@ export default function CadastroForm() {
                             <TextInput
                                 style={[styles.input, styles.inputTel]}
                                 placeholder='000.000.000-00'
-                                placeholderTextColor="#8A8A8A"
+                                placeholderTextColor={theme.colors.textMuted}
                                 value={cpf}
                                 onChangeText={(text) => setCpf(formatarCpf(text))}
                                 keyboardType='numeric'
@@ -205,7 +207,7 @@ export default function CadastroForm() {
                     <TextInput
                         style={styles.input}
                         placeholder="Digite sua senha"
-                        placeholderTextColor="#8A8A8A"
+                        placeholderTextColor={theme.colors.textMuted}
                         value={senha}
                         onChangeText={setSenha}
                         secureTextEntry
@@ -215,7 +217,7 @@ export default function CadastroForm() {
                     <TextInput
                         style={styles.input}
                         placeholder="Confirme sua senha"
-                        placeholderTextColor="#8A8A8A"
+                        placeholderTextColor={theme.colors.textMuted}
                         value={confirmSenha}
                         onChangeText={setConfirmSenha}
                         secureTextEntry
@@ -226,20 +228,26 @@ export default function CadastroForm() {
             <View style={styles.buttonRow}>
                 {etapa === 2 && (
                     <TouchableOpacity
-                        style={[styles.button, styles.backButton]}
+                        style={[
+                            styles.button,
+                            styles.backButton,
+                            carregando && styles.buttonDisabled,
+                        ]}
                         onPress={() => setEtapa(1)}
                         disabled={carregando}
                     >
-                        <Text style={styles.backButtonText}>VOLTAR</Text>
+                        <Text style={[styles.backButtonText, carregando && styles.buttonTextDisabled]}>
+                            VOLTAR
+                        </Text>
                     </TouchableOpacity>
                 )}
 
                 <TouchableOpacity
-                    style={styles.button}
+                    style={[styles.button, carregando && styles.buttonDisabled]}
                     onPress={handleCadastro}
                     disabled={carregando}
                 >
-                    <Text style={styles.buttonText}>
+                    <Text style={[styles.buttonText, carregando && styles.buttonTextDisabled]}>
                         {carregando
                             ? 'AGUARDE...'
                             : etapa === 1
@@ -265,29 +273,28 @@ export default function CadastroForm() {
 
 const styles = StyleSheet.create({
     form: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 20,
-        padding: 24,
-        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.08)',
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.radius.panel,
+        padding: theme.spacing.lg,
+        boxShadow: theme.shadows.form,
         elevation: 4,
     },
     label: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: '#374151',
-        marginBottom: 8,
-        opacity: 0.5,
+        fontSize: theme.typography.label,
+        fontWeight: theme.typography.weight.semiBold,
+        color: theme.colors.textSecondary,
+        marginBottom: theme.spacing.xs,
     },
     input: {
         height: 52,
         borderWidth: 1,
-        borderColor: '#D5DCE3',
-        borderRadius: 10,
-        paddingHorizontal: 15,
-        fontSize: 15,
-        opacity: 0.5,
-        backgroundColor: '#FAFBFC',
-        marginBottom: 18,
+        borderColor: theme.colors.border,
+        borderRadius: theme.radius.medium,
+        paddingHorizontal: theme.spacing.md,
+        fontSize: theme.typography.body,
+        color: theme.colors.text,
+        backgroundColor: theme.colors.surfaceSubtle,
+        marginBottom: theme.spacing.md,
     },
 
     cpfTel: {
@@ -302,11 +309,14 @@ const styles = StyleSheet.create({
     button: {
         flex: 1,
         height: 52,
-        backgroundColor: '#E85D04',
-        borderRadius: 10,
+        backgroundColor: theme.colors.primary,
+        borderRadius: theme.radius.medium,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 5,
+        marginTop: theme.spacing.xxs,
+    },
+    buttonDisabled: {
+        backgroundColor: theme.states.disabled.background,
     },
     buttonRow: {
         flexDirection: 'row',
@@ -314,33 +324,36 @@ const styles = StyleSheet.create({
         gap: 10,
     },
     buttonText: {
-        color: '#FFFFFF',
-        fontSize: 16,
-        fontWeight: '700',
+        color: theme.colors.surface,
+        fontSize: theme.typography.bodyLarge,
+        fontWeight: theme.typography.weight.bold,
+    },
+    buttonTextDisabled: {
+        color: theme.states.disabled.foreground,
     },
     backButton: {
         height: 52,
-        backgroundColor: '#FFFFFF',
+        backgroundColor: theme.colors.surface,
         borderWidth: 1,
-        borderColor: '#E85D04',
-        borderRadius: 10,
+        borderColor: theme.colors.primary,
+        borderRadius: theme.radius.medium,
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 5,
+        marginTop: theme.spacing.xxs,
     },
     backButtonText: {
-        color: '#E85D04',
-        fontSize: 16,
-        fontWeight: '700',
+        color: theme.colors.primary,
+        fontSize: theme.typography.bodyLarge,
+        fontWeight: theme.typography.weight.bold,
     },
     message: {
-        color: '#374151',
-        fontSize: 14,
-        marginTop: 12,
+        color: theme.colors.textSecondary,
+        fontSize: theme.typography.label,
+        marginTop: theme.spacing.sm,
         textAlign: 'center',
     },
     successMessage: {
-        color: '#16803C',
-        fontWeight: '600',
+        color: theme.states.success.foreground,
+        fontWeight: theme.typography.weight.semiBold,
     },
 });

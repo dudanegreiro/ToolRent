@@ -1,5 +1,6 @@
 import { fazerLogin } from '@/services/api';
 import { saveSession } from '@/services/session';
+import { theme } from '@/theme';
 import { Href, useRouter } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -135,25 +136,25 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FA',
+    backgroundColor: theme.colors.background,
   },
 
   containerText: {
-    marginBottom: 24,
+    marginBottom: theme.spacing.lg,
   },
 
   textBemVindo: {
-    fontSize: 28,
-    fontFamily: 'sans-serif',
-    fontWeight: '700',
-    color: '#1F3D4A',
+    fontSize: theme.typography.display,
+    fontFamily: theme.typography.fontFamily,
+    fontWeight: theme.typography.weight.bold,
+    color: theme.colors.text,
   },
 
   text: {
-    fontSize: 15,
-    fontFamily: 'sans-serif',
-    color: '#6B7280',
-    marginTop: 8,
+    fontSize: theme.typography.body,
+    fontFamily: theme.typography.fontFamily,
+    color: theme.colors.textSubtle,
+    marginTop: theme.spacing.xs,
     lineHeight: 22,
   },
 
@@ -163,8 +164,8 @@ const styles = StyleSheet.create({
 
   content: {
     flex: 1,
-    paddingHorizontal: 25,
-    paddingVertical: 45,
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.xxl,
     justifyContent: 'center',
   },
 });
